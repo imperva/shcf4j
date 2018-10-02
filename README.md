@@ -1,2 +1,2 @@
-# shcf4j
-SHCF4J is a façade wrapper meant to enforce separation-of-concerns between the application and the HTTP Client used under-the-hoods. The concrete HTTP Client SDK must be injected into the SHCF4J, than, by using SHCF4J developers are forced to use its API which hides the implementation used internally and thus enable developers changing it when needed.
+# About SHCF4J
+The Simple HTTP Client Facade for Java (SHCF4J) serves as a simple facade or abstraction for various HTTP client frameworks (e.g. java.net.HttpURLConnection, Apache HttpClient, etc.) allowing the end user to plug in the desired HTTP client framework at deployment time. This library idea originated from the The Simple Logging Facade for Java (SLF4J) progect. More information can be found on the [SLF4J website](http://www.slf4j.org).
