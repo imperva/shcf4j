@@ -50,7 +50,7 @@ public interface HttpAsyncClient extends Closeable {
      *
      * @param target   the target host for the request.
      * @param request  the request to execute
-     * @param ctx      client execution context
+     * @param ctx      client4 execution context
      * @param callback future callback.
      * @return future representing pending completion of the operation.
      */

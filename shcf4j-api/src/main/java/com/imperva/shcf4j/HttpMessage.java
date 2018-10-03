@@ -6,8 +6,8 @@ import java.util.List;
 /**
  * <b>HttpMessage</b>
  * <p/>
- * HTTP messages consist of requests from client to server and responses
- * from server to client.
+ * HTTP messages consist of requests from client4 to server and responses
+ * from server to client4.
  * <pre>
  *     HTTP-message   = Request | Response     ; HTTP/1.1 messages
  * </pre>
