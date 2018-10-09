@@ -6,10 +6,12 @@ import lombok.Value;
 
 /**
  * <b>IOReactorConfig</b>
- * <p/>
- * I/O reactor configuration parameters.
  *
- * @author <font color="blue">Maxim Kirilov</font>
+ * <p>
+ * I/O reactor configuration parameters.
+ * </p>
+ *
+ * @author maxim.kirilov
  */
 @Builder
 @Value
@@ -54,12 +56,15 @@ public class IOReactorConfig {
     private final int rcvBufSize = 0;
 
 
-
     /**
+     * <p>
      * Determines time interval in milliseconds at which the I/O reactor wakes up to check for
      * timed out sessions and session requests.
-     * <p/>
+     * </p>
+     * <p>
      * Default: <code>1000</code> milliseconds.
+     *
+     * @return the time interval in milliseconds at which the I/O reactor wakes up to check for timed out sessions and session requests
      */
     public long getSelectIntervalMilliseconds() {
         return this.selectIntervalMilliseconds;
@@ -67,22 +72,29 @@ public class IOReactorConfig {
 
 
     /**
+     * <p>
      * Determines grace period in milliseconds the I/O reactors are expected to block waiting
      * for individual worker threads to terminate cleanly.
-     * <p/>
+     * </p>
+     * <p>
      * Default: <code>500</code> milliseconds.
+     *
+     * @return the grace period in milliseconds the I/O reactors are expected to block waiting for individual worker threads to terminate cleanly.
      */
     public long getShutdownGracePeriod() {
         return this.shutdownGracePeriod;
     }
 
     /**
+     * <p>
      * Determines whether or not I/O interest operations are to be queued and executed
      * asynchronously by the I/O reactor thread or to be applied to the underlying
      * {@link java.nio.channels.SelectionKey} immediately.
-     * <p/>
+     * </p>
+     * <p>
      * Default: <code>false</code>
      *
+     * @return whether or not I/O interest operations are to be queued and executed asynchronously by the I/O reactor thread or to be applied to the underlying {@link java.nio.channels.SelectionKey} immediately.
      * @see java.nio.channels.SelectionKey
      * @see java.nio.channels.SelectionKey#interestOps()
      * @see java.nio.channels.SelectionKey#interestOps(int)
@@ -92,9 +104,13 @@ public class IOReactorConfig {
     }
 
     /**
+     * <p>
      * Determines the number of I/O dispatch threads to be used by the I/O reactor.
-     * <p/>
+     * </p>
+     * <p>
      * Default: <code>2</code>
+     *
+     * @return the number of I/O dispatch threads to be used by the I/O reactor.
      */
     public int getIoThreadCount() {
         return this.ioThreadCount;
@@ -102,10 +118,13 @@ public class IOReactorConfig {
 
 
     /**
+     * <p>
      * Determines the default socket timeout value for non-blocking I/O operations.
-     * <p/>
+     * </p>
+     * <p>
      * Default: <code>0</code> (no timeout)
      *
+     * @return the default socket timeout value for non-blocking I/O operations.
      * @see java.net.SocketOptions#SO_TIMEOUT
      */
     public int getSoTimeoutMilliseconds() {
@@ -114,11 +133,13 @@ public class IOReactorConfig {
 
 
     /**
+     * <p>
      * Determines the default value of the {@link java.net.SocketOptions#SO_REUSEADDR} parameter
      * for newly created sockets.
-     * <p/>
+     * </p>
      * Default: <code>false</code>
      *
+     * @return the default value of the {@link java.net.SocketOptions#SO_REUSEADDR} parameter
      * @see java.net.SocketOptions#SO_REUSEADDR
      */
     public boolean isSoReuseAddress() {
@@ -126,11 +147,14 @@ public class IOReactorConfig {
     }
 
     /**
+     * <p>
      * Determines the default value of the {@link java.net.SocketOptions#SO_LINGER} parameter
      * for newly created sockets.
-     * <p/>
+     * </p>
+     * <p>
      * Default: <code>-1</code>
      *
+     * @return the default value of the {@link java.net.SocketOptions#SO_LINGER} parameter for newly created sockets.
      * @see java.net.SocketOptions#SO_LINGER
      */
     public int getSoLingerSeconds() {
@@ -138,11 +162,14 @@ public class IOReactorConfig {
     }
 
     /**
+     * <p>
      * Determines the default value of the {@link java.net.SocketOptions#SO_KEEPALIVE} parameter
      * for newly created sockets.
-     * <p/>
+     * </p>
+     * <p>
      * Default: <code>-1</code>
      *
+     * @return the default value of the {@link java.net.SocketOptions#SO_KEEPALIVE} parameter for newly created sockets.
      * @see java.net.SocketOptions#SO_KEEPALIVE
      */
     public boolean isSoKeepalive() {
@@ -150,11 +177,14 @@ public class IOReactorConfig {
     }
 
     /**
+     * <p>
      * Determines the default value of the {@link java.net.SocketOptions#TCP_NODELAY} parameter
      * for newly created sockets.
-     * <p/>
+     * </p>
+     * <p>
      * Default: <code>false</code>
      *
+     * @return the default value of the {@link java.net.SocketOptions#TCP_NODELAY} parameter for newly created sockets.
      * @see java.net.SocketOptions#TCP_NODELAY
      */
     public boolean isTcpNoDelay() {
@@ -162,9 +192,13 @@ public class IOReactorConfig {
     }
 
     /**
+     * <p>
      * Determines the default connect timeout value for non-blocking connection requests.
-     * <p/>
+     * </p>
+     * <p>
      * Default: <code>0</code> (no timeout)
+     *
+     * @return the default connect timeout value for non-blocking connection requests.
      */
     public int getConnectTimeoutMilliseconds() {
         return connectTimeoutMilliseconds;
@@ -172,11 +206,14 @@ public class IOReactorConfig {
 
 
     /**
+     * <p>
      * Determines the default value of the {@link java.net.SocketOptions#SO_SNDBUF} parameter
      * for newly created sockets.
-     * <p/>
+     * </p>
+     * <p>
      * Default: <code>0</code> (system default)
      *
+     * @return the default value of the {@link java.net.SocketOptions#SO_SNDBUF} parameter for newly created sockets.
      * @see java.net.SocketOptions#SO_SNDBUF
      */
     public int getSndBufSize() {
@@ -184,11 +221,14 @@ public class IOReactorConfig {
     }
 
     /**
+     * <p>
      * Determines the default value of the {@link java.net.SocketOptions#SO_RCVBUF} parameter
      * for newly created sockets.
-     * <p/>
+     * </p>
+     * <p>
      * Default: <code>0</code> (system default)
      *
+     * @return the default value of the {@link java.net.SocketOptions#SO_RCVBUF} parameter for newly created sockets.
      * @see java.net.SocketOptions#SO_RCVBUF
      */
     public int getRcvBufSize() {

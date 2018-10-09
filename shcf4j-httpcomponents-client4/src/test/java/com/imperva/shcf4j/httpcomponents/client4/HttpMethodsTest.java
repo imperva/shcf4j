@@ -6,7 +6,6 @@ import com.imperva.shcf4j.HttpResponse;
 import com.imperva.shcf4j.auth.AuthScope;
 import com.imperva.shcf4j.auth.UsernamePasswordCredentials;
 import com.imperva.shcf4j.client.CredentialsProvider;
-import com.imperva.shcf4j.client.ResponseHandlerBase;
 import com.imperva.shcf4j.client.protocol.ClientContext;
 import com.imperva.shcf4j.entity.ContentType;
 import com.imperva.shcf4j.entity.FileEntity;
@@ -71,26 +70,20 @@ public abstract class HttpMethodsTest extends SyncHttpClientBaseTest {
                 execute(
                         HOST,
                         request,
-                        new ResponseHandlerBase<HttpResponse>() {
-                            @Override
-                            public HttpResponse handleResponse(HttpResponse response) throws IOException {
-
-                                BufferedReader rd =
-                                        new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-
-                                Assert.assertEquals("Wrong content received",
-                                        responseContent, rd.readLine());
-
-                                return null;
+                        resp -> {
+                            try (BufferedReader rd = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()))) {
+                                Assert.assertEquals("Wrong content received", responseContent, rd.readLine());
+                            } catch (IOException ioException) {
+                                Assert.fail("Unexpected exception caught");
                             }
+                            return null;
                         }
                 );
     }
 
 
-
     @Test
-    public void emptyEntityPostTest() throws IOException{
+    public void emptyEntityPostTest() throws IOException {
         String uri = "/resource";
         instanceRule.stubFor(post(urlEqualTo(uri))
                 .willReturn(
@@ -151,7 +144,7 @@ public abstract class HttpMethodsTest extends SyncHttpClientBaseTest {
     }
 
     @Test
-    public void basicAuthenticationTest() throws IOException{
+    public void basicAuthenticationTest() throws IOException {
         String uri = "/basic/auth";
 
         String user = "user";

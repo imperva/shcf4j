@@ -9,7 +9,7 @@ import java.nio.charset.CodingErrorAction;
 /**
  * <b>ConnectionConfig</b>
  *
- * @author <font color="blue">Maxim Kirilov</font>
+ * @author maxim.kirilov
  */
 
 @Builder

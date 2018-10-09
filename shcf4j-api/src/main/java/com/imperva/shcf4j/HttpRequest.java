@@ -75,42 +75,52 @@ public class HttpRequest implements HttpMessage {
         return this;
     }
 
+    /**
+     *
+     * @param uri the request URI
+     * @return {@code HttpRequest}
+     */
     public static HttpRequest createGetRequest(URI uri) {
         return new HttpRequest(uri, SupportedHttpMethod.GET);
     }
 
 
+    /**
+     *
+     * @param uri the request URI
+     * @return {@code HttpRequest}
+     */
     public static HttpRequest createGetRequest(String uri) {
         return createGetRequest(URI.create(uri));
     }
 
     /**
-     * @param uri
-     * @return
+     * @param uri the request URI
+     * @return {@code HttpEntityEnclosingRequest}
      */
     public static HttpEntityEnclosingRequest createPostRequest(URI uri) {
         return new HttpEntityEnclosingRequest(uri, SupportedHttpMethod.POST);
     }
 
     /**
-     * @param uri
-     * @return
+     * @param uri the request URI
+     * @return {@code HttpEntityEnclosingRequest}
      */
     public static HttpEntityEnclosingRequest createPostRequest(String uri) {
         return createPostRequest(URI.create(uri));
     }
 
     /**
-     * @param uri
-     * @return
+     * @param uri the request URI
+     * @return {@code HttpEntityEnclosingRequest}
      */
     public static HttpEntityEnclosingRequest createPutRequest(URI uri) {
         return new HttpEntityEnclosingRequest(uri, SupportedHttpMethod.PUT);
     }
 
     /**
-     * @param uri
-     * @return
+     * @param uri the request URI
+     * @return {@code HttpEntityEnclosingRequest}
      */
     public static HttpEntityEnclosingRequest createPutRequest(String uri) {
         return createPutRequest(URI.create(uri));

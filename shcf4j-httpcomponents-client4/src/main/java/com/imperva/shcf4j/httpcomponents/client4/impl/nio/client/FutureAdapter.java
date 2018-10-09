@@ -11,7 +11,7 @@ import java.util.concurrent.TimeoutException;
 /**
  * <b>FutureAdapter</b>
  *
- * @author <font color="blue">Maxim Kirilov</font>
+ * @author maxim.kirilov
  */
 public class FutureAdapter implements Future<HttpResponse> {
 

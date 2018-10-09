@@ -11,13 +11,12 @@ import java.util.Collection;
 
 /**
  * <b>RequestConfig</b>
- * <p/>
+ *
  * <p>
  * Holds configuration parameters for HTTP request.
  * </p>
  *
- * @author <font color="blue">Maxim Kirilov</font>
- *         Date: May 2014
+ * @author maxim.kirilov
  */
 @Builder(toBuilder = true)
 @Value

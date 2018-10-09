@@ -4,14 +4,12 @@ import javax.net.ssl.SSLException;
 
 /**
  * <b>X509HostnameVerifier</b>
- * <p/>
  * <p>
  * Interface for checking if a hostname matches the names stored inside the
  * server's X.509 certificate.
  * </p>
  *
- * @author <font color="blue">Maxim Kirilov</font>
- *         Date: May 2014
+ * @author maxim.kirilov
  */
 @FunctionalInterface
 public interface X509HostnameVerifier {

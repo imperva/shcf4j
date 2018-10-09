@@ -25,11 +25,80 @@ allprojects {
 
 configure(javaProjects()) {
     apply plugin: 'java'
+    apply plugin: 'maven'
+    apply plugin: 'signing'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
+    }
+
+    signing {
+        sign configurations.archives
+    }
+
+    task javadocJar(type: Jar) {
+        classifier = 'javadoc'
+        from javadoc
+    }
+
+    task sourcesJar(type: Jar) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    artifacts {
+        archives javadocJar, sourcesJar
+    }
+
+    // Build, sign, and upload
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+
+                // Sign POM
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                // Destination
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                pom.project {
+                    name 'Simple HTTP Client Facade for Java (SHCF4J)'
+                    packaging 'jar'
+                    description 'The Simple HTTP Client Facade for Java (SHCF4J) serves as a simple facade or abstraction for various HTTP client frameworks (e.g. java.net.HttpURLConnection, Apache HttpClient, etc.) allowing the end user to plug in the desired HTTP client framework at deployment time.'
+                    url 'https://github.com/imperva/shcf4j'
+
+                    scm {
+                        connection 'scm:git:git://github.com/imperva/shcf4j.git'
+                        developerConnection 'scm:git:ssh://github.com/imperva/shcf4j.git'
+                        url 'https://github.com/imperva/shcf4j'
+                    }
+
+                    licenses {
+                        license {
+                            name 'The Apache License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id 'maximkir'
+                            name 'Maxim Kirilov'
+                            email 'maxim.kirilov@imperva.com'
+                            organization 'Imperva'
+                            organizationUrl 'https://imperva.com'
+                        }
+                    }
+                }
+            }
+        }
     }
 }

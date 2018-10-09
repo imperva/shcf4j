@@ -6,14 +6,12 @@ import java.io.OutputStream;
 
 /**
  * <b>HttpEntity</b>
- * <p/>
+ *
  * <p>
  * An entity that can be sent or received with an HTTP message.
  * </p>
  *
- * @author <font color="blue">Maxim Kirilov</font>
- *         <p/>
- *         Date: April 2014
+ * @author maxim.kirilov
  */
 public interface HttpEntity {
 
@@ -35,12 +33,12 @@ public interface HttpEntity {
      * chunked encoding should be used when the entity is sent.
      * For entities that are received, it can also indicate whether
      * the entity was received with chunked encoding.
-     * <br/>
+     * <p>
      * The behavior of wrapping entities is implementation dependent,
      * but should respect the primary purpose.
      *
      * @return <code>true</code> if chunked encoding is preferred for this
-     *         entity, or <code>false</code> if it is not
+     * entity, or <code>false</code> if it is not
      */
     boolean isChunked();
 
@@ -48,9 +46,9 @@ public interface HttpEntity {
      * Tells the length of the content, if known.
      *
      * @return the number of bytes of the content, or
-     *         a negative number if unknown. If the content length is known
-     *         but exceeds {@link Long#MAX_VALUE Long.MAX_VALUE},
-     *         a negative number is returned.
+     * a negative number if unknown. If the content length is known
+     * but exceeds {@link Long#MAX_VALUE Long.MAX_VALUE},
+     * a negative number is returned.
      */
     long getContentLength();
 
@@ -61,7 +59,7 @@ public interface HttpEntity {
      * charset attribute.
      *
      * @return the Content-Type header for this entity, or
-     *         <code>null</code> if the content type is unknown
+     * <code>null</code> if the content type is unknown
      */
     Header getContentType();
 
@@ -73,7 +71,7 @@ public interface HttpEntity {
      * adjust this header accordingly.
      *
      * @return the Content-Encoding header for this entity, or
-     *         <code>null</code> if the content encoding is unknown
+     * <code>null</code> if the content encoding is unknown
      */
     Header getContentEncoding();
 
@@ -85,13 +83,13 @@ public interface HttpEntity {
      * Entities that are not {@link #isRepeatable repeatable} are expected
      * to return the same {@link InputStream} instance and therefore
      * may not be consumed more than once.
-     * <p/>
+     *
      * IMPORTANT: Please note all entity implementations must ensure that
      * all allocated resources are properly deallocated after
      * the {@link InputStream#close()} method is invoked.
      *
      * @return content stream of the entity.
-     * @throws IOException   if the stream could not be created
+     * @throws IOException           if the stream could not be created
      * @throws IllegalStateException if content stream cannot be created.
      * @see #isRepeatable()
      */
@@ -99,8 +97,7 @@ public interface HttpEntity {
 
     /**
      * Writes the entity content out to the output stream.
-     * <p/>
-     * <p/>
+     *
      * IMPORTANT: Please note all entity implementations must ensure that
      * all allocated resources are properly deallocated when this method
      * returns.
@@ -118,7 +115,7 @@ public interface HttpEntity {
      * to the wrapped entity.
      *
      * @return <code>true</code> if the entity content is streamed,
-     *         <code>false</code> otherwise
+     * <code>false</code> otherwise
      */
     boolean isStreaming();
 

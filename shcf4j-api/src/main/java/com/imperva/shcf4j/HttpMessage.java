@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * <b>HttpMessage</b>
- * <p/>
+ *
  * HTTP messages consist of requests from client4 to server and responses
  * from server to client4.
  * <pre>
@@ -27,8 +27,8 @@ import java.util.List;
  *      start-line      = Request-Line | Status-Line
  * </pre>
  *
- * @author <font color="blue">Maxim Kirilov</font>
- *         Date: April 2014
+ * @author maxim.kirilov
+ *
  */
 public interface HttpMessage {
 
@@ -82,6 +82,7 @@ public interface HttpMessage {
      *
      * @param name  the name of the header.
      * @param value the value of the header.
+     * @return {@code HttpMessage}
      */
     HttpMessage addHeader(String name, String value);
 
@@ -91,6 +92,7 @@ public interface HttpMessage {
      *
      * @param name  the name of the header.
      * @param value the value of the header.
+     * @return {@code HttpMessage}
      */
     HttpMessage setHeader(String name, String value);
 

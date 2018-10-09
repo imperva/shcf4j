@@ -25,9 +25,10 @@ import java.util.function.Consumer;
 
 /**
  * <b>HttpClientBuilder</b>
- * <p/>
+ * <p>
  * Builder for {@link HttpClient} instances.
- * <p/>
+ * </p>
+ * <p>
  * When a particular component is not explicitly this class will
  * use its default implementation.
  * <ul>
@@ -50,14 +51,11 @@ import java.util.function.Consumer;
  * <li>http.maxConnections</li>
  * <li>http.agent</li>
  * </ul>
- * <p/>
  * Please note that some settings used by this class can be mutually
  * exclusive and may not apply when building {@link HttpClient}
  * instances.
  *
- * @author <font color="blue">Maxim Kirilov</font>
- *         <p/>
- *         Date: April 2014
+ * @author maxim.kirilov
  */
 public class HttpClientBuilder {
 
@@ -68,19 +66,23 @@ public class HttpClientBuilder {
         this.builder = httpClientBuilder;
     }
 
-    protected HttpClientBuilder(){
+    protected HttpClientBuilder() {
         this(org.apache.http.impl.client.HttpClients.custom());
     }
 
 
+    /**
+     *
+     * @return a {@code HttpClient} that the builder produce
+     */
     public HttpClient build() {
         return new SimpleHttpClient(builder.build());
     }
 
 
     /**
-     * @param strategy
-     * @return
+     * @param strategy the SSL socket creation strategy
+     * @return {@code HttpClientBuilder}
      */
     public HttpClientBuilder setSSLSessionStrategy(final SSLSessionStrategy strategy) {
         Objects.requireNonNull(strategy, "strategy");
@@ -95,11 +97,10 @@ public class HttpClientBuilder {
     }
 
 
-
     /**
      * Disables connection state tracking.
      *
-     * @return
+     * @return {@code HttpClientBuilder}
      */
     public HttpClientBuilder disableConnectionState() {
         builder.disableConnectionState();
@@ -108,6 +109,8 @@ public class HttpClientBuilder {
 
     /**
      * Disables automatic content decompression.
+     *
+     * @return {@code HttpClientBuilder}
      */
     public HttpClientBuilder disableContentCompression() {
         builder.disableContentCompression();
@@ -118,8 +121,8 @@ public class HttpClientBuilder {
     /**
      * Assigns maximum total connection value.
      *
-     * @param maxConnTotal
-     * @return
+     * @param maxConnTotal allowed in this client instance
+     * @return {@code HttpClientBuilder}
      */
     public HttpClientBuilder setMaxConnTotal(int maxConnTotal) {
         builder.setMaxConnTotal(maxConnTotal);
@@ -129,7 +132,8 @@ public class HttpClientBuilder {
     /**
      * Assigns default {@link SocketConfig}.
      *
-     * @param socketConfig
+     * @param socketConfig object
+     * @return {@code HttpClientBuilder}
      */
     public HttpClientBuilder setDefaultSocketConfig(SocketConfig socketConfig) {
         Objects.requireNonNull(socketConfig, "socketConfig");
@@ -148,7 +152,8 @@ public class HttpClientBuilder {
     /**
      * Assigns retryCount.
      *
-     * @param retryCount
+     * @param retryCount of single request
+     * @return {@code HttpClientBuilder}
      */
     public HttpClientBuilder setRetryCount(Integer retryCount) {
 
@@ -157,10 +162,13 @@ public class HttpClientBuilder {
         return this;
     }
 
-        /**
+    /**
      * Assigns default {@link RequestConfig} instance which will be used
      * for request execution if not explicitly set in the client4 execution
      * context.
+     *
+     * @param config default config for every outgoing request
+     * @return {@code HttpClientBuilder}
      */
     public final HttpClientBuilder setDefaultRequestConfig(final RequestConfig config) {
         Objects.requireNonNull(config, "config");
@@ -170,6 +178,9 @@ public class HttpClientBuilder {
 
     /**
      * Assigns default proxy value.
+     *
+     * @param proxy object for every outgoing request
+     * @return {@code HttpClientBuilder}
      */
     public HttpClientBuilder setProxy(HttpHost proxy) {
         Objects.requireNonNull(proxy, "proxy");
@@ -178,6 +189,12 @@ public class HttpClientBuilder {
     }
 
 
+    /**
+     *
+     *
+     * @param cp credentials provider for various authentication schemes
+     * @return {@code HttpClientBuilder}
+     */
     public HttpClientBuilder setDefaultCredentialsProvider(CredentialsProvider cp) {
         Objects.requireNonNull(cp, "cp");
         builder.setDefaultCredentialsProvider(ConversionUtils.convert(cp));
@@ -185,7 +202,12 @@ public class HttpClientBuilder {
     }
 
 
-    public HttpClientBuilder setRoutePlanner(final HttpRoutePlanner routePlanner){
+    /**
+     *
+     * @param routePlanner for outgoing http requests
+     * @return {@code HttpClientBuilder}
+     */
+    public HttpClientBuilder setRoutePlanner(final HttpRoutePlanner routePlanner) {
         Objects.requireNonNull(routePlanner, "routePlanner");
         final org.apache.http.conn.routing.HttpRoutePlanner defaultRoutePlanner =
                 new DefaultRoutePlanner(DefaultSchemePortResolver.INSTANCE);
@@ -193,15 +215,15 @@ public class HttpClientBuilder {
 
             HttpHost t1 =
                     HttpHost
-                    .builder()
-                    .hostname(target.getHostName())
-                    .schemeName(target.getSchemeName())
-                    .port(target.getPort())
-                    .build();
+                            .builder()
+                            .hostname(target.getHostName())
+                            .schemeName(target.getSchemeName())
+                            .port(target.getPort())
+                            .build();
 
             t1 = routePlanner.determineRoute(t1, new HttpMessageWrapper(request));
 
-            return defaultRoutePlanner.determineRoute(ConversionUtils.convert(t1), request , context);
+            return defaultRoutePlanner.determineRoute(ConversionUtils.convert(t1), request, context);
         });
         return this;
     }
@@ -210,12 +232,11 @@ public class HttpClientBuilder {
      * Adds a list of interceptors to the client4, the order is according to the passed list iterator
      * implementation.
      *
-     *
-     * @param interceptors
-     * @return
+     * @param interceptors a list of interceptors that executed upon every request
+     * @return {@code HttpClientBuilder}
      */
-    public HttpClientBuilder setRequestInterceptors(List<Consumer<HttpMessage>> interceptors){
-        for (Consumer<HttpMessage> interceptor : interceptors){
+    public HttpClientBuilder setRequestInterceptors(List<Consumer<HttpMessage>> interceptors) {
+        for (Consumer<HttpMessage> interceptor : interceptors) {
             builder.addInterceptorLast(new HttpRequestInterceptorAdapter(interceptor));
         }
         return this;
@@ -223,15 +244,13 @@ public class HttpClientBuilder {
 
     /**
      * <b>X509HostnameVerifierAdapter</b>
-     * <p/>
+     *
      * <p>
      * This inner class used to adapt user implementation to vendors one,
      * by using composition.
      * </p>
      *
-     * @author <font color="blue">Maxim Kirilov</font>
-     *         <p/>
-     *         Date: May 2014
+     * @author maxim.kirilov
      */
     private static class X509HostnameVerifierAdapter extends AbstractVerifier {
 

@@ -8,12 +8,10 @@ import java.security.Principal;
 
 /**
  * <b>UsernamePasswordCredentials</b>
- * <p/>
- * Simple implementation based on a user name / password
- * pair.
- * <p/>
- * <p/>
- * Created by Maxim.Kirilov on 10/26/2014.
+ * <p>
+ * Simple implementation based on a user name / password pair.
+ *
+ * @author maxim.kirilov
  */
 
 @Builder

@@ -7,13 +7,12 @@ import java.nio.charset.Charset;
 
 /**
  * <b>ContentType</b>
- * <p/>
+ *
  * <p>
  * Content type information consisting of a MIME type and an optional charset.
  * </p>
- * <p/>
- * User: Maxim.Kirilov
- * Date: 01/05/2014
+ *
+ * @author maxim.kirilov
  */
 @Builder
 @Value

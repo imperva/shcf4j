@@ -22,9 +22,9 @@ import java.util.concurrent.ThreadFactory;
 
 /**
  * <b>HttpAsyncClientBuilder</b>
- * <p/>
+ * <p>
  * Builder for {@link com.imperva.shcf4j.client.HttpAsyncClient} instances.
- * <p/>
+ * </p>
  * When a particular component is not explicitly this class will
  * use its default implementation. System properties will be taken
  * into account when configuring the default implementations when
@@ -49,12 +49,12 @@ import java.util.concurrent.ThreadFactory;
  * <li>http.maxConnections</li>
  * <li>http.agent</li>
  * </ul>
- * <p/>
+ * <p>
  * Please note that some settings used by this class can be mutually
  * exclusive and may not apply when building {@link com.imperva.shcf4j.client.HttpAsyncClient}
  * instances.
  *
- * @author <font color="blue">Maxim Kirilov</font>
+ * @author maxim.kirilov
  */
 public class HttpAsyncClientBuilder {
 
@@ -64,15 +64,15 @@ public class HttpAsyncClientBuilder {
         this.asyncClientBuilder = asyncClient;
     }
 
-    protected HttpAsyncClientBuilder(){
+    protected HttpAsyncClientBuilder() {
         this(org.apache.http.impl.nio.client.HttpAsyncClientBuilder.create());
     }
 
     /**
      * Assigns maximum total connection value.
      *
-     * @param maxConnTotal
-     * @return
+     * @param maxConnTotal allowed in this client instance
+     * @return {@code HttpAsyncClientBuilder}
      */
     public final HttpAsyncClientBuilder setMaxConnTotal(final int maxConnTotal) {
         this.asyncClientBuilder.setMaxConnTotal(maxConnTotal);
@@ -82,8 +82,8 @@ public class HttpAsyncClientBuilder {
     /**
      * Assigns maximum connection per route value.
      *
-     * @param maxConnPerRoute
-     * @return
+     * @param maxConnPerRoute a limit of open connections for a single route
+     * @return {@code HttpClientBuilder}
      */
     public final HttpAsyncClientBuilder setMaxConnPerRoute(final int maxConnPerRoute) {
         this.asyncClientBuilder.setMaxConnPerRoute(maxConnPerRoute);
@@ -93,7 +93,7 @@ public class HttpAsyncClientBuilder {
     /**
      * Disables connection state tracking.
      *
-     * @return
+     * @return {@code HttpClientBuilder}
      */
     public HttpAsyncClientBuilder disableConnectionState() {
         this.asyncClientBuilder.disableConnectionState();
@@ -101,8 +101,8 @@ public class HttpAsyncClientBuilder {
     }
 
     /**
-     * @param strategy
-     * @return
+     * @param strategy the SSL socket creation strategy
+     * @return {@code HttpClientBuilder}
      */
     public HttpAsyncClientBuilder setSSLSessionStrategy(final SSLSessionStrategy strategy) {
         Objects.requireNonNull(strategy, "strategy");
@@ -120,7 +120,8 @@ public class HttpAsyncClientBuilder {
     /**
      * Assigns default {@link IOReactorConfig}.
      *
-     * @param ioReactorConfig
+     * @param ioReactorConfig object
+     * @return {@code HttpClientBuilder}
      */
     public HttpAsyncClientBuilder setDefaultSocketConfig(IOReactorConfig ioReactorConfig) {
         Objects.requireNonNull(ioReactorConfig, "ioReactorConfig");
@@ -146,6 +147,9 @@ public class HttpAsyncClientBuilder {
 
     /**
      * Assigns default {@link ConnectionConfig}.
+     *
+     * @param config default config for every outgoing request
+     * @return {@code HttpClientBuilder}
      */
     public final HttpAsyncClientBuilder setDefaultConnectionConfig(final ConnectionConfig config) {
 
@@ -164,6 +168,9 @@ public class HttpAsyncClientBuilder {
      * Assigns default {@link RequestConfig} instance which will be used
      * for request execution if not explicitly set in the client4 execution
      * context.
+     *
+     * @param config default config for every outgoing request
+     * @return {@code HttpAsyncClientBuilder}
      */
     public final HttpAsyncClientBuilder setDefaultRequestConfig(final RequestConfig config) {
 
@@ -174,6 +181,8 @@ public class HttpAsyncClientBuilder {
 
     /**
      * Assigns {@link java.util.concurrent.ThreadFactory} instance.
+     * @param threadFactory the factory that creates the threads
+     * @return {@code HttpAsyncClientBuilder}
      */
     public final HttpAsyncClientBuilder setThreadFactory(final ThreadFactory threadFactory) {
         this.asyncClientBuilder.setThreadFactory(threadFactory);
@@ -184,6 +193,8 @@ public class HttpAsyncClientBuilder {
     /**
      * Use system properties when creating and configuring default
      * implementations.
+     *
+     * @return an {@code HttpAsyncClientBuilder} that initialized with system properties
      */
     public final HttpAsyncClientBuilder useSystemProperties() {
         this.asyncClientBuilder.useSystemProperties();
@@ -192,6 +203,9 @@ public class HttpAsyncClientBuilder {
 
     /**
      * Assigns default proxy value.
+     *
+     * @param proxy object for every outgoing request
+     * @return {@code HttpClientBuilder}
      */
     public HttpAsyncClientBuilder setProxy(HttpHost proxy) {
         Objects.requireNonNull(proxy, "proxy");
@@ -206,7 +220,7 @@ public class HttpAsyncClientBuilder {
         return this;
     }
 
-    public HttpAsyncClientBuilder setRoutePlanner(final HttpRoutePlanner routePlanner){
+    public HttpAsyncClientBuilder setRoutePlanner(final HttpRoutePlanner routePlanner) {
         Objects.requireNonNull(routePlanner, "routePlanner");
         final org.apache.http.conn.routing.HttpRoutePlanner defaultRoutePlanner =
                 new DefaultRoutePlanner(DefaultSchemePortResolver.INSTANCE);
@@ -240,8 +254,8 @@ public class HttpAsyncClientBuilder {
      * </p>
      *
      * @author <font color="blue">Maxim Kirilov</font>
-     *         <p/>
-     *         Date: May 2014
+     * <p/>
+     * Date: May 2014
      */
     private static class X509HostnameVerifierAdapter extends AbstractVerifier {
 

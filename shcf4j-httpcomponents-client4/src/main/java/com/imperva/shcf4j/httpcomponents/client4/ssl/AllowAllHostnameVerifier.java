@@ -6,11 +6,14 @@ import javax.net.ssl.SSLException;
 
 /**
  * <b>AllowAllHostnameVerifier</b>
- * <p/>
- * <p>
+ *
+ *  <p>
  * The ALLOW_ALL HostnameVerifier essentially turns hostname verification off.
  * This implementation is a no-op, and never throws the SSLException.
  * </p>
+ *
+ * @author maxim.kirilov
+ *
  */
 public class AllowAllHostnameVerifier implements X509HostnameVerifier {
 

@@ -14,20 +14,16 @@ import java.util.concurrent.Future;
 
 /**
  * <b>HttpAsyncClient</b>
- * <p/>
+ *
  * <p>
  * This interface represents only the most basic contract for HTTP request execution.
  * It imposes no restrictions or particular details on the request execution process and leaves the specifics
  * of state management, authentication and redirect handling up to individual implementations.
  * </p>
  *
- * @author <font color="blue">Maxim Kirilov</font>
- *         <p/>
- *         Date: December 2014
+ * @author maxim.kirilov
  */
 public interface HttpAsyncClient extends Closeable {
-
-
 
 
     Future<File> execute(HttpHost target, HttpRequest request, ZeroCopyToFileResponseConsumer responseConsumer, ClientContext ctx, FutureCallback<File> callback) throws FileNotFoundException;

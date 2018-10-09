@@ -7,11 +7,11 @@ import java.security.Principal;
 
 /**
  * <b>NTCredentials</b>
- * <p/>
+ *
  * {@link Credentials} implementation for Microsoft Windows platforms that includes
  * Windows specific attributes such as name of the domain the user belongs to.
- * <p/>
- * Created by Maxim.Kirilov on 10/26/2014.
+ *
+ * @author maxim.kirilov
  */
 @Builder
 @Value

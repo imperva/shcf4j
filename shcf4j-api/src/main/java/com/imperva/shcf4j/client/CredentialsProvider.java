@@ -8,15 +8,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <b>CredentialsProvider</b>
- * <p/>
  * <p>
  * Basic credentials provider that maintains a collection of user
  * credentials.
  * </p>
- * <p/>
- * <p/>
- * <p/>
- * Created by maxim.kirilov on 10/23/2014.
+ *
+ * @author maxim.kirilov
  */
 public class CredentialsProvider {
 
@@ -24,7 +21,7 @@ public class CredentialsProvider {
 
 
     /**
-     * @return
+     * @return a default {@code CredentialsProvider}
      */
     public static CredentialsProvider createSystemDefaultCredentialsProvider() {
         return new CredentialsProvider();

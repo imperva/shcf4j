@@ -8,14 +8,14 @@ import lombok.Value;
 
 /**
  * <b>ClientContext</b>
- * <p/>
+ *
  * <p>
  * ClientContext represents execution state of an HTTP process. It is a structure
  * that can be used to map an attribute name to an attribute value.
  * </p>
  *
- * @author <font color="blue">Maxim Kirilov</font>
- *         Date: May 2014
+ * @author maxim.kirilov
+ *
  */
 @Builder(toBuilder = true)
 @Value

@@ -6,12 +6,13 @@ import javax.net.ssl.SSLException;
 
 /**
  * <b>BrowserCompatHostnameVerifier</b>
- * <p/>
+ * <p>
  * The HostnameVerifier that works the same way as Curl and Firefox.
- * <p/>
+ * </p>
+ * <p>
  * The hostname must match either the first CN, or any of the subject-alts.
  * A wildcard can occur in the CN, and in any of the subject-alts.
- * <p/>
+ * </p>
  * The only difference between BROWSER_COMPATIBLE and STRICT is that a wildcard
  * (such as "*.foo.com") with BROWSER_COMPATIBLE matches all subdomains,
  * including "a.b.foo.com".
