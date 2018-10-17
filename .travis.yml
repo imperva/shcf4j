@@ -17,7 +17,7 @@ after_success:
         -Psigning.keyId=${GPG_KEY_ID} \
         -Psigning.password=${GPG_KEY_PASSPHRASE} \
         -Psigning.secretKeyRingFile=imperva.travis.gpg
-  fi
+    fi
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
