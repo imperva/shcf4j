@@ -1,3 +1,8 @@
+
+if ( !JavaVersion.current().java8Compatible ) {
+    throw new GradleException( "Gradle must be run with Java 8" )
+}
+
 rootProject.name = 'shcf4j'
 include ":shcf4j-api", ":shcf4j-httpcomponents-client4"
 
