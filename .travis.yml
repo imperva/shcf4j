@@ -4,6 +4,7 @@ jdk:
 install:
 - gradle assemble -x signArchives
 after_success:
+- chmod +x deploy_artifacts.sh
 - ./deploy_artifacts.sh
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
