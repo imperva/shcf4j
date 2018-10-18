@@ -5,6 +5,7 @@ install:
 - gradle assemble -x signArchives
 after_success:
 - pwd
+- ls -l
 - chmod +x deploy_artifacts.sh
 - ./deploy_artifacts.sh
 before_cache:
