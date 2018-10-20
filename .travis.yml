@@ -4,10 +4,8 @@ jdk:
 install:
 - gradle assemble -x signArchives
 after_success:
-- pwd
-- ls -l
-- chmod +x deploy_artifacts.sh
-- ./deploy_artifacts.sh
+- chmod +x deploy-artifacts.sh
+- ./deploy-artifacts.sh
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -rf $HOME/.gradle/caches/*/plugin-resolution/
