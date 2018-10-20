@@ -4,8 +4,8 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; th
   openssl aes-256-cbc \
             -K $encrypted_2e308745a1f8_key \
             -iv $encrypted_2e308745a1f8_iv \
-            -in imperva.travis.gpg.enc \
-            -out imperva.travis.gpg
+            -in ${TRAVIS_BUILD_DIR}/imperva.travis.gpg.enc \
+            -out ${TRAVIS_BUILD_DIR}/imperva.travis.gpg \
             -d
   gradle uploadArchives \
             -PossrhUsername=${SONATYPE_USERNAME} \
