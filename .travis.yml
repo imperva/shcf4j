@@ -1,11 +1,25 @@
 language: java
+install: true
 jdk:
 - oraclejdk8
-install:
-- gradle assemble -x signArchives
-after_success:
-- chmod +x deploy-artifacts.sh
-- "./deploy-artifacts.sh"
+
+stages:
+  - name: build
+  - name: snapshot
+    # only publish snapshots from "master" branch and not in pull requests
+    if: branch = master AND type IN (push)
+  - name: release
+    # only publish releases from "release" branch and not in pull requests
+    if: branch = release AND type IN (push)
+
+jobs:
+  include:
+    - stage: build
+      script: gradle build -x signArchives
+    - stage: snapshot
+      script: chmod +x deploy-artifacts.sh
+      script: ./deploy-artifacts.sh
+
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -rf $HOME/.gradle/caches/*/plugin-resolution/
@@ -17,6 +31,5 @@ env:
   global:
   - secure: R+l4/bWLVN/WgxP1ZhG+thkaBGAFzGxwPI405/IAEt+YpxnQ6dTbk9ctELg+wQxofaG1lhyyefCHt8kEOCjVpkEDNrdxvFdx5Vlbw6upyQWITKRs4mtOpCAKLUQo6ZkExdHQ1o1YzVMpgo5PxWlVkUk06zQWz8G21+e2SXwoYl3ojBhz9PP/rrPB5F/xcrNjgyIQvtn10lXWlhcOnWBjWVX8oXig7RqNYsjQ8UKFXPMmou4giweX4Y55r0iVzF8PgsJ13gF99D+N7YiemykQd1kEI8+M1pc8n0cXX7KfPzFa1G4Aefvhbwy+jg6dAEtdysW8VihixmPbhQG43zDS7ZaKFKYJi/qk8gTcMWzEPx2KAOrK/Ba8UY6zSWjseuH2xrO+pR50V2suiT52cfu3wJMeaPwm5NYT2+QXK5rSQqNP+XAf/XOWoaZscmCractY9JgzTugSGSIzu2YEGbZ77fk+D4uq/eFLzgT3guV4QxZv9yZm8IxAYdjArtSs2t+oihfrOfncZhaKfVe4WUbKkzRxDLCZF9gR17uIU4SCZkbxTBtMQT4RQbc50Kai2ChY4xwQZDCYTajreIPB66OBlz2NUTyxaLKS2GAWahWvQy17o7PHCkrXQTM2TPPqYuHRheeROPRg/VvQHRqpLvDwTDCqi2teykPhfF1fyE9mu7E=
   - secure: YhatI2XYPIrOvYic5PoMR590ntD9IR8Ev+Kc8Mc3bN8FH/0WDxj1TUpanWEIAeCeLXlGRmQi18ePklq+WrwWpaqqWZsDMqDmg79GdGFJibTiMTTTXhK1CR8JUzpBlJzISscOnmWkKnUR8SttM35Pbgv6M/7ja3SLF8kSp0iEJ6MCLYZ8JfpcY+VfVieIEmmkZdD5JUMSjVGkPvAvgw0VHdVjElZk2VR5Sd5e+0GJWtBtMCXEaap8mGvWp4be3xoz3PB9R6+78p01EILHcMk5ekYKbE+ourh1+GTMa4nL9vjjp0G2SG+/PvKaQpggu/CYKsxbm5mhrYSUxrK4oNlsyjWD9IesgBbNxsWkDWf1hqnNYBXbISfJZSTTvxViLGPrQMmZDpEhGmaHisMXaG3coV1wICYB7n1Tu8Nn+0sNBojXGRo89bTM9FWOyT8ctlU7FbiTEXIig/kxUFe/w9m9DRrlwQ/pTX8vwH5R3bxvAy78hEzSZypn5ghIVY7+rVLFIyEw1vCPd5o0X6nMhMM8XzDTn1otzBLXAf4avx/XUd/Wt0YHMm9iL5QD7kdTYJVIbqhdRL3Ri85Eml9FAf0pMKOpM19ZP3UITh8hklaQ94XrZkw1CCq8xgaBcR1rknBf46pV41ZTVfCXLdi4YNI/0EoCavBQSMSroIDqcqyWQtA=
-#  - secure: fC8I5IraDrBtOWEm68LJbXIcOaR59CQzc/9htxXFlFQGWWu7jI+QFEo0c8MsKec6AV2KCJZTxEmq82hKGnSF5gF9tFqXGXuyqZfJvDIAchlePJEv3LAaziwh/MUB2X8nD7fZskH18I53x+3s8xi3uayJQASa2IC/iUgPwVBrh2ukdxPerGarOHqfmVZM90RZ0eedmoLljtA0DSrH1uziO+sezKpCSEMMO8CSgT9TeEHpXhByzwsJ36OkBXN2B4VDWWnu0zpCrhi8sSF5qEH9NkHQ5OjDUEPXRQNNbi0N6eN8LEPCZYSS1wojmDu2J9kYhdhtx+yQmJ1Rw74SSGqmQ4MIyvXuWt0rVnmJN76hoiYe6wXcvTW3KHe8gq4DYOfPxF4sBFU9OIafwCu4M4PwIpJr1CE7UVnyIf9F7ZkvDnUGmtbQd76V7GVukWtA++DYqGHx4sGJdl9tA12zRFAuREr+wUcwCxhfQ7bXgvGh8VYe64ru0hI8zODuc2zEKlaXubw/sqxERF3XKrNyV3gqmX57G6WFLNRiSwgZyygYi4HnW8T8OoY/+TsQvtqlI5ai5tCnWzRsjp4Psj0jX8Quved6AVRkC+6TdPuDoo5q9NSofQzTfgZp+uP9iOQMQ0iZz9zDGKiyqGpS1wZoNzpjTa6R85QtefjEtovdOHvbY4o=
   - secure: BXO/+XM+8Wd914GSdBSNvReg9WfZjwRHDxm5dSY4/N9cW8DaFS0y8TXt16PVvj6YFrPyJxnuzshNgN9+IHIJGvqDmxM9EqUgn4+rXxIeDIDLKdrXTuHYd+l4nW6V/lyXr0qEsWfmamVZp45GbDaMs8gx5VBZAd+6CLMmc9ZZlrHm6AeebfsUhjkWpv2ZIUIW7aq8KQz48XFq5HsQkVjX+p7fdUmrgA/Vj/4/ZXlIlGh6wTVNmQ8KeeUu2IQEcvEMPXzwluHfBpwiB/lcAhvMVQ9u/mTAPVy4TRhyggqRkLgXW1PBckETM5Ity7L495vCIpweHqd+yX3Qj5a51aXhdAoHQc6mkOFP2PPfd2HI2hEaprGfy/CKGsy+Z+rI34hvT+9mplYfp19ZB38itFzT79PoGwM1vGl2h3PLBv6JHoKFQW9ta5SXLk8K29J7sp0qXBFiAOm3UKZvQJifJxdfyKiQb4adJIVeLMbfnLbJpKHN7KtNaySi4zBKG7NH2UQCGNy0elpghBvY9BESNRo0jA0DXX33ykEdQ5m1HkYKVZ8fUbK27XXlsds4gNa3Ol0S0JOCPoJJdyp/2WhPSskugp8z6knf5SB/0kDCycz9uLB/QtJRLKzQIYATLpnJXbZk7W6L2v9kOHMecTaRxVd+krfAmCKeF7h6FC9vmWwDeS0=
   - secure: HfiEX1e5MIidy1PeOL/49ShSriP0kys512BYivHWquv8V72sV2phu7joJfroLwk8d9mBzd9veSTj802sgjljpnEpuhJvtV44fVeOS01pgcVFRFafs1bKxyod2NMJNSH8/R3DYt1URnyOw+/r9H3zCk/fqcJ5vl3njIIaQwBuvqAxnycxF2IZWBIq8kLrGSotp0Ny04TDjB12pSecBe0rbbOXwnfa9/rVMwTGKQpfhuF/wEz9flb1fPZmrWAwEAApMw5iJbF3VTssodr+42U0mcpT9zPPCgtH7G5Lj2gdl+eDcEBKKKUAb4h6omMaOGTG9Gsp6Z/oOgSsbo/EpVgz/Em+/tGkfxyuou0soP4TDw2jPCUorV218Hkk8FczFWX1EnWsKfYLAVMEMLXKS15bLBiZF4+tCKXKiaGryPK7ybo5Lop7O3wDoe+FleR2moOetckvMvBJ23zqnvTNnpYqydc6JVIxN93xoUkj8vLtYAgujFVbviGZGE3BT15laeru09nn8Q2cRlHg4RXEjw99Jtjl7bpf/P5ffr7pNSnDbsXzB/mlVxOs9KybOqWu3UolquTzVR2Q+nGMInjeqc9KJxLCD8P7Cjm+D99uqePsmjLHqjTngFJEscE860a+b7gs8rVbPj6SFnIXrB489zWj6hwTXqRDrMDW+3akIkIw0j8=
