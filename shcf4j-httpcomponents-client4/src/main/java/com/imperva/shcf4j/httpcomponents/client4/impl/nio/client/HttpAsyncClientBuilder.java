@@ -7,16 +7,13 @@ import com.imperva.shcf4j.client.config.ConnectionConfig;
 import com.imperva.shcf4j.client.config.RequestConfig;
 import com.imperva.shcf4j.conn.routing.HttpRoutePlanner;
 import com.imperva.shcf4j.conn.ssl.SSLSessionStrategy;
-import com.imperva.shcf4j.conn.ssl.X509HostnameVerifier;
 import com.imperva.shcf4j.httpcomponents.client4.impl.ConversionUtils;
 import com.imperva.shcf4j.httpcomponents.client4.impl.HttpMessageWrapper;
 import com.imperva.shcf4j.nio.reactor.IOReactorConfig;
-import org.apache.http.conn.ssl.AbstractVerifier;
 import org.apache.http.impl.conn.DefaultRoutePlanner;
 import org.apache.http.impl.conn.DefaultSchemePortResolver;
 import org.apache.http.nio.conn.ssl.SSLIOSessionStrategy;
 
-import javax.net.ssl.SSLException;
 import java.util.Objects;
 import java.util.concurrent.ThreadFactory;
 
@@ -56,7 +53,7 @@ import java.util.concurrent.ThreadFactory;
  *
  * @author maxim.kirilov
  */
-public class HttpAsyncClientBuilder {
+class HttpAsyncClientBuilder implements com.imperva.shcf4j.HttpAsyncClientBuilder {
 
     private final org.apache.http.impl.nio.client.HttpAsyncClientBuilder asyncClientBuilder;
 
@@ -104,13 +101,14 @@ public class HttpAsyncClientBuilder {
      * @param strategy the SSL socket creation strategy
      * @return {@code HttpClientBuilder}
      */
+    @Override
     public HttpAsyncClientBuilder setSSLSessionStrategy(final SSLSessionStrategy strategy) {
         Objects.requireNonNull(strategy, "strategy");
         SSLIOSessionStrategy sslStrategy = new SSLIOSessionStrategy(
                 strategy.getSslContext(),
                 strategy.getSupportedProtocols(),
                 strategy.getSupportedCipherSuites(),
-                new X509HostnameVerifierAdapter(strategy.getHostnameVerifier()));
+                strategy.getHostnameVerifier());
 
         this.asyncClientBuilder.setSSLStrategy(sslStrategy);
         return this;
@@ -123,6 +121,7 @@ public class HttpAsyncClientBuilder {
      * @param ioReactorConfig object
      * @return {@code HttpClientBuilder}
      */
+    @Override
     public HttpAsyncClientBuilder setDefaultSocketConfig(IOReactorConfig ioReactorConfig) {
         Objects.requireNonNull(ioReactorConfig, "ioReactorConfig");
         org.apache.http.impl.nio.reactor.IOReactorConfig.Builder builder =
@@ -245,29 +244,4 @@ public class HttpAsyncClientBuilder {
         return new InternalClosableHttpAsyncClient(this.asyncClientBuilder.build());
     }
 
-    /**
-     * <b>X509HostnameVerifierAdapter</b>
-     * <p/>
-     * <p>
-     * This inner class used to adapt user implementation to vendors one,
-     * by using composition.
-     * </p>
-     *
-     * @author <font color="blue">Maxim Kirilov</font>
-     * <p/>
-     * Date: May 2014
-     */
-    private static class X509HostnameVerifierAdapter extends AbstractVerifier {
-
-        private final X509HostnameVerifier hostnameVerifier;
-
-        private X509HostnameVerifierAdapter(X509HostnameVerifier hostnameVerifier) {
-            this.hostnameVerifier = hostnameVerifier;
-        }
-
-        @Override
-        public void verify(String host, String[] cns, String[] subjectAlts) throws SSLException {
-            this.hostnameVerifier.verify(host, cns, subjectAlts);
-        }
-    }
 }

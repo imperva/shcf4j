@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+
+    <util:list id="allowedClientSslProtocols">
+        <value>TLSv1</value>
+        <value>TLSv1.1</value>
+        <value>TLSv1.2</value>
+    </util:list>
+
+    <bean id="allowedCipherSuitesArray" class="org.springframework.util.StringUtils" factory-method="commaDelimitedListToStringArray">
+        <constructor-arg type="java.lang.String" value="#{systemProperties['https.cipherSuites'] ?: 'TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA,TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_DHE_RSA_WITH_AES_256_CBC_SHA,TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,TLS_DHE_RSA_WITH_AES_256_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384'}"/>
+    </bean>
+
+
+    <bean id="abstractSslSessionStrategy" class="com.imperva.shcf4j.conn.ssl.SimpleSSLSessionStrategy" abstract="true">
+        <property name="sslContext">
+            <bean class="javax.net.ssl.SSLContext" factory-method="getInstance">
+                <constructor-arg value="TLS"/>
+            </bean>
+        </property>
+        <property name="hostnameVerifier">
+            <bean class="com.imperva.shcf4j.conn.ssl.AllowAllHostnameVerifier"/>
+        </property>
+        <property name="supportedProtocols">
+            <ref bean="allowedClientSslProtocols"/>
+        </property>
+        <property name="supportedCipherSuites">
+            <ref bean="allowedCipherSuitesArray"/>
+        </property>
+    </bean>
+
+
+    <bean id="mildSslSessionStrategy" parent="abstractSslSessionStrategy" init-method="initSslContext">
+        <property name="hostnameVerifier">
+            <bean class="com.imperva.shcf4j.conn.ssl.AllowAllHostnameVerifier"/>
+        </property>
+        <property name="trustAllCerts"      value="true"/>
+    </bean>
+
+
+
+    <bean id="exampleSyncHttpClient" class="com.imperva.shcf4j.example.di.spring.SHC4JFactoryBean">
+        <property name="SSLSessionStrategy"                             ref="mildSslSessionStrategy"/>
+        <property name="defaultSocketConfig">
+            <bean class="com.imperva.shcf4j.config.SocketConfig">
+                <constructor-arg name="soTimeoutMilliseconds"   value="15000"/>
+                <constructor-arg name="soReuseAddress"          value="false"/>
+                <constructor-arg name="soLingerSeconds"         value="-1"/>
+                <constructor-arg name="soKeepAlive"             value="false"/>
+                <constructor-arg name="tcpNoDelay"              value="false"/>
+            </bean>
+        </property>
+        <property name="defaultRequestConfig">
+            <bean class="com.imperva.shcf4j.client.config.RequestConfig">
+                <constructor-arg name="expectContinueEnabled"                   value="true"/>
+                <constructor-arg name="proxy">
+                    <null />
+                </constructor-arg>
+                <constructor-arg name="localAddress">
+                    <null />
+                </constructor-arg>
+                <constructor-arg name="staleConnectionCheckEnabled"             value="true"/>
+                <constructor-arg name="cookieSpec">
+                    <null />
+                </constructor-arg>
+                <constructor-arg name="redirectsEnabled"                        value="true"/>
+                <constructor-arg name="relativeRedirectsAllowed"                value="false"/>
+                <constructor-arg name="circularRedirectsAllowed"                value="false"/>
+                <constructor-arg name="maxRedirects"                            value="-1"/>
+                <constructor-arg name="authenticationEnabled"                   value="false"/>
+                <constructor-arg name="targetPreferredAuthSchemes">
+                    <null />
+                </constructor-arg>
+                <constructor-arg name="proxyPreferredAuthSchemes">
+                    <null />
+                </constructor-arg>
+                <constructor-arg name="connectionRequestTimeoutMilliseconds"    value="30000"/>
+                <constructor-arg name="connectTimeoutMilliseconds"              value="-1"/>
+                <constructor-arg name="socketTimeoutMilliseconds"               value="30000"/>
+            </bean>
+        </property>
+    </bean>
+
+</beans>

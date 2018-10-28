@@ -11,7 +11,10 @@ buildscript {
 }
 
 def javaProjects() {
-    subprojects.findAll { new File(it.projectDir, 'src').directory }
+    subprojects.findAll {
+        new File(it.projectDir, 'src').directory &&
+        it.name != 'example'
+    }
 }
 
 allprojects {

@@ -8,17 +8,14 @@ import com.imperva.shcf4j.client.config.RequestConfig;
 import com.imperva.shcf4j.config.SocketConfig;
 import com.imperva.shcf4j.conn.routing.HttpRoutePlanner;
 import com.imperva.shcf4j.conn.ssl.SSLSessionStrategy;
-import com.imperva.shcf4j.conn.ssl.X509HostnameVerifier;
 import com.imperva.shcf4j.httpcomponents.client4.impl.ConversionUtils;
 import com.imperva.shcf4j.httpcomponents.client4.impl.HttpMessageWrapper;
 import org.apache.http.conn.socket.LayeredConnectionSocketFactory;
-import org.apache.http.conn.ssl.AbstractVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.conn.DefaultRoutePlanner;
 import org.apache.http.impl.conn.DefaultSchemePortResolver;
 
-import javax.net.ssl.SSLException;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -57,7 +54,7 @@ import java.util.function.Consumer;
  *
  * @author maxim.kirilov
  */
-public class HttpClientBuilder {
+class HttpClientBuilder implements com.imperva.shcf4j.HttpClientBuilder {
 
     private final org.apache.http.impl.client.HttpClientBuilder builder;
 
@@ -72,9 +69,9 @@ public class HttpClientBuilder {
 
 
     /**
-     *
      * @return a {@code HttpClient} that the builder produce
      */
+    @Override
     public HttpClient build() {
         return new SimpleHttpClient(builder.build());
     }
@@ -84,13 +81,14 @@ public class HttpClientBuilder {
      * @param strategy the SSL socket creation strategy
      * @return {@code HttpClientBuilder}
      */
+    @Override
     public HttpClientBuilder setSSLSessionStrategy(final SSLSessionStrategy strategy) {
         Objects.requireNonNull(strategy, "strategy");
         LayeredConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(
                 strategy.getSslContext(),
                 strategy.getSupportedProtocols(),
                 strategy.getSupportedCipherSuites(),
-                new X509HostnameVerifierAdapter(strategy.getHostnameVerifier()));
+                strategy.getHostnameVerifier());
 
         this.builder.setSSLSocketFactory(socketFactory);
         return this;
@@ -135,6 +133,7 @@ public class HttpClientBuilder {
      * @param socketConfig object
      * @return {@code HttpClientBuilder}
      */
+    @Override
     public HttpClientBuilder setDefaultSocketConfig(SocketConfig socketConfig) {
         Objects.requireNonNull(socketConfig, "socketConfig");
         org.apache.http.config.SocketConfig.Builder SocketBuilder = org.apache.http.config.SocketConfig.custom();
@@ -170,6 +169,7 @@ public class HttpClientBuilder {
      * @param config default config for every outgoing request
      * @return {@code HttpClientBuilder}
      */
+    @Override
     public final HttpClientBuilder setDefaultRequestConfig(final RequestConfig config) {
         Objects.requireNonNull(config, "config");
         builder.setDefaultRequestConfig(ConversionUtils.convert(config));
@@ -182,6 +182,7 @@ public class HttpClientBuilder {
      * @param proxy object for every outgoing request
      * @return {@code HttpClientBuilder}
      */
+    @Override
     public HttpClientBuilder setProxy(HttpHost proxy) {
         Objects.requireNonNull(proxy, "proxy");
         builder.setProxy(ConversionUtils.convert(proxy));
@@ -190,11 +191,10 @@ public class HttpClientBuilder {
 
 
     /**
-     *
-     *
      * @param cp credentials provider for various authentication schemes
      * @return {@code HttpClientBuilder}
      */
+    @Override
     public HttpClientBuilder setDefaultCredentialsProvider(CredentialsProvider cp) {
         Objects.requireNonNull(cp, "cp");
         builder.setDefaultCredentialsProvider(ConversionUtils.convert(cp));
@@ -203,7 +203,6 @@ public class HttpClientBuilder {
 
 
     /**
-     *
      * @param routePlanner for outgoing http requests
      * @return {@code HttpClientBuilder}
      */
@@ -240,30 +239,6 @@ public class HttpClientBuilder {
             builder.addInterceptorLast(new HttpRequestInterceptorAdapter(interceptor));
         }
         return this;
-    }
-
-    /**
-     * <b>X509HostnameVerifierAdapter</b>
-     *
-     * <p>
-     * This inner class used to adapt user implementation to vendors one,
-     * by using composition.
-     * </p>
-     *
-     * @author maxim.kirilov
-     */
-    private static class X509HostnameVerifierAdapter extends AbstractVerifier {
-
-        private final X509HostnameVerifier hostnameVerifier;
-
-        private X509HostnameVerifierAdapter(X509HostnameVerifier hostnameVerifier) {
-            this.hostnameVerifier = hostnameVerifier;
-        }
-
-        @Override
-        public void verify(String host, String[] cns, String[] subjectAlts) throws SSLException {
-            this.hostnameVerifier.verify(host, cns, subjectAlts);
-        }
     }
 
 

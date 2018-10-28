@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * <b>HttpMessage</b>
- *
+ * <p>
  * HTTP messages consist of requests from client4 to server and responses
  * from server to client4.
  * <pre>
@@ -28,7 +28,6 @@ import java.util.List;
  * </pre>
  *
  * @author maxim.kirilov
- *
  */
 public interface HttpMessage {
 
@@ -52,9 +51,9 @@ public interface HttpMessage {
      *
      * @param name the name of the header to return.
      * @return the first header whose name property equals <code>name</code>
-     *   or <code>null</code> if no such header could be found.
+     * or <code>null</code> if no such header could be found.
      */
-    default Header getFirstHeader(String name){
+    default Header getFirstHeader(String name) {
         return getHeaders(name).stream().findFirst().orElse(null);
     }
 

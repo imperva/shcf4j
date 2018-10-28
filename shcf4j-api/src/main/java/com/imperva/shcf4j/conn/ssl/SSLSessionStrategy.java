@@ -1,7 +1,8 @@
 package com.imperva.shcf4j.conn.ssl;
 
 
-import javax.net.ssl.*;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
 
 /**
  * <b>SSLSessionStrategy</b>
@@ -21,6 +22,6 @@ public interface SSLSessionStrategy {
 
     String[] getSupportedCipherSuites();
 
-    X509HostnameVerifier getHostnameVerifier();
+    HostnameVerifier getHostnameVerifier();
 
 }

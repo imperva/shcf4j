@@ -1,0 +1,13 @@
+// build a map of the dependency artifacts to use.  Allows centralized definition of the version of artifacts to
+// use.  In that respect it serves a role similar to <dependencyManagement> in Maven
+ext {
+    lombokVersion = '1.16.18'
+    junitVersion = '4.12'
+    wiremockVersion = '2.7.1'
+
+    libraries = [
+            lombok:             "org.projectlombok:lombok:${lombokVersion}",
+            junit:              "junit:junit:${junitVersion}",
+            wiremock:           "com.github.tomakehurst:wiremock:${wiremockVersion}"
+    ]
+}
