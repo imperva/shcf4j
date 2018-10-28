@@ -12,3 +12,30 @@ JRE 8
 # Use Cases
 * As standard for internal libraries that used across different microservice and perform HTTP calls.
 * Correct resource management for open HTTP connections. A content can be consumed only by provided callback - no easy way to expose an input stream.
+
+# Code Examples
+The HTTP client instances can be created in various ways. For example through any DI frameworks (see the example project) or just by putting a few lines of code:
+
+```Java
+HttpClient httpClient = HttpClientBuilderFactory
+        .getHttpClientBuilder()
+        .build();
+
+```
+The HTTP client instance can be customized with any supported configuration parameters (part of the shcf4j-api project). For example:
+
+```Java
+HttpClient httpClient = HttpClientBuilderFactory
+        .getHttpClientBuilder()
+        .setDefaultSocketConfig(
+                SocketConfig
+                        .builder()
+                        .soTimeoutMilliseconds(5 * 1000)
+                        .build()
+        )
+        .build();
+```
+
+
+## What Happens Behind the Scenes?
+The factory class uses Java ```java.util.ServiceLoader``` in order to find all ```com.imperva.shcf4j.spi.SHC4JServiceProvider``` instances. Then it uses the first found instance for all following requests.
