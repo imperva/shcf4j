@@ -17,8 +17,7 @@ jobs:
     - stage: build
       script: gradle build -x signArchives
     - stage: snapshot
-      script: chmod +x deploy-artifacts.sh
-      script: ./deploy-artifacts.sh
+      script: 'chmod +x deploy-artifacts.sh; ./deploy-artifacts.sh'
 
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
