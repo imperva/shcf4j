@@ -1,10 +1,10 @@
 package com.imperva.shcf4j.httpcomponents.client4;
 
+import com.imperva.shcf4j.HttpClientBuilder;
+import com.imperva.shcf4j.HttpClientBuilderFactory;
 import com.imperva.shcf4j.HttpRequest;
 import com.imperva.shcf4j.client.HttpClient;
 import com.imperva.shcf4j.config.SocketConfig;
-import com.imperva.shcf4j.httpcomponents.client4.impl.client.HttpClientBuilder;
-import com.imperva.shcf4j.httpcomponents.client4.impl.client.HttpClients;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -12,7 +12,10 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 
 /**
  * <b>SocketConfigTest</b>
@@ -30,7 +33,7 @@ public class SocketConfigTest extends SyncHttpClientBaseTest {
 
     @BeforeClass
     public static void init() {
-        HttpClientBuilder builder = HttpClients.custom();
+        HttpClientBuilder builder = HttpClientBuilderFactory.getHttpClientBuilder();
         builder.setDefaultSocketConfig(
                 SocketConfig
                         .builder()

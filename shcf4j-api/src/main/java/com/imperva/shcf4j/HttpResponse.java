@@ -16,7 +16,7 @@ public interface HttpResponse extends HttpMessage {
      * Obtains the message entity of this response, if any.
      *
      * @return the response entity, or
-     *         <code>null</code> if there is none
+     * <code>null</code> if there is none
      */
     HttpEntity getEntity();
 

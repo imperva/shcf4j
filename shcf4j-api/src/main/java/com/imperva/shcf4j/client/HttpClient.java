@@ -22,7 +22,7 @@ import java.util.function.Function;
  * @author maxim.kirilov
  *
  */
-public interface HttpClient extends Closeable{
+public interface HttpClient extends Closeable {
 
 
     /**
