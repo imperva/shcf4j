@@ -12,7 +12,14 @@ import org.springframework.beans.factory.FactoryBean;
 
 
 /**
+ * <b>SHC4JFactoryBean</b>
  *
+ * <p>
+ * In order to connect between a builder pattern and spring bean creation a {@link FactoryBean}
+ * interface must be implemented.
+ * </p>
+ *
+ * @author maxim.kirilov
  */
 public class SHC4JFactoryBean implements HttpClientBuilder, FactoryBean<HttpClient> {
 
@@ -53,6 +60,11 @@ public class SHC4JFactoryBean implements HttpClientBuilder, FactoryBean<HttpClie
     @Override
     public HttpClient getObject() {
         return builder.build();
+    }
+
+    @Override
+    public boolean isSingleton() {
+        return false;
     }
 
     @Override

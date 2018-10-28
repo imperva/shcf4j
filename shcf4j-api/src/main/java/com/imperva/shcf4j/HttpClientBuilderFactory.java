@@ -58,7 +58,7 @@ public class HttpClientBuilderFactory {
                 Util.report("Actual provider is of type [" + PROVIDER.get().getClass().getCanonicalName() + "]");
                 FACTORY_STATE.set(State.SUCCESSFUL_INITIALIZATION);
             } else {
-                Util.report("No SHCF4J providers were found.");
+                Util.report("No SHCF4J providers were found");
                 Util.report("Defaulting to no-operation (NOP) HTTP Client implementation");
                 FACTORY_STATE.set(State.NOP_FALLBACK_INITIALIZATION);
             }
