@@ -3,9 +3,11 @@
 ext {
     lombokVersion = '1.16.18'
     junitVersion = '4.12'
+    wiremockVersion = '2.7.1'
 
     libraries = [
             lombok:             "org.projectlombok:lombok:${lombokVersion}",
-            junit:              "junit:junit:${junitVersion}"
+            junit:              "junit:junit:${junitVersion}",
+            wiremock:           "com.github.tomakehurst:wiremock:${wiremockVersion}"
     ]
 }

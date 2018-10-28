@@ -21,7 +21,7 @@ public class HttpClientBuilderFactoryTest {
         HttpClient httpClient = HttpClientBuilderFactory.getHttpClientBuilder().build();
 
         httpClient.execute(
-                HttpHost.builder().schemeName("https").hostname("github.com").port(443).build(),
-                HttpRequest.createGetRequest("/imperva/shcf4j"));
+                HttpHost.builder().hostname("localhost").port(8090).build(),
+                HttpRequest.createGetRequest("/hello"));
     }
 }
