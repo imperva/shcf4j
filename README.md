@@ -12,6 +12,7 @@ JRE 8
 # Use Cases
 * As standard for internal libraries that used across different microservice and perform HTTP calls.
 * Correct resource management for open HTTP connections. A content can be consumed only by provided callback - no easy way to expose an input stream.
+* Unified configuration for outgoing HTTPS requests like: the used protocol (TLSv1, TLSv1.1, etc.) & the used ciphers list. Can be very useful in applications that must have varios security compliancy.
 
 # Code Examples
 The HTTP client instances can be created in various ways. For example through any DI frameworks (see the example project) or just by putting a few lines of code:
@@ -39,3 +40,6 @@ HttpClient httpClient = HttpClientBuilderFactory
 
 ## What Happens Behind the Scenes?
 The factory class uses Java ```java.util.ServiceLoader``` in order to find all ```com.imperva.shcf4j.spi.SHC4JServiceProvider``` instances. Then it uses the first found instance for all following requests.
+
+# Backlog
+1. Enable to lookup HTTP client builders by provider name, it will enable to use same API layer but with different implementations in a single JVM.
