@@ -1,8 +1,8 @@
 package com.imperva.shcf4j.httpcomponents.client4;
 
-import com.imperva.shcf4j.HttpClientBuilder;
+import com.imperva.shcf4j.SyncHttpClientBuilder;
 import com.imperva.shcf4j.HttpClientBuilderFactory;
-import com.imperva.shcf4j.client.HttpClient;
+import com.imperva.shcf4j.client.SyncHttpClient;
 import org.junit.BeforeClass;
 
 /**
@@ -13,11 +13,11 @@ import org.junit.BeforeClass;
  */
 public class CustomClientTest {
 
-    protected static HttpClient client;
+    protected static SyncHttpClient client;
 
     @BeforeClass
     public static void init() {
-        HttpClientBuilder builder = HttpClientBuilderFactory.getHttpClientBuilder();
+        SyncHttpClientBuilder builder = HttpClientBuilderFactory.getHttpClientBuilder();
         client = builder.build();
     }
 

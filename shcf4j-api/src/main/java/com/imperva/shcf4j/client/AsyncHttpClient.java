@@ -13,7 +13,7 @@ import java.io.FileNotFoundException;
 import java.util.concurrent.Future;
 
 /**
- * <b>HttpAsyncClient</b>
+ * <b>AsyncHttpClient</b>
  *
  * <p>
  * This interface represents only the most basic contract for HTTP request execution.
@@ -23,7 +23,7 @@ import java.util.concurrent.Future;
  *
  * @author maxim.kirilov
  */
-public interface HttpAsyncClient extends Closeable {
+public interface AsyncHttpClient extends Closeable {
 
 
     Future<File> execute(HttpHost target, HttpRequest request, ZeroCopyToFileResponseConsumer responseConsumer, ClientContext ctx, FutureCallback<File> callback) throws FileNotFoundException;

@@ -3,7 +3,7 @@ package com.imperva.shcf4j.helpers;
 import com.imperva.shcf4j.HttpHost;
 import com.imperva.shcf4j.HttpRequest;
 import com.imperva.shcf4j.HttpResponse;
-import com.imperva.shcf4j.client.HttpAsyncClient;
+import com.imperva.shcf4j.client.AsyncHttpClient;
 import com.imperva.shcf4j.client.protocol.ClientContext;
 import com.imperva.shcf4j.concurrent.FutureCallback;
 import com.imperva.shcf4j.nio.protocol.ZeroCopyToFileResponseConsumer;
@@ -13,9 +13,9 @@ import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
-class NOPHttpAsyncClient implements HttpAsyncClient {
+class NOPAsyncHttpClient implements AsyncHttpClient {
 
-    static final HttpAsyncClient INSTANCE = new NOPHttpAsyncClient();
+    static final AsyncHttpClient INSTANCE = new NOPAsyncHttpClient();
 
     @Override
     public Future<File> execute(HttpHost target, HttpRequest request, ZeroCopyToFileResponseConsumer responseConsumer, ClientContext ctx, FutureCallback<File> callback) {

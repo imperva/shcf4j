@@ -8,10 +8,10 @@ before_install:
 
 stages:
   - name: build
-  - name: snapshot
+  - name: publish-snapshot
     # only publish snapshots from "master" branch and not in pull requests
     if: branch = master AND type IN (push)
-  - name: release
+  - name: publish-release
     # only publish releases from "release" branch and not in pull requests
     if: branch = release AND type IN (push)
 
@@ -19,7 +19,7 @@ jobs:
   include:
     - stage: build
       script: gradle build -x signArchives
-    - stage: snapshot
+    - stage: publish-snapshot
       script: ./deploy-artifacts.sh
 
 before_cache:

@@ -1,14 +1,16 @@
 package com.imperva.shcf4j.example.di.spring;
 
-import com.imperva.shcf4j.HttpClientBuilder;
+import com.imperva.shcf4j.SyncHttpClientBuilder;
 import com.imperva.shcf4j.HttpClientBuilderFactory;
 import com.imperva.shcf4j.HttpHost;
 import com.imperva.shcf4j.client.CredentialsProvider;
-import com.imperva.shcf4j.client.HttpClient;
+import com.imperva.shcf4j.client.SyncHttpClient;
 import com.imperva.shcf4j.client.config.RequestConfig;
 import com.imperva.shcf4j.config.SocketConfig;
 import com.imperva.shcf4j.conn.ssl.SSLSessionStrategy;
 import org.springframework.beans.factory.FactoryBean;
+
+import javax.net.ssl.SSLException;
 
 
 /**
@@ -21,44 +23,44 @@ import org.springframework.beans.factory.FactoryBean;
  *
  * @author maxim.kirilov
  */
-public class SHC4JFactoryBean implements HttpClientBuilder, FactoryBean<HttpClient> {
+public class SHC4JFactoryBean implements SyncHttpClientBuilder, FactoryBean<SyncHttpClient> {
 
-    private final HttpClientBuilder builder = HttpClientBuilderFactory.getHttpClientBuilder();
+    private final SyncHttpClientBuilder builder = HttpClientBuilderFactory.getHttpClientBuilder();
 
 
     @Override
-    public HttpClientBuilder setSSLSessionStrategy(SSLSessionStrategy strategy) {
+    public SyncHttpClientBuilder setSSLSessionStrategy(SSLSessionStrategy strategy) throws SSLException {
         return builder.setSSLSessionStrategy(strategy);
     }
 
     @Override
-    public HttpClientBuilder setDefaultSocketConfig(SocketConfig socketConfig) {
+    public SyncHttpClientBuilder setDefaultSocketConfig(SocketConfig socketConfig) {
         return builder.setDefaultSocketConfig(socketConfig);
     }
 
     @Override
-    public HttpClientBuilder setDefaultRequestConfig(RequestConfig config) {
+    public SyncHttpClientBuilder setDefaultRequestConfig(RequestConfig config) {
         return builder.setDefaultRequestConfig(config);
     }
 
     @Override
-    public HttpClientBuilder setProxy(HttpHost proxy) {
+    public SyncHttpClientBuilder setProxy(HttpHost proxy) {
         return builder.setProxy(proxy);
     }
 
     @Override
-    public HttpClientBuilder setDefaultCredentialsProvider(CredentialsProvider cp) {
+    public SyncHttpClientBuilder setDefaultCredentialsProvider(CredentialsProvider cp) {
         return builder.setDefaultCredentialsProvider(cp);
     }
 
     @Override
-    public HttpClient build() {
+    public SyncHttpClient build() {
         return builder.build();
     }
 
 
     @Override
-    public HttpClient getObject() {
+    public SyncHttpClient getObject() {
         return builder.build();
     }
 
@@ -69,6 +71,6 @@ public class SHC4JFactoryBean implements HttpClientBuilder, FactoryBean<HttpClie
 
     @Override
     public Class<?> getObjectType() {
-        return HttpClient.class;
+        return SyncHttpClient.class;
     }
 }

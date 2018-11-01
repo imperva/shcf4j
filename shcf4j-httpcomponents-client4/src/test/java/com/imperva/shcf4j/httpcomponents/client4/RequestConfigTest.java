@@ -2,7 +2,7 @@ package com.imperva.shcf4j.httpcomponents.client4;
 
 import com.imperva.shcf4j.HttpClientBuilderFactory;
 import com.imperva.shcf4j.HttpRequest;
-import com.imperva.shcf4j.client.HttpClient;
+import com.imperva.shcf4j.client.SyncHttpClient;
 import com.imperva.shcf4j.client.config.RequestConfig;
 import com.imperva.shcf4j.client.protocol.ClientContext;
 import org.junit.Test;
@@ -22,10 +22,10 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
  */
 public class RequestConfigTest extends SyncHttpClientBaseTest {
 
-    private final HttpClient client = HttpClientBuilderFactory.getHttpClientBuilder().build();
+    private final SyncHttpClient client = HttpClientBuilderFactory.getHttpClientBuilder().build();
 
     @Override
-    HttpClient getHttpClient() {
+    SyncHttpClient getHttpClient() {
         return client;
     }
 

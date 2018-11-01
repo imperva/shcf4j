@@ -108,17 +108,17 @@ public class HttpClientBuilderFactory {
 
 
     /**
-     * @return a {@link HttpClientBuilder}
+     * @return a {@link SyncHttpClientBuilder}
      */
-    public static HttpClientBuilder getHttpClientBuilder() {
+    public static SyncHttpClientBuilder getHttpClientBuilder() {
         return getProvider().getHttpClientBuilder();
     }
 
 
     /**
-     * @return a {@link HttpAsyncClientBuilder}
+     * @return a {@link AsyncHttpClientBuilder}
      */
-    public static HttpAsyncClientBuilder getHttpAsyncClientBuilder() {
+    public static AsyncHttpClientBuilder getHttpAsyncClientBuilder() {
         return getProvider().getHttpAsyncClientBuilder();
     }
 

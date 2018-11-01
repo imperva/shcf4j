@@ -3,7 +3,7 @@ package com.imperva.shcf4j.helpers;
 import com.imperva.shcf4j.HttpHost;
 import com.imperva.shcf4j.HttpRequest;
 import com.imperva.shcf4j.HttpResponse;
-import com.imperva.shcf4j.client.HttpClient;
+import com.imperva.shcf4j.client.SyncHttpClient;
 import com.imperva.shcf4j.client.protocol.ClientContext;
 import com.imperva.shcf4j.spi.SHC4JServiceProvider;
 
@@ -11,7 +11,7 @@ import java.util.function.Function;
 
 
 /**
- * <b>NOPHttpClient</b>
+ * <b>NOPSyncHttpClient</b>
  *
  * <p>
  * An implementation that used as fallback for non found {@link SHC4JServiceProvider}
@@ -19,10 +19,10 @@ import java.util.function.Function;
  *
  * @author maxim.kirilov
  */
-class NOPHttpClient implements HttpClient {
+class NOPSyncHttpClient implements SyncHttpClient {
 
 
-    static final HttpClient INSTANCE = new NOPHttpClient();
+    static final SyncHttpClient INSTANCE = new NOPSyncHttpClient();
 
 
     @Override

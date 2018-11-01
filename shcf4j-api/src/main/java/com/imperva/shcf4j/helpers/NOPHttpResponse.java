@@ -15,7 +15,7 @@ import java.util.Locale;
  *
  *
  * <p>
- *     An empty {@link HttpResponse} that supposed to be returned from an {@link NOPHttpClient}
+ *     An empty {@link HttpResponse} that supposed to be returned from an {@link NOPSyncHttpClient}
  * </p>
  *
  * @author maxim.kirilov

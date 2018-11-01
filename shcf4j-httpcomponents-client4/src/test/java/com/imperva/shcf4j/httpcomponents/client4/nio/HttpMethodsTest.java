@@ -3,7 +3,7 @@ package com.imperva.shcf4j.httpcomponents.client4.nio;
 import com.imperva.shcf4j.HttpClientBuilderFactory;
 import com.imperva.shcf4j.HttpRequest;
 import com.imperva.shcf4j.HttpResponse;
-import com.imperva.shcf4j.client.HttpAsyncClient;
+import com.imperva.shcf4j.client.AsyncHttpClient;
 import com.imperva.shcf4j.client.config.RequestConfig;
 import com.imperva.shcf4j.client.protocol.ClientContext;
 import com.imperva.shcf4j.concurrent.FutureCallback;
@@ -25,7 +25,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
  */
 public class HttpMethodsTest extends AsyncHttpClientBaseTest {
 
-    protected HttpAsyncClient httpAsyncClient;
+    protected AsyncHttpClient asyncHttpClient;
 
     private static final long TEST_TMOUT = 10000L;
 
@@ -34,22 +34,22 @@ public class HttpMethodsTest extends AsyncHttpClientBaseTest {
 
     @Before
     public void setup() {
-        httpAsyncClient = HttpClientBuilderFactory.getHttpAsyncClientBuilder().build();
+        asyncHttpClient = HttpClientBuilderFactory.getHttpAsyncClientBuilder().build();
         isCallbackExecuted = false;
     }
 
     @After
     public void tear() {
         try {
-            httpAsyncClient.close();
+            asyncHttpClient.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    HttpAsyncClient getHttpClient() {
-        return this.httpAsyncClient;
+    AsyncHttpClient getHttpClient() {
+        return this.asyncHttpClient;
     }
 
     @Test(timeout = TEST_TMOUT)

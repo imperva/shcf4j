@@ -1,9 +1,9 @@
 package com.imperva.shcf4j.httpcomponents.client4;
 
-import com.imperva.shcf4j.HttpClientBuilder;
+import com.imperva.shcf4j.SyncHttpClientBuilder;
 import com.imperva.shcf4j.HttpClientBuilderFactory;
 import com.imperva.shcf4j.HttpRequest;
-import com.imperva.shcf4j.client.HttpClient;
+import com.imperva.shcf4j.client.SyncHttpClient;
 import com.imperva.shcf4j.config.SocketConfig;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,14 +26,14 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
  */
 public class SocketConfigTest extends SyncHttpClientBaseTest {
 
-    protected static HttpClient client;
+    protected static SyncHttpClient client;
 
     private static final int tmoutMilliseconds = 1000 * 10;
 
 
     @BeforeClass
     public static void init() {
-        HttpClientBuilder builder = HttpClientBuilderFactory.getHttpClientBuilder();
+        SyncHttpClientBuilder builder = HttpClientBuilderFactory.getHttpClientBuilder();
         builder.setDefaultSocketConfig(
                 SocketConfig
                         .builder()
@@ -63,7 +63,7 @@ public class SocketConfigTest extends SyncHttpClientBaseTest {
 
 
     @Override
-    HttpClient getHttpClient() {
+    SyncHttpClient getHttpClient() {
         return client;
     }
 }

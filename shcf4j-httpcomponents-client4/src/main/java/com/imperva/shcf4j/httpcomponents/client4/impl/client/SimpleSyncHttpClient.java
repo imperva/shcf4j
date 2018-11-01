@@ -8,10 +8,10 @@ import org.apache.http.impl.client.CloseableHttpClient;
  * @author <font color="blue">Maxim Kirilov</font>
  *         Date: April 2014
  */
-class SimpleHttpClient extends HttpClientBase {
+class SimpleSyncHttpClient extends SyncHttpClientBase {
 
 
-    SimpleHttpClient(CloseableHttpClient realClient) {
+    SimpleSyncHttpClient(CloseableHttpClient realClient) {
         super(realClient);
     }
 

@@ -3,7 +3,7 @@ package com.imperva.shcf4j.httpcomponents.client4.impl.client;
 import com.imperva.shcf4j.HttpHost;
 import com.imperva.shcf4j.HttpMessage;
 import com.imperva.shcf4j.client.CredentialsProvider;
-import com.imperva.shcf4j.client.HttpClient;
+import com.imperva.shcf4j.client.SyncHttpClient;
 import com.imperva.shcf4j.client.config.RequestConfig;
 import com.imperva.shcf4j.config.SocketConfig;
 import com.imperva.shcf4j.conn.routing.HttpRoutePlanner;
@@ -16,14 +16,18 @@ import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.conn.DefaultRoutePlanner;
 import org.apache.http.impl.conn.DefaultSchemePortResolver;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
- * <b>HttpClientBuilder</b>
+ * <b>SyncHttpClientBuilder</b>
  * <p>
- * Builder for {@link HttpClient} instances.
+ * Builder for {@link SyncHttpClient} instances.
  * </p>
  * <p>
  * When a particular component is not explicitly this class will
@@ -49,58 +53,71 @@ import java.util.function.Consumer;
  * <li>http.agent</li>
  * </ul>
  * Please note that some settings used by this class can be mutually
- * exclusive and may not apply when building {@link HttpClient}
+ * exclusive and may not apply when building {@link SyncHttpClient}
  * instances.
  *
  * @author maxim.kirilov
  */
-class HttpClientBuilder implements com.imperva.shcf4j.HttpClientBuilder {
+class SyncHttpClientBuilder implements com.imperva.shcf4j.SyncHttpClientBuilder {
 
     private final org.apache.http.impl.client.HttpClientBuilder builder;
 
 
-    protected HttpClientBuilder(org.apache.http.impl.client.HttpClientBuilder httpClientBuilder) {
+    protected SyncHttpClientBuilder(org.apache.http.impl.client.HttpClientBuilder httpClientBuilder) {
         this.builder = httpClientBuilder;
     }
 
-    protected HttpClientBuilder() {
+    protected SyncHttpClientBuilder() {
         this(org.apache.http.impl.client.HttpClients.custom());
     }
 
 
     /**
-     * @return a {@code HttpClient} that the builder produce
+     * @return a {@code SyncHttpClient} that the builder produce
      */
     @Override
-    public HttpClient build() {
-        return new SimpleHttpClient(builder.build());
+    public SyncHttpClient build() {
+        return new SimpleSyncHttpClient(builder.build());
     }
 
 
     /**
      * @param strategy the SSL socket creation strategy
-     * @return {@code HttpClientBuilder}
+     * @return {@code SyncHttpClientBuilder}
      */
     @Override
-    public HttpClientBuilder setSSLSessionStrategy(final SSLSessionStrategy strategy) {
+    public com.imperva.shcf4j.httpcomponents.client4.impl.client.SyncHttpClientBuilder setSSLSessionStrategy(final SSLSessionStrategy strategy)  throws SSLException {
         Objects.requireNonNull(strategy, "strategy");
-        LayeredConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(
-                strategy.getSslContext(),
-                strategy.getSupportedProtocols(),
-                strategy.getSupportedCipherSuites(),
-                strategy.getHostnameVerifier());
 
-        this.builder.setSSLSocketFactory(socketFactory);
-        return this;
+        try {
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(
+                    strategy.getKeyManagerFactory() != null ?
+                            strategy.getKeyManagerFactory().getKeyManagers() : null,
+                    strategy.getTrustManagerFactory() != null ?
+                            strategy.getTrustManagerFactory().getTrustManagers() : null,
+                    null
+            );
+            LayeredConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(
+                    sslContext,
+                    strategy.getSupportedProtocols(),
+                    strategy.getSupportedCipherSuites(),
+                    strategy.getHostnameVerifier());
+
+            this.builder.setSSLSocketFactory(socketFactory);
+            return this;
+        } catch (NoSuchAlgorithmException | KeyManagementException e){
+            throw new SSLException(e);
+        }
     }
 
 
     /**
      * Disables connection state tracking.
      *
-     * @return {@code HttpClientBuilder}
+     * @return {@code SyncHttpClientBuilder}
      */
-    public HttpClientBuilder disableConnectionState() {
+    public com.imperva.shcf4j.httpcomponents.client4.impl.client.SyncHttpClientBuilder disableConnectionState() {
         builder.disableConnectionState();
         return this;
     }
@@ -108,9 +125,9 @@ class HttpClientBuilder implements com.imperva.shcf4j.HttpClientBuilder {
     /**
      * Disables automatic content decompression.
      *
-     * @return {@code HttpClientBuilder}
+     * @return {@code SyncHttpClientBuilder}
      */
-    public HttpClientBuilder disableContentCompression() {
+    public com.imperva.shcf4j.httpcomponents.client4.impl.client.SyncHttpClientBuilder disableContentCompression() {
         builder.disableContentCompression();
         return this;
     }
@@ -120,9 +137,9 @@ class HttpClientBuilder implements com.imperva.shcf4j.HttpClientBuilder {
      * Assigns maximum total connection value.
      *
      * @param maxConnTotal allowed in this client instance
-     * @return {@code HttpClientBuilder}
+     * @return {@code SyncHttpClientBuilder}
      */
-    public HttpClientBuilder setMaxConnTotal(int maxConnTotal) {
+    public com.imperva.shcf4j.httpcomponents.client4.impl.client.SyncHttpClientBuilder setMaxConnTotal(int maxConnTotal) {
         builder.setMaxConnTotal(maxConnTotal);
         return this;
     }
@@ -131,10 +148,10 @@ class HttpClientBuilder implements com.imperva.shcf4j.HttpClientBuilder {
      * Assigns default {@link SocketConfig}.
      *
      * @param socketConfig object
-     * @return {@code HttpClientBuilder}
+     * @return {@code SyncHttpClientBuilder}
      */
     @Override
-    public HttpClientBuilder setDefaultSocketConfig(SocketConfig socketConfig) {
+    public com.imperva.shcf4j.httpcomponents.client4.impl.client.SyncHttpClientBuilder setDefaultSocketConfig(SocketConfig socketConfig) {
         Objects.requireNonNull(socketConfig, "socketConfig");
         org.apache.http.config.SocketConfig.Builder SocketBuilder = org.apache.http.config.SocketConfig.custom();
         SocketBuilder
@@ -152,9 +169,9 @@ class HttpClientBuilder implements com.imperva.shcf4j.HttpClientBuilder {
      * Assigns retryCount.
      *
      * @param retryCount of single request
-     * @return {@code HttpClientBuilder}
+     * @return {@code SyncHttpClientBuilder}
      */
-    public HttpClientBuilder setRetryCount(Integer retryCount) {
+    public com.imperva.shcf4j.httpcomponents.client4.impl.client.SyncHttpClientBuilder setRetryCount(Integer retryCount) {
 
         DefaultHttpRequestRetryHandler retryhandler = new DefaultHttpRequestRetryHandler(retryCount, true);
         builder.setRetryHandler(retryhandler);
@@ -167,10 +184,10 @@ class HttpClientBuilder implements com.imperva.shcf4j.HttpClientBuilder {
      * context.
      *
      * @param config default config for every outgoing request
-     * @return {@code HttpClientBuilder}
+     * @return {@code SyncHttpClientBuilder}
      */
     @Override
-    public final HttpClientBuilder setDefaultRequestConfig(final RequestConfig config) {
+    public final com.imperva.shcf4j.httpcomponents.client4.impl.client.SyncHttpClientBuilder setDefaultRequestConfig(final RequestConfig config) {
         Objects.requireNonNull(config, "config");
         builder.setDefaultRequestConfig(ConversionUtils.convert(config));
         return this;
@@ -180,10 +197,10 @@ class HttpClientBuilder implements com.imperva.shcf4j.HttpClientBuilder {
      * Assigns default proxy value.
      *
      * @param proxy object for every outgoing request
-     * @return {@code HttpClientBuilder}
+     * @return {@code SyncHttpClientBuilder}
      */
     @Override
-    public HttpClientBuilder setProxy(HttpHost proxy) {
+    public com.imperva.shcf4j.httpcomponents.client4.impl.client.SyncHttpClientBuilder setProxy(HttpHost proxy) {
         Objects.requireNonNull(proxy, "proxy");
         builder.setProxy(ConversionUtils.convert(proxy));
         return this;
@@ -192,10 +209,10 @@ class HttpClientBuilder implements com.imperva.shcf4j.HttpClientBuilder {
 
     /**
      * @param cp credentials provider for various authentication schemes
-     * @return {@code HttpClientBuilder}
+     * @return {@code SyncHttpClientBuilder}
      */
     @Override
-    public HttpClientBuilder setDefaultCredentialsProvider(CredentialsProvider cp) {
+    public com.imperva.shcf4j.httpcomponents.client4.impl.client.SyncHttpClientBuilder setDefaultCredentialsProvider(CredentialsProvider cp) {
         Objects.requireNonNull(cp, "cp");
         builder.setDefaultCredentialsProvider(ConversionUtils.convert(cp));
         return this;
@@ -204,9 +221,9 @@ class HttpClientBuilder implements com.imperva.shcf4j.HttpClientBuilder {
 
     /**
      * @param routePlanner for outgoing http requests
-     * @return {@code HttpClientBuilder}
+     * @return {@code SyncHttpClientBuilder}
      */
-    public HttpClientBuilder setRoutePlanner(final HttpRoutePlanner routePlanner) {
+    public com.imperva.shcf4j.httpcomponents.client4.impl.client.SyncHttpClientBuilder setRoutePlanner(final HttpRoutePlanner routePlanner) {
         Objects.requireNonNull(routePlanner, "routePlanner");
         final org.apache.http.conn.routing.HttpRoutePlanner defaultRoutePlanner =
                 new DefaultRoutePlanner(DefaultSchemePortResolver.INSTANCE);
@@ -232,9 +249,9 @@ class HttpClientBuilder implements com.imperva.shcf4j.HttpClientBuilder {
      * implementation.
      *
      * @param interceptors a list of interceptors that executed upon every request
-     * @return {@code HttpClientBuilder}
+     * @return {@code SyncHttpClientBuilder}
      */
-    public HttpClientBuilder setRequestInterceptors(List<Consumer<HttpMessage>> interceptors) {
+    public com.imperva.shcf4j.httpcomponents.client4.impl.client.SyncHttpClientBuilder setRequestInterceptors(List<Consumer<HttpMessage>> interceptors) {
         for (Consumer<HttpMessage> interceptor : interceptors) {
             builder.addInterceptorLast(new HttpRequestInterceptorAdapter(interceptor));
         }

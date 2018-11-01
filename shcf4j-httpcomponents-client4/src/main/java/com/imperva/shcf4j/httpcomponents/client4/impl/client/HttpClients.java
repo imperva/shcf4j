@@ -1,11 +1,11 @@
 package com.imperva.shcf4j.httpcomponents.client4.impl.client;
 
-import com.imperva.shcf4j.client.HttpClient;
+import com.imperva.shcf4j.client.SyncHttpClient;
 
 /**
  * <b>HttpClients</b>
  * <p>
- * Factory methods for {@link HttpClient} instances.
+ * Factory methods for {@link SyncHttpClient} instances.
  * </p>
  *
  * @author maxim.kirilov
@@ -15,12 +15,12 @@ public class HttpClients {
 
     /**
      * Creates builder object for construction of custom
-     * {@link HttpClient} instances.
+     * {@link SyncHttpClient} instances.
      *
-     * @return {@code HttpClientBuilder}
+     * @return {@code SyncHttpClientBuilder}
      */
-    public static HttpClientBuilder custom() {
-        return new HttpClientBuilder(
+    public static SyncHttpClientBuilder custom() {
+        return new SyncHttpClientBuilder(
                 org.apache.http.impl.client.HttpClients.custom()
         );
     }

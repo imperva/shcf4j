@@ -1,8 +1,8 @@
 package com.imperva.shcf4j.httpcomponents.client4.impl.nio.client;
 
 import com.imperva.shcf4j.HttpHost;
+import com.imperva.shcf4j.client.AsyncHttpClient;
 import com.imperva.shcf4j.client.CredentialsProvider;
-import com.imperva.shcf4j.client.HttpAsyncClient;
 import com.imperva.shcf4j.client.config.ConnectionConfig;
 import com.imperva.shcf4j.client.config.RequestConfig;
 import com.imperva.shcf4j.conn.routing.HttpRoutePlanner;
@@ -14,13 +14,17 @@ import org.apache.http.impl.conn.DefaultRoutePlanner;
 import org.apache.http.impl.conn.DefaultSchemePortResolver;
 import org.apache.http.nio.conn.ssl.SSLIOSessionStrategy;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 import java.util.concurrent.ThreadFactory;
 
 /**
- * <b>HttpAsyncClientBuilder</b>
+ * <b>AsyncHttpClientBuilder</b>
  * <p>
- * Builder for {@link com.imperva.shcf4j.client.HttpAsyncClient} instances.
+ * Builder for {@link AsyncHttpClient} instances.
  * </p>
  * When a particular component is not explicitly this class will
  * use its default implementation. System properties will be taken
@@ -48,20 +52,20 @@ import java.util.concurrent.ThreadFactory;
  * </ul>
  * <p>
  * Please note that some settings used by this class can be mutually
- * exclusive and may not apply when building {@link com.imperva.shcf4j.client.HttpAsyncClient}
+ * exclusive and may not apply when building {@link AsyncHttpClient}
  * instances.
  *
  * @author maxim.kirilov
  */
-class HttpAsyncClientBuilder implements com.imperva.shcf4j.HttpAsyncClientBuilder {
+class AsyncHttpClientBuilder implements com.imperva.shcf4j.AsyncHttpClientBuilder {
 
     private final org.apache.http.impl.nio.client.HttpAsyncClientBuilder asyncClientBuilder;
 
-    protected HttpAsyncClientBuilder(org.apache.http.impl.nio.client.HttpAsyncClientBuilder asyncClient) {
+    protected AsyncHttpClientBuilder(org.apache.http.impl.nio.client.HttpAsyncClientBuilder asyncClient) {
         this.asyncClientBuilder = asyncClient;
     }
 
-    protected HttpAsyncClientBuilder() {
+    protected AsyncHttpClientBuilder() {
         this(org.apache.http.impl.nio.client.HttpAsyncClientBuilder.create());
     }
 
@@ -69,9 +73,9 @@ class HttpAsyncClientBuilder implements com.imperva.shcf4j.HttpAsyncClientBuilde
      * Assigns maximum total connection value.
      *
      * @param maxConnTotal allowed in this client instance
-     * @return {@code HttpAsyncClientBuilder}
+     * @return {@code AsyncHttpClientBuilder}
      */
-    public final HttpAsyncClientBuilder setMaxConnTotal(final int maxConnTotal) {
+    public final com.imperva.shcf4j.httpcomponents.client4.impl.nio.client.AsyncHttpClientBuilder setMaxConnTotal(final int maxConnTotal) {
         this.asyncClientBuilder.setMaxConnTotal(maxConnTotal);
         return this;
     }
@@ -80,9 +84,9 @@ class HttpAsyncClientBuilder implements com.imperva.shcf4j.HttpAsyncClientBuilde
      * Assigns maximum connection per route value.
      *
      * @param maxConnPerRoute a limit of open connections for a single route
-     * @return {@code HttpClientBuilder}
+     * @return {@code SyncHttpClientBuilder}
      */
-    public final HttpAsyncClientBuilder setMaxConnPerRoute(final int maxConnPerRoute) {
+    public final com.imperva.shcf4j.httpcomponents.client4.impl.nio.client.AsyncHttpClientBuilder setMaxConnPerRoute(final int maxConnPerRoute) {
         this.asyncClientBuilder.setMaxConnPerRoute(maxConnPerRoute);
         return this;
     }
@@ -90,28 +94,43 @@ class HttpAsyncClientBuilder implements com.imperva.shcf4j.HttpAsyncClientBuilde
     /**
      * Disables connection state tracking.
      *
-     * @return {@code HttpClientBuilder}
+     * @return {@code SyncHttpClientBuilder}
      */
-    public HttpAsyncClientBuilder disableConnectionState() {
+    public com.imperva.shcf4j.httpcomponents.client4.impl.nio.client.AsyncHttpClientBuilder disableConnectionState() {
         this.asyncClientBuilder.disableConnectionState();
         return this;
     }
 
     /**
      * @param strategy the SSL socket creation strategy
-     * @return {@code HttpClientBuilder}
+     * @return {@code SyncHttpClientBuilder}
      */
     @Override
-    public HttpAsyncClientBuilder setSSLSessionStrategy(final SSLSessionStrategy strategy) {
+    public com.imperva.shcf4j.httpcomponents.client4.impl.nio.client.AsyncHttpClientBuilder
+    setSSLSessionStrategy(final SSLSessionStrategy strategy) throws SSLException {
         Objects.requireNonNull(strategy, "strategy");
-        SSLIOSessionStrategy sslStrategy = new SSLIOSessionStrategy(
-                strategy.getSslContext(),
-                strategy.getSupportedProtocols(),
-                strategy.getSupportedCipherSuites(),
-                strategy.getHostnameVerifier());
 
-        this.asyncClientBuilder.setSSLStrategy(sslStrategy);
-        return this;
+        try {
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(
+                    strategy.getKeyManagerFactory() != null ?
+                            strategy.getKeyManagerFactory().getKeyManagers() : null,
+                    strategy.getTrustManagerFactory() != null ?
+                            strategy.getTrustManagerFactory().getTrustManagers() : null,
+                    null
+            );
+
+            SSLIOSessionStrategy sslStrategy = new SSLIOSessionStrategy(
+                    sslContext,
+                    strategy.getSupportedProtocols(),
+                    strategy.getSupportedCipherSuites(),
+                    strategy.getHostnameVerifier());
+
+            this.asyncClientBuilder.setSSLStrategy(sslStrategy);
+            return this;
+        } catch (NoSuchAlgorithmException | KeyManagementException e){
+            throw new SSLException(e);
+        }
     }
 
 
@@ -119,10 +138,10 @@ class HttpAsyncClientBuilder implements com.imperva.shcf4j.HttpAsyncClientBuilde
      * Assigns default {@link IOReactorConfig}.
      *
      * @param ioReactorConfig object
-     * @return {@code HttpClientBuilder}
+     * @return {@code SyncHttpClientBuilder}
      */
     @Override
-    public HttpAsyncClientBuilder setDefaultSocketConfig(IOReactorConfig ioReactorConfig) {
+    public com.imperva.shcf4j.httpcomponents.client4.impl.nio.client.AsyncHttpClientBuilder setDefaultSocketConfig(IOReactorConfig ioReactorConfig) {
         Objects.requireNonNull(ioReactorConfig, "ioReactorConfig");
         org.apache.http.impl.nio.reactor.IOReactorConfig.Builder builder =
                 org.apache.http.impl.nio.reactor.IOReactorConfig.custom();
@@ -148,9 +167,9 @@ class HttpAsyncClientBuilder implements com.imperva.shcf4j.HttpAsyncClientBuilde
      * Assigns default {@link ConnectionConfig}.
      *
      * @param config default config for every outgoing request
-     * @return {@code HttpClientBuilder}
+     * @return {@code SyncHttpClientBuilder}
      */
-    public final HttpAsyncClientBuilder setDefaultConnectionConfig(final ConnectionConfig config) {
+    public final com.imperva.shcf4j.httpcomponents.client4.impl.nio.client.AsyncHttpClientBuilder setDefaultConnectionConfig(final ConnectionConfig config) {
 
         org.apache.http.config.ConnectionConfig.Builder builder = org.apache.http.config.ConnectionConfig.custom();
         builder.setBufferSize(config.getBufferSize())
@@ -169,9 +188,9 @@ class HttpAsyncClientBuilder implements com.imperva.shcf4j.HttpAsyncClientBuilde
      * context.
      *
      * @param config default config for every outgoing request
-     * @return {@code HttpAsyncClientBuilder}
+     * @return {@code AsyncHttpClientBuilder}
      */
-    public final HttpAsyncClientBuilder setDefaultRequestConfig(final RequestConfig config) {
+    public final com.imperva.shcf4j.httpcomponents.client4.impl.nio.client.AsyncHttpClientBuilder setDefaultRequestConfig(final RequestConfig config) {
 
         Objects.requireNonNull(config, "config");
         this.asyncClientBuilder.setDefaultRequestConfig(ConversionUtils.convert(config));
@@ -181,9 +200,9 @@ class HttpAsyncClientBuilder implements com.imperva.shcf4j.HttpAsyncClientBuilde
     /**
      * Assigns {@link java.util.concurrent.ThreadFactory} instance.
      * @param threadFactory the factory that creates the threads
-     * @return {@code HttpAsyncClientBuilder}
+     * @return {@code AsyncHttpClientBuilder}
      */
-    public final HttpAsyncClientBuilder setThreadFactory(final ThreadFactory threadFactory) {
+    public final com.imperva.shcf4j.httpcomponents.client4.impl.nio.client.AsyncHttpClientBuilder setThreadFactory(final ThreadFactory threadFactory) {
         this.asyncClientBuilder.setThreadFactory(threadFactory);
         return this;
     }
@@ -193,9 +212,9 @@ class HttpAsyncClientBuilder implements com.imperva.shcf4j.HttpAsyncClientBuilde
      * Use system properties when creating and configuring default
      * implementations.
      *
-     * @return an {@code HttpAsyncClientBuilder} that initialized with system properties
+     * @return an {@code AsyncHttpClientBuilder} that initialized with system properties
      */
-    public final HttpAsyncClientBuilder useSystemProperties() {
+    public final com.imperva.shcf4j.httpcomponents.client4.impl.nio.client.AsyncHttpClientBuilder useSystemProperties() {
         this.asyncClientBuilder.useSystemProperties();
         return this;
     }
@@ -204,22 +223,22 @@ class HttpAsyncClientBuilder implements com.imperva.shcf4j.HttpAsyncClientBuilde
      * Assigns default proxy value.
      *
      * @param proxy object for every outgoing request
-     * @return {@code HttpClientBuilder}
+     * @return {@code SyncHttpClientBuilder}
      */
-    public HttpAsyncClientBuilder setProxy(HttpHost proxy) {
+    public com.imperva.shcf4j.httpcomponents.client4.impl.nio.client.AsyncHttpClientBuilder setProxy(HttpHost proxy) {
         Objects.requireNonNull(proxy, "proxy");
         asyncClientBuilder.setProxy(ConversionUtils.convert(proxy));
         return this;
     }
 
 
-    public HttpAsyncClientBuilder setDefaultCredentialsProvider(CredentialsProvider cp) {
+    public com.imperva.shcf4j.httpcomponents.client4.impl.nio.client.AsyncHttpClientBuilder setDefaultCredentialsProvider(CredentialsProvider cp) {
         Objects.requireNonNull(cp, "cp");
         asyncClientBuilder.setDefaultCredentialsProvider(ConversionUtils.convert(cp));
         return this;
     }
 
-    public HttpAsyncClientBuilder setRoutePlanner(final HttpRoutePlanner routePlanner) {
+    public com.imperva.shcf4j.httpcomponents.client4.impl.nio.client.AsyncHttpClientBuilder setRoutePlanner(final HttpRoutePlanner routePlanner) {
         Objects.requireNonNull(routePlanner, "routePlanner");
         final org.apache.http.conn.routing.HttpRoutePlanner defaultRoutePlanner =
                 new DefaultRoutePlanner(DefaultSchemePortResolver.INSTANCE);
@@ -240,8 +259,8 @@ class HttpAsyncClientBuilder implements com.imperva.shcf4j.HttpAsyncClientBuilde
         return this;
     }
 
-    public HttpAsyncClient build() {
-        return new InternalClosableHttpAsyncClient(this.asyncClientBuilder.build());
+    public AsyncHttpClient build() {
+        return new InternalClosableAsyncHttpClient(this.asyncClientBuilder.build());
     }
 
 }

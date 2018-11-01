@@ -3,7 +3,7 @@ package com.imperva.shcf4j.httpcomponents.client4.impl.nio.client;
 import com.imperva.shcf4j.HttpHost;
 import com.imperva.shcf4j.HttpRequest;
 import com.imperva.shcf4j.HttpResponse;
-import com.imperva.shcf4j.client.HttpAsyncClient;
+import com.imperva.shcf4j.client.AsyncHttpClient;
 import com.imperva.shcf4j.client.protocol.ClientContext;
 import com.imperva.shcf4j.concurrent.FutureCallback;
 import com.imperva.shcf4j.httpcomponents.client4.impl.ConversionUtils;
@@ -22,11 +22,11 @@ import java.util.function.Function;
  *
  * @author <font color="blue">Maxim Kirilov</font>
  */
-class InternalClosableHttpAsyncClient implements HttpAsyncClient {
+class InternalClosableAsyncHttpClient implements AsyncHttpClient {
 
     private final CloseableHttpAsyncClient asyncClient;
 
-    InternalClosableHttpAsyncClient(CloseableHttpAsyncClient asyncClient) {
+    InternalClosableAsyncHttpClient(CloseableHttpAsyncClient asyncClient) {
         this.asyncClient = asyncClient;
         this.asyncClient.start();
     }

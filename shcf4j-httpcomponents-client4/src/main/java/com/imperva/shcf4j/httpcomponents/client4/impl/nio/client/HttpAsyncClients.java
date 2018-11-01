@@ -3,7 +3,7 @@ package com.imperva.shcf4j.httpcomponents.client4.impl.nio.client;
 
 /**
  * <b>HttpAsyncClients</b>
- * Factory methods for {@link HttpAsyncClientBuilder} instances.
+ * Factory methods for {@link AsyncHttpClientBuilder} instances.
  *
  * @author maxim.kirilov
  */
@@ -12,11 +12,11 @@ public class HttpAsyncClients {
 
     /**
      * Creates builder object for construction of custom
-     * {@link HttpAsyncClientBuilder} instances.
+     * {@link AsyncHttpClientBuilder} instances.
      *
-     * @return a {@code HttpAsyncClientBuilder} for customized implementation
+     * @return a {@code AsyncHttpClientBuilder} for customized implementation
      */
-    public static HttpAsyncClientBuilder custom() {
-        return new HttpAsyncClientBuilder(org.apache.http.impl.nio.client.HttpAsyncClientBuilder.create());
+    public static AsyncHttpClientBuilder custom() {
+        return new AsyncHttpClientBuilder(org.apache.http.impl.nio.client.HttpAsyncClientBuilder.create());
     }
 }
