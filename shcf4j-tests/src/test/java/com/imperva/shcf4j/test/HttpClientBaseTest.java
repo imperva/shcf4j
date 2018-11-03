@@ -1,23 +1,11 @@
-package com.imperva.shcf4j.httpcomponents.client4;
+package com.imperva.shcf4j.test;
 
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import com.imperva.shcf4j.HttpHost;
 import org.junit.ClassRule;
 import org.junit.Rule;
 
-/**
- * <b>HttpRequestTest</b>
- *
- * @author <font color="blue">Maxim Kirilov</font>
- *         Date: April 2014
- */
 public class HttpClientBaseTest {
-
-    static {
-        System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
-        System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
-        System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http", "DEBUG");
-    }
 
     public static final String HEADER_ACCEPT = "Accept";
     public static final String HEADER_CONTENT_TYPE = "Content-Type";

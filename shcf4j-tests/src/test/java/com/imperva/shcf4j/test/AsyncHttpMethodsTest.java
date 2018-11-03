@@ -1,13 +1,11 @@
-package com.imperva.shcf4j.httpcomponents.client4.nio;
+package com.imperva.shcf4j.test;
 
-import com.imperva.shcf4j.HttpClientBuilderFactory;
 import com.imperva.shcf4j.HttpRequest;
 import com.imperva.shcf4j.HttpResponse;
 import com.imperva.shcf4j.client.AsyncHttpClient;
 import com.imperva.shcf4j.client.config.RequestConfig;
 import com.imperva.shcf4j.client.protocol.ClientContext;
 import com.imperva.shcf4j.concurrent.FutureCallback;
-import com.imperva.shcf4j.httpcomponents.client4.HttpClientBaseTest;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -23,7 +21,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 
 /**
  */
-public class HttpMethodsTest extends AsyncHttpClientBaseTest {
+public abstract class AsyncHttpMethodsTest extends AsyncHttpClientBaseTest {
 
     protected AsyncHttpClient asyncHttpClient;
 
@@ -34,7 +32,7 @@ public class HttpMethodsTest extends AsyncHttpClientBaseTest {
 
     @Before
     public void setup() {
-        asyncHttpClient = HttpClientBuilderFactory.getHttpAsyncClientBuilder().build();
+        asyncHttpClient = getHttpClient();
         isCallbackExecuted = false;
     }
 
@@ -47,34 +45,30 @@ public class HttpMethodsTest extends AsyncHttpClientBaseTest {
         }
     }
 
-    @Override
-    AsyncHttpClient getHttpClient() {
-        return this.asyncHttpClient;
-    }
 
     @Test(timeout = TEST_TMOUT)
     public void getMethodTest() {
         String uri = "/my/resource";
         instanceRule.stubFor(get(urlEqualTo(uri))
-                .withHeader(HttpClientBaseTest.HEADER_ACCEPT, equalTo("text/xml"))
+                .withHeader(HEADER_ACCEPT, equalTo("text/xml"))
                 .willReturn(
                         aResponse()
                                 .withStatus(HttpURLConnection.HTTP_OK)
-                                .withHeader(HttpClientBaseTest.HEADER_CONTENT_TYPE, "text/xml")
+                                .withHeader(HEADER_CONTENT_TYPE, "text/xml")
                 )
         );
 
         HttpRequest request = HttpRequest.createGetRequest(uri);
-        request.addHeader(HttpClientBaseTest.HEADER_ACCEPT, "text/xml");
-        Assert.assertTrue("Accept header is missing", request.containsHeader(HttpClientBaseTest.HEADER_ACCEPT));
+        request.addHeader(HEADER_ACCEPT, "text/xml");
+        Assert.assertTrue("Accept header is missing", request.containsHeader(HEADER_ACCEPT));
 
-        getHttpClient().execute(HttpClientBaseTest.HOST, request, new FutureCallback<HttpResponse>() {
+        getHttpClient().execute(HOST, request, new FutureCallback<HttpResponse>() {
             @Override
             public void completed(HttpResponse response) {
                 Assert.assertEquals("Response code is wrong",
                         HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
                 Assert.assertEquals("Content Header is wrong",
-                        "text/xml", response.getHeaders(HttpClientBaseTest.HEADER_CONTENT_TYPE).get(0).getValue());
+                        "text/xml", response.getHeaders(HEADER_CONTENT_TYPE).get(0).getValue());
                 isCallbackExecuted = true;
             }
         });
@@ -104,7 +98,7 @@ public class HttpMethodsTest extends AsyncHttpClientBaseTest {
                                 .build())
                 .build();
 
-        getHttpClient().execute(HttpClientBaseTest.HOST, request, ctx, new FutureCallback<HttpResponse>() {
+        getHttpClient().execute(HOST, request, ctx, new FutureCallback<HttpResponse>() {
             @Override
             public void failed(Exception ex) {
                 isCallbackExecuted = true;

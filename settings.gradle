@@ -4,7 +4,7 @@ if ( !JavaVersion.current().java8Compatible ) {
 }
 
 rootProject.name = 'shcf4j'
-include ":shcf4j-api", ":shcf4j-httpcomponents-client4", ":shcf4j-netty4", ":example"
+include ":shcf4j-api", ":shcf4j-httpcomponents-client4", ":shcf4j-netty4", ":example", ":shcf4j-tests"
 
 rootProject.children.each { project ->
     String fileBaseName = project.name.replaceAll("\\p{Upper}") { "-${it.toLowerCase()}" }

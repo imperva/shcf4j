@@ -1,8 +1,6 @@
-package com.imperva.shcf4j.httpcomponents.client4;
+package com.imperva.shcf4j.test;
 
-import com.imperva.shcf4j.HttpClientBuilderFactory;
 import com.imperva.shcf4j.HttpRequest;
-import com.imperva.shcf4j.client.SyncHttpClient;
 import com.imperva.shcf4j.client.config.RequestConfig;
 import com.imperva.shcf4j.client.protocol.ClientContext;
 import org.junit.Test;
@@ -20,19 +18,13 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 /**
  * <b>RequestConfigTest</b>
  */
-public class RequestConfigTest extends SyncHttpClientBaseTest {
+public abstract class RequestConfigTest extends SyncHttpClientBaseTest {
 
-    private final SyncHttpClient client = HttpClientBuilderFactory.getHttpClientBuilder().build();
-
-    @Override
-    SyncHttpClient getHttpClient() {
-        return client;
-    }
 
     @Test(expected = SocketTimeoutException.class)
     public void requestTimeoutTest() throws IOException {
 
-        long millisecondsDelay = TimeUnit.MILLISECONDS.convert(1, TimeUnit.MINUTES);
+        long millisecondsDelay = TimeUnit.MILLISECONDS.convert(1, TimeUnit.SECONDS);
         String uri = "/my/resource";
         instanceRule.stubFor(get(urlEqualTo(uri))
                 .withHeader(HEADER_ACCEPT, equalTo("text/xml"))
@@ -53,7 +45,7 @@ public class RequestConfigTest extends SyncHttpClientBaseTest {
                         .requestConfig(
                                 RequestConfig
                                         .builder()
-                                        .socketTimeoutMilliseconds( (int)millisecondsDelay - 1000)
+                                        .socketTimeoutMilliseconds( (int)millisecondsDelay / 2)
                                         .build())
                         .build());
     }

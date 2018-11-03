@@ -1,4 +1,4 @@
-package com.imperva.shcf4j.httpcomponents.client4;
+package com.imperva.shcf4j.test;
 
 import com.imperva.shcf4j.client.SyncHttpClient;
 
@@ -11,5 +11,5 @@ import com.imperva.shcf4j.client.SyncHttpClient;
  */
 public abstract class SyncHttpClientBaseTest extends HttpClientBaseTest {
 
-    abstract SyncHttpClient getHttpClient();
+    protected abstract SyncHttpClient getHttpClient();
 }
