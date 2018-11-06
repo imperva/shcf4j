@@ -8,38 +8,46 @@ public class HttpRequestTest {
 
 
     @Test
-    public void addHeadersTest() {
-        String uri = "https://google.com";
-        HttpRequest request = HttpRequest.createGetRequest(uri);
-        request
-                .addHeader("h1", "v1")
-                .addHeader("h2", "v2");
+    public void addDifferentHeadersTest() {
+        HttpRequest request =
+                HttpRequest
+                        .builder()
+                        .getRequest()
+                        .uri("https://google.com")
+                        .header(Header.builder().name("h1").value("v1").build())
+                        .header(Header.builder().name("h2").value("v2").build())
+                        .build();
 
         Assert.assertEquals("wrong number of headers", 2, request.getAllHeaders().size());
     }
 
     @Test
-    public void setHeadersTest() {
-        String uri = "https://google.com";
-        HttpRequest request = HttpRequest.createGetRequest(uri);
-        request
-                .addHeader("h1", "v1")
-                .addHeader("h2", "v2");
+    public void addIdenticalHeadersTest() {
+        HttpRequest request =
+                HttpRequest
+                        .builder()
+                        .getRequest()
+                        .uri("https://google.com")
+                        .header(Header.builder().name("h1").value("v1").build())
+                        .header(Header.builder().name("h1").value("v2").build())
+                        .build();
 
         Assert.assertEquals("wrong number of headers", 2, request.getAllHeaders().size());
-        Assert.assertEquals("", "v1", request.getHeaders("h1").get(0).getValue());
-
-        request.setHeader("h1", "v2");
-        Assert.assertEquals("wrong number of headers", 2, request.getAllHeaders().size());
-        Assert.assertEquals("", "v2", request.getHeaders("h1").get(0).getValue());
     }
 
 
 
     @Test
     public void setMissingHeaderTest(){
-        HttpRequest request = HttpRequest.createGetRequest("http://localhost:8080");
-        request.setHeader("h", "v");
+        HttpRequest request =
+                HttpRequest
+                        .builder()
+                        .getRequest()
+                        .uri("http://localhost:8080")
+                        .header(Header.builder().name("h").value("v").build())
+                        .build();
+
+
         boolean exists = request
                 .getHeaders("h")
                 .stream()

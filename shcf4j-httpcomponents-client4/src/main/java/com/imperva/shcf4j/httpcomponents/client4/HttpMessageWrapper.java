@@ -1,4 +1,4 @@
-package com.imperva.shcf4j.httpcomponents.client4.impl;
+package com.imperva.shcf4j.httpcomponents.client4;
 
 import com.imperva.shcf4j.Header;
 import com.imperva.shcf4j.HttpMessage;
@@ -38,19 +38,6 @@ public class HttpMessageWrapper implements HttpMessage {
     public List<? extends Header> getAllHeaders() {
         return convertHeaders(httpMessage.getAllHeaders());
     }
-
-    @Override
-    public HttpMessage addHeader(String name, String value) {
-        httpMessage.addHeader(name, value);
-        return this;
-    }
-
-    @Override
-    public HttpMessage setHeader(String name, String value) {
-        httpMessage.setHeader(name, value);
-        return this;
-    }
-
 
     private List<? extends Header> convertHeaders(org.apache.http.Header[] headers){
         return

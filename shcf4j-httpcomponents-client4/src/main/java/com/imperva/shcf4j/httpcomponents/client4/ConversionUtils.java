@@ -1,7 +1,5 @@
-package com.imperva.shcf4j.httpcomponents.client4.impl;
+package com.imperva.shcf4j.httpcomponents.client4;
 
-import com.imperva.shcf4j.HttpEntity;
-import com.imperva.shcf4j.HttpEntityEnclosingRequest;
 import com.imperva.shcf4j.HttpRequest;
 import com.imperva.shcf4j.HttpResponse;
 import com.imperva.shcf4j.auth.AuthScope;
@@ -9,23 +7,21 @@ import com.imperva.shcf4j.auth.Credentials;
 import com.imperva.shcf4j.client.CredentialsProvider;
 import com.imperva.shcf4j.client.config.RequestConfig;
 import com.imperva.shcf4j.client.protocol.ClientContext;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.SystemDefaultCredentialsProvider;
 
 import java.util.Map;
 
-public class ConversionUtils {
+class ConversionUtils {
 
 
-    public static org.apache.http.HttpHost convert(com.imperva.shcf4j.HttpHost httpHost){
+    static org.apache.http.HttpHost convert(com.imperva.shcf4j.HttpHost httpHost){
         return httpHost != null ?
                 new org.apache.http.HttpHost(httpHost.getHostname(), httpHost.getPort(), httpHost.getSchemeName())
                 : null;
     }
 
-    public static org.apache.http.protocol.HttpContext convert(ClientContext ctx) {
+    static org.apache.http.protocol.HttpContext convert(ClientContext ctx) {
 
         if (ctx != null) {
             HttpClientContext httpContext = HttpClientContext.create();
@@ -44,7 +40,7 @@ public class ConversionUtils {
         return null;
     }
 
-    public static org.apache.http.client.config.RequestConfig convert(RequestConfig config){
+    static org.apache.http.client.config.RequestConfig convert(RequestConfig config){
         return org.apache.http.client.config.RequestConfig.custom()
                 .setExpectContinueEnabled(config.isExpectContinueEnabled())
                 .setProxy(convert(config.getProxy()))
@@ -64,53 +60,16 @@ public class ConversionUtils {
                 .build();
     }
 
-    public static org.apache.http.HttpRequest convert(HttpRequest request){
-
-        org.apache.http.HttpRequest httpRequest;
-
-        switch (request.getMethod()){
-            case GET:
-                httpRequest = new org.apache.http.client.methods.HttpGet(request.getUri());
-                break;
-            case POST:
-                HttpPost postRequest = new HttpPost(request.getUri());
-                if (request instanceof HttpEntityEnclosingRequest){
-                    HttpEntity entity = ((HttpEntityEnclosingRequest) request).getEntity();
-                    postRequest.setEntity(new HttpEntityAdapter(entity));
-                }
-                httpRequest = postRequest;
-                break;
-            case PUT:
-                HttpPut putRequest = new HttpPut(request.getUri());
-                if (request instanceof HttpEntityEnclosingRequest){
-                    HttpEntity entity = ((HttpEntityEnclosingRequest) request).getEntity();
-                    putRequest.setEntity(new HttpEntityAdapter(entity));
-                }
-                httpRequest = putRequest;
-                break;
-            case DELETE:
-                httpRequest = new org.apache.http.client.methods.HttpDelete(request.getUri());
-                break;
-            default:
-                throw new RuntimeException("Not supported HTTP method: " + request.getMethod());
-        }
-
-        request
-                .getAllHeaders()
-                .stream()
-                .peek(h -> httpRequest.addHeader(h.getName(), h.getValue()))
-                .count();
-
-
-        return httpRequest;
+    static org.apache.http.HttpRequest convert(HttpRequest request){
+        return HttpComponentsRequestFactory.createHttpComponentsRequest(request);
     }
 
-    public static HttpResponse convert(org.apache.http.HttpResponse response){
+    static HttpResponse convert(org.apache.http.HttpResponse response){
         return new HttpResponseImpl(response);
     }
 
 
-    public static org.apache.http.client.CredentialsProvider convert(CredentialsProvider cp){
+    static org.apache.http.client.CredentialsProvider convert(CredentialsProvider cp){
         org.apache.http.client.CredentialsProvider credentialsProvider =
                 new SystemDefaultCredentialsProvider();
 

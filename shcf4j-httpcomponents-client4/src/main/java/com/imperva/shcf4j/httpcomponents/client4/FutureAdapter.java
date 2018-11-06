@@ -1,7 +1,6 @@
-package com.imperva.shcf4j.httpcomponents.client4.impl.nio.client;
+package com.imperva.shcf4j.httpcomponents.client4;
 
 import com.imperva.shcf4j.HttpResponse;
-import com.imperva.shcf4j.httpcomponents.client4.impl.ConversionUtils;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;

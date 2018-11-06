@@ -4,10 +4,12 @@ ext {
     lombokVersion = '1.16.18'
     junitVersion = '4.12'
     wiremockVersion = '2.7.1'
+    logbackClassicVersion = '1.2.3'
 
     libraries = [
             lombok:             "org.projectlombok:lombok:${lombokVersion}",
             junit:              "junit:junit:${junitVersion}",
-            wiremock:           "com.github.tomakehurst:wiremock:${wiremockVersion}"
+            wiremock:           "com.github.tomakehurst:wiremock:${wiremockVersion}",
+            logbackClassic:    "ch.qos.logback:logback-classic:${logbackClassicVersion}"
     ]
 }

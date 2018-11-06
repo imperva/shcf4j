@@ -1,4 +1,4 @@
-package com.imperva.shcf4j.httpcomponents.client4.impl.client;
+package com.imperva.shcf4j.httpcomponents.client4;
 
 import com.imperva.shcf4j.client.SyncHttpClient;
 

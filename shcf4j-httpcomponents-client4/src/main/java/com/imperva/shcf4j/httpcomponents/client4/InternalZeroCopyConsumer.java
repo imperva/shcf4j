@@ -1,4 +1,4 @@
-package com.imperva.shcf4j.httpcomponents.client4.impl.nio.client;
+package com.imperva.shcf4j.httpcomponents.client4;
 
 import java.io.File;
 import java.io.FileNotFoundException;

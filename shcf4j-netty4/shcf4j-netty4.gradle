@@ -9,5 +9,8 @@ dependencies {
 //    compile group: 'io.netty', name: 'netty-transport', version: '4.1.30.Final'
 //    compile group: 'io.netty', name: 'netty-codec', version: '4.1.30.Final'
 //    compile group: 'io.netty', name: 'netty-codec-http', version: '4.1.30.Final'
+    testCompile ( libraries.wiremock )
     testCompile ( libraries.junit )
+    testCompile ( libraries.logbackClassic )
+    testCompile project(':shcf4j-tests').sourceSets.test.output
 }

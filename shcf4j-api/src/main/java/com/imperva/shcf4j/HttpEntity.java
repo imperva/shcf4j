@@ -15,8 +15,8 @@ import java.io.OutputStream;
  */
 public interface HttpEntity {
 
-    String CONTENT_TYPE = "Content-Type";
-    String CONTENT_ENCODING = "Content-Encoding";
+//    String CONTENT_TYPE = "Content-Type";
+//    String CONTENT_ENCODING = "Content-Encoding";
 
     /**
      * Tells if the entity is capable of producing its data more than once.

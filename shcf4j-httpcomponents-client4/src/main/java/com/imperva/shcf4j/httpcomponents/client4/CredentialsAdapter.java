@@ -1,4 +1,4 @@
-package com.imperva.shcf4j.httpcomponents.client4.impl;
+package com.imperva.shcf4j.httpcomponents.client4;
 
 import org.apache.http.auth.Credentials;
 

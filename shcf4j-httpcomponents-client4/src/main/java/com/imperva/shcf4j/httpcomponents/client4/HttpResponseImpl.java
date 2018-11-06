@@ -1,4 +1,4 @@
-package com.imperva.shcf4j.httpcomponents.client4.impl;
+package com.imperva.shcf4j.httpcomponents.client4;
 
 import com.imperva.shcf4j.Header;
 import com.imperva.shcf4j.HttpEntity;
@@ -112,17 +112,6 @@ class HttpResponseImpl implements HttpResponse {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public HttpMessage addHeader(String name, String value) {
-        response.addHeader(name, value);
-        return this;
-    }
-
-    @Override
-    public HttpMessage setHeader(String name, String value) {
-        response.setHeader(name, value);
-        return this;
-    }
 
     private static class SimpleHttpEntity implements HttpEntity {
         private org.apache.http.HttpEntity entity;

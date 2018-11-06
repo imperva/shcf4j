@@ -1,7 +1,6 @@
-package com.imperva.shcf4j.httpcomponents.client4.impl.client;
+package com.imperva.shcf4j.httpcomponents.client4;
 
 import com.imperva.shcf4j.HttpMessage;
-import com.imperva.shcf4j.httpcomponents.client4.impl.HttpMessageWrapper;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.protocol.HttpContext;

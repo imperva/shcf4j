@@ -2,7 +2,6 @@ package com.imperva.shcf4j.netty4.client.async;
 
 import com.imperva.shcf4j.Header;
 import com.imperva.shcf4j.HttpEntity;
-import com.imperva.shcf4j.HttpMessage;
 import com.imperva.shcf4j.HttpResponse;
 import com.imperva.shcf4j.StatusLine;
 import io.netty.handler.codec.http.HttpHeaderNames;
@@ -12,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -38,10 +36,6 @@ class HttpResponseAdapter implements HttpResponse {
         return new DefaultHttpEntity();
     }
 
-    @Override
-    public Locale getLocale() {
-        return null;
-    }
 
     @Override
     public boolean containsHeader(String name) {
@@ -65,15 +59,6 @@ class HttpResponseAdapter implements HttpResponse {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public HttpMessage addHeader(String name, String value) {
-        return null;
-    }
-
-    @Override
-    public HttpMessage setHeader(String name, String value) {
-        return null;
-    }
 
 
     private class DefaultHttpEntity implements HttpEntity {

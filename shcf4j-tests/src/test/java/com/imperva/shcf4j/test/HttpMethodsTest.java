@@ -1,22 +1,29 @@
 package com.imperva.shcf4j.test;
 
-import com.imperva.shcf4j.HttpEntityEnclosingRequest;
+import com.imperva.shcf4j.Header;
 import com.imperva.shcf4j.HttpRequest;
 import com.imperva.shcf4j.HttpResponse;
 import com.imperva.shcf4j.auth.AuthScope;
 import com.imperva.shcf4j.auth.UsernamePasswordCredentials;
 import com.imperva.shcf4j.client.CredentialsProvider;
 import com.imperva.shcf4j.client.protocol.ClientContext;
-import com.imperva.shcf4j.entity.ContentType;
-import com.imperva.shcf4j.entity.FileEntity;
-import com.imperva.shcf4j.entity.StringEntity;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.net.HttpURLConnection;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.matching;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 
 /**
  * <b>HttpMethodsTest</b>
@@ -35,8 +42,13 @@ public abstract class HttpMethodsTest extends SyncHttpClientBaseTest {
                 )
         );
 
-        HttpRequest request = HttpRequest.createGetRequest(uri);
-        request.addHeader(HttpClientBaseTest.HEADER_ACCEPT, "text/xml");
+        HttpRequest request =
+                HttpRequest
+                        .builder()
+                        .getRequest()
+                        .uri(uri)
+                        .header(Header.builder().name(HttpClientBaseTest.HEADER_ACCEPT).value("text/xml").build())
+                        .build();
 
         Assert.assertTrue("Accept header is missing", request.containsHeader(HttpClientBaseTest.HEADER_ACCEPT));
         HttpResponse response = getHttpClient().execute(HttpClientBaseTest.HOST, request);
@@ -64,8 +76,14 @@ public abstract class HttpMethodsTest extends SyncHttpClientBaseTest {
                 )
         );
 
-        HttpRequest request = HttpRequest.createGetRequest(uri);
-        request.addHeader(HttpClientBaseTest.HEADER_ACCEPT, "text/xml");
+        HttpRequest request =
+                HttpRequest
+                        .builder()
+                        .getRequest()
+                        .uri(uri)
+                        .header(Header.builder().name(HttpClientBaseTest.HEADER_ACCEPT).value("text/xml").build())
+                        .build();
+
         HttpResponse response = getHttpClient().
                 execute(
                         HttpClientBaseTest.HOST,
@@ -92,8 +110,7 @@ public abstract class HttpMethodsTest extends SyncHttpClientBaseTest {
                 )
         );
 
-        HttpEntityEnclosingRequest request = HttpRequest.createPostRequest(uri);
-        HttpResponse response = getHttpClient().execute(HttpClientBaseTest.HOST, request);
+        HttpResponse response = getHttpClient().execute(HttpClientBaseTest.HOST, HttpRequest.builder().postRequest().uri(uri).build());
         Assert
                 .assertEquals("Wrong status code", HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
     }
@@ -111,9 +128,13 @@ public abstract class HttpMethodsTest extends SyncHttpClientBaseTest {
                 )
         );
 
-        HttpEntityEnclosingRequest request = HttpRequest.createPostRequest(uri);
-        request.setEntity(StringEntity.builder().entity(entity).contentType(ContentType.createTextXML()).build());
-        HttpResponse response = getHttpClient().execute(HttpClientBaseTest.HOST, request);
+        HttpResponse response = getHttpClient().execute(HttpClientBaseTest.HOST,
+                HttpRequest
+                        .builder()
+                        .postRequest()
+                        .uri(uri)
+                        .stringData(entity)
+                        .build());
         Assert
                 .assertEquals("Wrong status code", HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
     }
@@ -136,9 +157,16 @@ public abstract class HttpMethodsTest extends SyncHttpClientBaseTest {
                 )
         );
 
-        HttpEntityEnclosingRequest request = HttpRequest.createPostRequest(uri);
-        request.setEntity(FileEntity.builder().path(f.toPath()).build());
-        HttpResponse response = getHttpClient().execute(HttpClientBaseTest.HOST, request);
+        HttpResponse response =
+                getHttpClient()
+                        .execute(HttpClientBaseTest.HOST,
+                                HttpRequest
+                                        .builder()
+                                        .postRequest()
+                                        .uri(uri)
+                                        .filePath(f.toPath())
+                                        .build()
+                        );
         Assert
                 .assertEquals("Wrong status code", HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
     }
@@ -163,7 +191,7 @@ public abstract class HttpMethodsTest extends SyncHttpClientBaseTest {
                         .withStatus(200)
                 ));
 
-        HttpRequest request = HttpRequest.createGetRequest(uri);
+        HttpRequest request = HttpRequest.builder().getRequest().uri(uri).build();
         CredentialsProvider cp = CredentialsProvider.createSystemDefaultCredentialsProvider();
         cp.setCredentials(
                 AuthScope.createAnyAuthScope(),
@@ -177,5 +205,23 @@ public abstract class HttpMethodsTest extends SyncHttpClientBaseTest {
                 .assertEquals("Wrong status code", HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
 
     }
+
+
+    @Test
+    public void queryParametersTest(){
+
+    }
+
+
+    @Test
+    public void encodedQueryParametersTest(){
+
+    }
+
+    @Test
+    public void nonEncodedQueryParametersTest(){
+
+    }
+
 
 }

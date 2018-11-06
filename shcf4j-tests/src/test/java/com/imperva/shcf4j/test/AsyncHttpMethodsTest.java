@@ -1,22 +1,27 @@
 package com.imperva.shcf4j.test;
 
+import com.imperva.shcf4j.Header;
 import com.imperva.shcf4j.HttpRequest;
 import com.imperva.shcf4j.HttpResponse;
 import com.imperva.shcf4j.client.AsyncHttpClient;
 import com.imperva.shcf4j.client.config.RequestConfig;
 import com.imperva.shcf4j.client.protocol.ClientContext;
-import com.imperva.shcf4j.concurrent.FutureCallback;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.net.HttpURLConnection;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.matching;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 
 /**
@@ -27,13 +32,10 @@ public abstract class AsyncHttpMethodsTest extends AsyncHttpClientBaseTest {
 
     private static final long TEST_TMOUT = 10000L;
 
-    private volatile boolean isCallbackExecuted;
-
 
     @Before
     public void setup() {
         asyncHttpClient = getHttpClient();
-        isCallbackExecuted = false;
     }
 
     @After
@@ -47,7 +49,7 @@ public abstract class AsyncHttpMethodsTest extends AsyncHttpClientBaseTest {
 
 
     @Test(timeout = TEST_TMOUT)
-    public void getMethodTest() {
+    public void getMethodTest() throws Exception {
         String uri = "/my/resource";
         instanceRule.stubFor(get(urlEqualTo(uri))
                 .withHeader(HEADER_ACCEPT, equalTo("text/xml"))
@@ -58,28 +60,28 @@ public abstract class AsyncHttpMethodsTest extends AsyncHttpClientBaseTest {
                 )
         );
 
-        HttpRequest request = HttpRequest.createGetRequest(uri);
-        request.addHeader(HEADER_ACCEPT, "text/xml");
+        HttpRequest request =
+                HttpRequest
+                        .builder()
+                        .getRequest()
+                        .uri(uri)
+                        .header(Header.builder().name(HttpClientBaseTest.HEADER_ACCEPT).value("text/xml").build())
+                        .build();
         Assert.assertTrue("Accept header is missing", request.containsHeader(HEADER_ACCEPT));
 
-        getHttpClient().execute(HOST, request, new FutureCallback<HttpResponse>() {
-            @Override
-            public void completed(HttpResponse response) {
-                Assert.assertEquals("Response code is wrong",
-                        HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
-                Assert.assertEquals("Content Header is wrong",
-                        "text/xml", response.getHeaders(HEADER_CONTENT_TYPE).get(0).getValue());
-                isCallbackExecuted = true;
-            }
-        });
+        HttpResponse response = getHttpClient()
+                .execute(HOST, request)
+                .get();
 
-        while (!isCallbackExecuted) {
-            sleep(1000L);
-        }
+
+        Assert.assertEquals("Response code is wrong",
+                HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
+        Assert.assertEquals("Content Header is wrong",
+                "text/xml", response.getHeaders(HEADER_CONTENT_TYPE).get(0).getValue());
     }
 
-    @Test(timeout = TEST_TMOUT)
-    public void failedCallbackTest() {
+    @Test(timeout = TEST_TMOUT, expected = Throwable.class)
+    public void failedCallbackTest() throws Exception {
         String uri = "/delayed";
         instanceRule.stubFor(get(urlEqualTo(uri))
                 .willReturn(
@@ -88,7 +90,13 @@ public abstract class AsyncHttpMethodsTest extends AsyncHttpClientBaseTest {
                                 .withFixedDelay(60 * 1000)
                 )
         );
-        HttpRequest request = HttpRequest.createGetRequest(uri);
+        HttpRequest request =
+                HttpRequest
+                        .builder()
+                        .getRequest()
+                        .uri(uri)
+                        .build();
+
         ClientContext ctx = ClientContext
                 .builder()
                 .requestConfig(
@@ -98,24 +106,56 @@ public abstract class AsyncHttpMethodsTest extends AsyncHttpClientBaseTest {
                                 .build())
                 .build();
 
-        getHttpClient().execute(HOST, request, ctx, new FutureCallback<HttpResponse>() {
-            @Override
-            public void failed(Exception ex) {
-                isCallbackExecuted = true;
-            }
-        });
-
-        while (!isCallbackExecuted) {
-            sleep(1000L);
-        }
+        getHttpClient().execute(HOST, request, ctx).get();
     }
 
 
-    private void sleep(long milliseconds) {
-        try {
-            Thread.sleep(milliseconds);
-        } catch (InterruptedException e) {
-        }
+
+    @Test
+    public void emptyEntityPostTest() throws Exception {
+        String uri = "/resource";
+        instanceRule.stubFor(post(urlEqualTo(uri))
+                .willReturn(
+                        aResponse()
+                                .withStatus(HttpURLConnection.HTTP_OK)
+                )
+        );
+
+        HttpResponse response = getHttpClient()
+                .execute(HttpClientBaseTest.HOST, HttpRequest.builder().postRequest().uri(uri).build())
+                .get();
+
+
+        Assert.assertEquals("Wrong status code", 200, response.getStatusLine().getStatusCode());
+    }
+
+    @Test
+    public void fileEntityPostTest() throws Exception {
+        File f = File.createTempFile("fileEntity", ".tmp");
+        f.deleteOnExit();
+        String fileContent = "fileContent";
+        Writer w = new PrintWriter(f, "UTF-8");
+        w.write(fileContent);
+        w.close();
+        String uri = "/my/entity";
+        instanceRule.stubFor(post(urlEqualTo(uri))
+                .withRequestBody(matching(fileContent))
+                .willReturn(
+                        aResponse()
+                                .withStatus(HttpURLConnection.HTTP_OK)
+                )
+        );
+
+        HttpResponse response =
+                getHttpClient()
+                        .execute(HttpClientBaseTest.HOST,
+                                HttpRequest
+                                        .builder()
+                                        .postRequest()
+                                        .uri(uri)
+                                        .filePath(f.toPath())
+                                        .build()).get();
+        Assert.assertEquals("Wrong status code", HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
     }
 
 

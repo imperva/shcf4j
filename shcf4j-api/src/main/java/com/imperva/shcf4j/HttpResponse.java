@@ -1,7 +1,5 @@
 package com.imperva.shcf4j;
 
-import java.util.Locale;
-
 public interface HttpResponse extends HttpMessage {
 
     /**
@@ -21,12 +19,4 @@ public interface HttpResponse extends HttpMessage {
     HttpEntity getEntity();
 
 
-    /**
-     * Obtains the locale of this response.
-     * The locale is used to determine the reason phrase
-     * for the status code.
-     *
-     * @return the locale of this response, never <code>null</code>
-     */
-    Locale getLocale();
 }

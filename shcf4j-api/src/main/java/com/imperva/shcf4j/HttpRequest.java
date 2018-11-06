@@ -1,15 +1,23 @@
 package com.imperva.shcf4j;
 
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Singular;
 import lombok.ToString;
 
+import java.io.InputStream;
 import java.net.URI;
-import java.util.LinkedList;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
 
-@ToString(includeFieldNames=false, of= {"method", "uri"})
+@Builder
+@Getter
+@ToString(includeFieldNames=false, of= {"httpMethod", "uri"})
 public class HttpRequest implements HttpMessage {
 
     public enum SupportedHttpMethod {
@@ -19,23 +27,18 @@ public class HttpRequest implements HttpMessage {
         DELETE
     }
 
-    private List<Header> headers = new LinkedList<>();
-    private final SupportedHttpMethod method;
+    @Singular
+    private List<Header> headers;
+    private final SupportedHttpMethod httpMethod;
     private final URI uri;
+    private final Path filePath;
+    private final byte[] byteData;
+    private final String stringData;
+    private final ByteBuffer byteBufferData;
+    private final InputStream inputStreamData;
+    private final Charset charset;
 
-    public HttpRequest(URI uri, SupportedHttpMethod method) {
-        this.uri = uri;
-        this.method = method;
-    }
 
-
-    public URI getUri() {
-        return uri;
-    }
-
-    public SupportedHttpMethod getMethod() {
-        return method;
-    }
 
     @Override
     public boolean containsHeader(String headerName) {
@@ -55,85 +58,44 @@ public class HttpRequest implements HttpMessage {
         return headers;
     }
 
-    @Override
-    public HttpMessage addHeader(String name, String value) {
-        headers.add(Header.builder().name(name).value(value).build());
-        return this;
-    }
 
-    @Override
-    public HttpMessage setHeader(String name, String value) {
-        List<? extends Header> lHeaders = getHeaders(name);
-        if (! lHeaders.isEmpty() ) {
-            Header h = getHeaders(name).get(0);
-            if (headers.remove(h)) {
-                headers.add(Header.builder().name(name).value(value).build());
-            }
-        } else {
-            addHeader(name, value);
+
+
+
+
+    public static class HttpRequestBuilder {
+
+        public HttpRequestBuilder getRequest(){
+            this.httpMethod = SupportedHttpMethod.GET;
+            return this;
         }
-        return this;
+
+        public HttpRequestBuilder postRequest(){
+            this.httpMethod = SupportedHttpMethod.POST;
+            return this;
+        }
+
+        public HttpRequestBuilder putRequest(){
+            this.httpMethod = SupportedHttpMethod.PUT;
+            return this;
+        }
+
+        public HttpRequestBuilder deleteRequest(){
+            this.httpMethod = SupportedHttpMethod.DELETE;
+            return this;
+        }
+
+        public HttpRequestBuilder uri(String uri){
+            this.uri = URI.create(uri);
+            return this;
+        }
+
+        public HttpRequestBuilder uri(URI uri){
+            this.uri = uri;
+            return this;
+        }
+
     }
-
-    /**
-     *
-     * @param uri the request URI
-     * @return {@code HttpRequest}
-     */
-    public static HttpRequest createGetRequest(URI uri) {
-        return new HttpRequest(uri, SupportedHttpMethod.GET);
-    }
-
-
-    /**
-     *
-     * @param uri the request URI
-     * @return {@code HttpRequest}
-     */
-    public static HttpRequest createGetRequest(String uri) {
-        return createGetRequest(URI.create(uri));
-    }
-
-    /**
-     * @param uri the request URI
-     * @return {@code HttpEntityEnclosingRequest}
-     */
-    public static HttpEntityEnclosingRequest createPostRequest(URI uri) {
-        return new HttpEntityEnclosingRequest(uri, SupportedHttpMethod.POST);
-    }
-
-    /**
-     * @param uri the request URI
-     * @return {@code HttpEntityEnclosingRequest}
-     */
-    public static HttpEntityEnclosingRequest createPostRequest(String uri) {
-        return createPostRequest(URI.create(uri));
-    }
-
-    /**
-     * @param uri the request URI
-     * @return {@code HttpEntityEnclosingRequest}
-     */
-    public static HttpEntityEnclosingRequest createPutRequest(URI uri) {
-        return new HttpEntityEnclosingRequest(uri, SupportedHttpMethod.PUT);
-    }
-
-    /**
-     * @param uri the request URI
-     * @return {@code HttpEntityEnclosingRequest}
-     */
-    public static HttpEntityEnclosingRequest createPutRequest(String uri) {
-        return createPutRequest(URI.create(uri));
-    }
-
-    public static HttpRequest createDeleteRequest(URI uri) {
-        return new HttpRequest(uri, SupportedHttpMethod.DELETE);
-    }
-
-    public static HttpRequest createDeleteRequest(String uri) {
-        return new HttpRequest(URI.create(uri), SupportedHttpMethod.DELETE);
-    }
-
 
 
 }

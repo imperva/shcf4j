@@ -1,4 +1,4 @@
-package com.imperva.shcf4j.httpcomponents.client4.impl.client;
+package com.imperva.shcf4j.httpcomponents.client4;
 
 import org.apache.http.impl.client.CloseableHttpClient;
 
@@ -8,7 +8,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
  * @author <font color="blue">Maxim Kirilov</font>
  *         Date: April 2014
  */
-class SimpleSyncHttpClient extends SyncHttpClientBase {
+class SimpleSyncHttpClient extends ClosableSyncHttpClientBase {
 
 
     SimpleSyncHttpClient(CloseableHttpClient realClient) {

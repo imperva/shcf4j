@@ -1,11 +1,10 @@
-package com.imperva.shcf4j.httpcomponents.client4.impl.client;
+package com.imperva.shcf4j.httpcomponents.client4;
 
 import com.imperva.shcf4j.HttpHost;
 import com.imperva.shcf4j.HttpRequest;
 import com.imperva.shcf4j.HttpResponse;
 import com.imperva.shcf4j.client.SyncHttpClient;
 import com.imperva.shcf4j.client.protocol.ClientContext;
-import com.imperva.shcf4j.httpcomponents.client4.impl.ConversionUtils;
 
 import java.io.IOException;
 import java.util.function.Function;
@@ -18,11 +17,11 @@ import java.util.function.Function;
  *
  * @author maxim.kirilov
  */
-public abstract class SyncHttpClientBase implements SyncHttpClient {
+public abstract class ClosableSyncHttpClientBase implements SyncHttpClient {
 
     private final org.apache.http.impl.client.CloseableHttpClient httpClient;
 
-    protected SyncHttpClientBase(org.apache.http.impl.client.CloseableHttpClient httpClient) {
+    protected ClosableSyncHttpClientBase(org.apache.http.impl.client.CloseableHttpClient httpClient) {
         this.httpClient = httpClient;
     }
 
@@ -40,11 +39,11 @@ public abstract class SyncHttpClientBase implements SyncHttpClient {
 
     @Override
     public HttpResponse execute(HttpHost target, HttpRequest request, ClientContext ctx) throws IOException {
-        return httpClient.execute(
-                ConversionUtils.convert(target),
-                ConversionUtils.convert(request),
-                ConversionUtils::<HttpResponse>convert,
-                ConversionUtils.convert(ctx)
+        return execute(
+                target,
+                request,
+                Function.identity(),
+                ctx
         );
     }
 

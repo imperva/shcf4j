@@ -1,5 +1,6 @@
 package com.imperva.shcf4j.test;
 
+import com.imperva.shcf4j.Header;
 import com.imperva.shcf4j.HttpRequest;
 import com.imperva.shcf4j.client.config.RequestConfig;
 import com.imperva.shcf4j.client.protocol.ClientContext;
@@ -36,8 +37,13 @@ public abstract class RequestConfigTest extends SyncHttpClientBaseTest {
                 )
         );
 
-        HttpRequest request = HttpRequest.createGetRequest(uri);
-        request.addHeader(HEADER_ACCEPT, "text/xml");
+        HttpRequest request =
+                HttpRequest
+                        .builder()
+                        .getRequest()
+                        .uri(uri)
+                        .header(Header.builder().name(HttpClientBaseTest.HEADER_ACCEPT).value("text/xml").build())
+                        .build();
 
         getHttpClient().execute(HOST, request,
                 ClientContext

@@ -82,7 +82,7 @@ public class AsyncNettyHttpClientBuilder implements AsyncHttpClientBuilder {
 
     @Override
     public AsyncHttpClient build() {
-        return new AsyncNettyHttpClient(new DefaultAsyncHttpClient(configBuilder.build()));
+        return new ClosableAsyncNettyHttpClient(new DefaultAsyncHttpClient(configBuilder.build()));
     }
 
 
