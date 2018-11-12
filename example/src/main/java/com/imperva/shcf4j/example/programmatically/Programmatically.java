@@ -3,24 +3,24 @@ package com.imperva.shcf4j.example.programmatically;
 import com.imperva.shcf4j.HttpClientBuilderFactory;
 import com.imperva.shcf4j.HttpHost;
 import com.imperva.shcf4j.HttpRequest;
-import com.imperva.shcf4j.client.HttpClient;
+import com.imperva.shcf4j.client.SyncHttpClient;
 
 public class Programmatically {
 
 
     public static void main(String[] args) throws Exception {
 
-        HttpClient httpClient = HttpClientBuilderFactory
+        SyncHttpClient syncHttpClient = HttpClientBuilderFactory
                 .getHttpClientBuilder()
                 .build();
 
-           httpClient.execute(
-                        HttpHost.builder().schemeName("https").hostname("github.com").port(443).build(),
-                        HttpRequest.createGetRequest("/imperva/shcf4j"),
-                        response -> {
-                            System.out.println(response.getStatusLine());
-                            return response.getStatusLine().getStatusCode() == 200;
-                        });
+        syncHttpClient.execute(
+                HttpHost.builder().schemeName("https").hostname("github.com").port(443).build(),
+                HttpRequest.builder().getRequest().uri("/imperva/shcf4j").build(),
+                response -> {
+                    System.out.println(response.getStatusLine());
+                    return response.getStatusLine().getStatusCode() == 200;
+                });
 
     }
 }

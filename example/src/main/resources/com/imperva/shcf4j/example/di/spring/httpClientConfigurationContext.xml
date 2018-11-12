@@ -17,12 +17,7 @@
     </bean>
 
 
-    <bean id="abstractSslSessionStrategy" class="com.imperva.shcf4j.conn.ssl.SimpleSSLSessionStrategy" abstract="true">
-        <property name="sslContext">
-            <bean class="javax.net.ssl.SSLContext" factory-method="getInstance">
-                <constructor-arg value="TLS"/>
-            </bean>
-        </property>
+    <bean id="mildSslSessionStrategy" class="com.imperva.shcf4j.conn.ssl.DefaultSSLSessionStrategy">
         <property name="hostnameVerifier">
             <bean class="com.imperva.shcf4j.conn.ssl.AllowAllHostnameVerifier"/>
         </property>
@@ -33,15 +28,6 @@
             <ref bean="allowedCipherSuitesArray"/>
         </property>
     </bean>
-
-
-    <bean id="mildSslSessionStrategy" parent="abstractSslSessionStrategy" init-method="initSslContext">
-        <property name="hostnameVerifier">
-            <bean class="com.imperva.shcf4j.conn.ssl.AllowAllHostnameVerifier"/>
-        </property>
-        <property name="trustAllCerts"      value="true"/>
-    </bean>
-
 
 
     <bean id="exampleSyncHttpClient" class="com.imperva.shcf4j.example.di.spring.SHC4JFactoryBean">

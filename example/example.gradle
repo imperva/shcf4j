@@ -13,6 +13,7 @@ repositories {
 dependencies {
     compile project(':shcf4j-api')
     compile project(':shcf4j-httpcomponents-client4')
+//    compile project(':shcf4j-netty4')
     compile group: 'org.springframework', name: 'spring-core', version: '5.1.1.RELEASE'
     compile group: 'org.springframework', name: 'spring-beans', version: '5.1.1.RELEASE'
     compile group: 'org.springframework', name: 'spring-context', version: '5.1.1.RELEASE'

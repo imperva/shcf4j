@@ -4,18 +4,20 @@ import com.imperva.shcf4j.client.CredentialsProvider;
 import com.imperva.shcf4j.client.config.RequestConfig;
 import com.imperva.shcf4j.conn.ssl.SSLSessionStrategy;
 
+import javax.net.ssl.SSLException;
+
 /**
  * <b>HttpClientCommonBuilder</b>
  *
  * <p>
- *     A common methods for both {@link HttpClientBuilder} and {@link HttpAsyncClientBuilder}
+ *     A common methods for both {@link SyncHttpClientBuilder} and {@link AsyncHttpClientBuilder}
  * </p>
  *
  * @author maxim.kirilov
  */
 public interface HttpClientCommonBuilder<T> {
 
-    T setSSLSessionStrategy(final SSLSessionStrategy strategy);
+    T setSSLSessionStrategy(final SSLSessionStrategy strategy) throws SSLException;
 
     T setDefaultRequestConfig(final RequestConfig config);
 

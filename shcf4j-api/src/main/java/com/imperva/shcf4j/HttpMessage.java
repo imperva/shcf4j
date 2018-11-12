@@ -75,24 +75,5 @@ public interface HttpMessage {
      */
     List<? extends Header> getAllHeaders();
 
-    /**
-     * Adds a header to this message. The header will be appended to the end of
-     * the list.
-     *
-     * @param name  the name of the header.
-     * @param value the value of the header.
-     * @return {@code HttpMessage}
-     */
-    HttpMessage addHeader(String name, String value);
-
-    /**
-     * Overwrites the first header with the same name. The new header will be appended to
-     * the end of the list, if no header with the given name can be found.
-     *
-     * @param name  the name of the header.
-     * @param value the value of the header.
-     * @return {@code HttpMessage}
-     */
-    HttpMessage setHeader(String name, String value);
 
 }

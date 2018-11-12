@@ -1,0 +1,16 @@
+apply from: rootProject.file( 'gradle/java-module.gradle' )
+
+dependencies {
+    compile project(':shcf4j-api')
+    compile group: 'org.asynchttpclient', name: 'async-http-client', version: '2.6.0'
+//    compile group: 'io.netty', name: 'netty-common', version: '4.1.30.Final'
+//    compile group: 'io.netty', name: 'netty-buffer', version: '4.1.30.Final'
+//    compile group: 'io.netty', name: 'netty-resolver', version: '4.1.30.Final'
+//    compile group: 'io.netty', name: 'netty-transport', version: '4.1.30.Final'
+//    compile group: 'io.netty', name: 'netty-codec', version: '4.1.30.Final'
+//    compile group: 'io.netty', name: 'netty-codec-http', version: '4.1.30.Final'
+    testCompile ( libraries.wiremock )
+    testCompile ( libraries.junit )
+    testCompile ( libraries.logbackClassic )
+    testCompile project(':shcf4j-tests').sourceSets.test.output
+}

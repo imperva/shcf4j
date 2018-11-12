@@ -18,7 +18,7 @@ JRE 8
 The HTTP client instances can be created in various ways. For example through any DI frameworks (see the example project) or just by putting a few lines of code:
 
 ```Java
-HttpClient httpClient = HttpClientBuilderFactory
+HttpClient syncHttpClient = HttpClientBuilderFactory
         .getHttpClientBuilder()
         .build();
 
@@ -26,7 +26,7 @@ HttpClient httpClient = HttpClientBuilderFactory
 The HTTP client instance can be customized with any supported configuration parameters (part of the shcf4j-api project). For example:
 
 ```Java
-HttpClient httpClient = HttpClientBuilderFactory
+HttpClient syncHttpClient = HttpClientBuilderFactory
         .getHttpClientBuilder()
         .setDefaultSocketConfig(
                 SocketConfig

@@ -1,7 +1,7 @@
 package com.imperva.shcf4j.spi;
 
-import com.imperva.shcf4j.HttpAsyncClientBuilder;
-import com.imperva.shcf4j.HttpClientBuilder;
+import com.imperva.shcf4j.AsyncHttpClientBuilder;
+import com.imperva.shcf4j.SyncHttpClientBuilder;
 
 
 /**
@@ -15,9 +15,9 @@ import com.imperva.shcf4j.HttpClientBuilder;
  */
 public interface SHC4JServiceProvider {
 
-    HttpClientBuilder getHttpClientBuilder();
+    SyncHttpClientBuilder getHttpClientBuilder();
 
-    HttpAsyncClientBuilder getHttpAsyncClientBuilder();
+    AsyncHttpClientBuilder getHttpAsyncClientBuilder();
 
     default void initialize() {
     }
