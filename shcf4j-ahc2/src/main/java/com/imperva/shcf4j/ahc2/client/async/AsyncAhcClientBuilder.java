@@ -1,4 +1,4 @@
-package com.imperva.shcf4j.netty4.client.async;
+package com.imperva.shcf4j.ahc2.client.async;
 
 import com.imperva.shcf4j.AsyncHttpClientBuilder;
 import com.imperva.shcf4j.HttpHost;
@@ -17,7 +17,7 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.concurrent.ThreadFactory;
 
-public class AsyncNettyHttpClientBuilder implements AsyncHttpClientBuilder {
+public class AsyncAhcClientBuilder implements AsyncHttpClientBuilder {
 
     private DefaultAsyncHttpClientConfig.Builder configBuilder = new DefaultAsyncHttpClientConfig.Builder();
 
@@ -67,6 +67,7 @@ public class AsyncNettyHttpClientBuilder implements AsyncHttpClientBuilder {
 
     @Override
     public AsyncHttpClientBuilder setDefaultRequestConfig(RequestConfig config) {
+        this.configBuilder.setRequestTimeout(config.getSocketTimeoutMilliseconds());
         return this;
     }
 
@@ -82,11 +83,11 @@ public class AsyncNettyHttpClientBuilder implements AsyncHttpClientBuilder {
 
     @Override
     public AsyncHttpClient build() {
-        return new ClosableAsyncNettyHttpClient(new DefaultAsyncHttpClient(configBuilder.build()));
+        return new ClosableAsyncAhcHttpClient(new DefaultAsyncHttpClient(configBuilder.build()));
     }
 
-
-    private static <T> Iterable<T> createIterableFrom(T... a){
+    @SafeVarargs
+    private static <T> Iterable<T> createIterableFrom(final T... a){
         T[] arr = a;
         return () -> new Iterator<T>() {
             private int index = 0;

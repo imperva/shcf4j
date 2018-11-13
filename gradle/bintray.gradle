@@ -1,0 +1,43 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+    }
+}
+
+
+apply plugin: com.jfrog.bintray.gradle.BintrayPlugin
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+
+bintrayUpload.dependsOn assemble
+bintrayUpload.dependsOn sourcesJar
+bintrayUpload.dependsOn javadocJar
+
+
+bintray {
+    user = project.hasProperty('bintray.user') ? project.property('bintray.user') : System.getenv('BINTRAY_USER')
+    key = project.hasProperty('bintray.key') ? project.property('bintray.key') : System.getenv('BINTRAY_KEY')
+    publications = ['shcf4jPublication']
+//    dryRun = true
+    override = true
+    pkg {
+        repo = 'imperva.opensource.maven.repository'
+        name = 'shcf4j'
+        userOrg = 'imperva-admin'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/imperva/shcf4j.git'
+        publish = true
+        publicDownloadNumbers = true
+        version {
+            name = '0.0.1'
+            desc = 'SHCF4J 0.0.1 final'
+            released  = new Date()
+        }
+    }
+}

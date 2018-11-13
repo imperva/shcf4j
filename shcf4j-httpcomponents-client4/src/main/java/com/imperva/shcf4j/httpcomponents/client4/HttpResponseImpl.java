@@ -136,42 +136,37 @@ class HttpResponseImpl implements HttpResponse {
                     .build() : null;
         }
 
-
+        @Override
         public boolean isRepeatable() {
             return entity.isRepeatable();
         }
 
-
+        @Override
         public boolean isChunked() {
             return entity.isChunked();
         }
 
-
+        @Override
         public long getContentLength() {
             return entity.getContentLength();
         }
 
-
+        @Override
         public Header getContentType() {
             return this.contentType;
         }
 
-
+        @Override
         public Header getContentEncoding() {
             return this.contentEncoding;
         }
 
-
+        @Override
         public InputStream getContent() throws IOException, IllegalStateException {
             return entity.getContent();
         }
 
-
-        public void writeTo(OutputStream outputStream) throws IOException {
-            entity.writeTo(outputStream);
-        }
-
-
+        @Override
         public boolean isStreaming() {
             return entity.isStreaming();
         }

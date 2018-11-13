@@ -1,6 +1,9 @@
 apply from: rootProject.file( 'gradle/java-module.gradle' )
+apply from: rootProject.file('gradle/release-bintray.gradle')
 
-description = ''
+description = 'An implementation of SHCF4J that performs an ' +
+        'adaptation to Apache HTTP client library, version 4.x'
+
 dependencies {
     compile project(':shcf4j-api')
     compile group: 'org.apache.httpcomponents', name: 'httpclient', version:'4.5.6'

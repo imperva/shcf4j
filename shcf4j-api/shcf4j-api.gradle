@@ -1,7 +1,9 @@
-apply from: rootProject.file( 'gradle/java-module.gradle' )
+apply from: rootProject.file('gradle/java-module.gradle')
+apply from: rootProject.file('gradle/release-bintray.gradle')
 
-description = ''
+description = 'An API definition of a full featured HTTP client capabilities'
 dependencies {
     compileOnly ( libraries.lombok )
+    annotationProcessor ( libraries.lombok )
     testCompile ( libraries.junit )
 }

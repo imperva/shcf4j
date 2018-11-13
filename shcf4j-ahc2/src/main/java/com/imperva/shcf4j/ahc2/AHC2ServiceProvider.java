@@ -1,15 +1,15 @@
-package com.imperva.shcf4j.netty4;
+package com.imperva.shcf4j.ahc2;
 
 import com.imperva.shcf4j.AsyncHttpClientBuilder;
 import com.imperva.shcf4j.SyncHttpClientBuilder;
-import com.imperva.shcf4j.netty4.client.async.AsyncNettyHttpClientBuilder;
+import com.imperva.shcf4j.ahc2.client.async.AsyncAhcClientBuilder;
 import com.imperva.shcf4j.spi.SHC4JServiceProvider;
 
 
 /**
  * @author maxim.kirilov
  */
-public class Netty4ServiceProvider implements SHC4JServiceProvider {
+public class AHC2ServiceProvider implements SHC4JServiceProvider {
 
 
     @Override
@@ -19,6 +19,6 @@ public class Netty4ServiceProvider implements SHC4JServiceProvider {
 
     @Override
     public AsyncHttpClientBuilder getHttpAsyncClientBuilder() {
-        return new AsyncNettyHttpClientBuilder();
+        return new AsyncAhcClientBuilder();
     }
 }

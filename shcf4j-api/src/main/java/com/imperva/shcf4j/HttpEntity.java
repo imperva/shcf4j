@@ -95,17 +95,6 @@ public interface HttpEntity {
      */
     InputStream getContent() throws IOException, IllegalStateException;
 
-    /**
-     * Writes the entity content out to the output stream.
-     *
-     * IMPORTANT: Please note all entity implementations must ensure that
-     * all allocated resources are properly deallocated when this method
-     * returns.
-     *
-     * @param outputStream the output stream to write entity content to
-     * @throws IOException if an I/O error occurs
-     */
-    void writeTo(OutputStream outputStream) throws IOException;
 
     /**
      * Tells whether this entity depends on an underlying stream.

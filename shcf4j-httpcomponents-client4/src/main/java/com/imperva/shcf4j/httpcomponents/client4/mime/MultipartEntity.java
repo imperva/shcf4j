@@ -64,11 +64,6 @@ class MultipartEntity implements HttpEntity {
     }
 
     @Override
-    public void writeTo(OutputStream outstream) throws IOException {
-        entity.writeTo(outstream);
-    }
-
-    @Override
     public boolean isStreaming() {
         return entity.isStreaming();
     }

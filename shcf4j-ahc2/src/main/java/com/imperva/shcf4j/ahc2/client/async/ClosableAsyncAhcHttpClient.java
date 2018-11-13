@@ -1,4 +1,4 @@
-package com.imperva.shcf4j.netty4.client.async;
+package com.imperva.shcf4j.ahc2.client.async;
 
 import com.imperva.shcf4j.Header;
 import com.imperva.shcf4j.HttpHost;
@@ -24,12 +24,12 @@ import java.util.concurrent.CompletableFuture;
  *
  * @author maxim.kirilov
  */
-class ClosableAsyncNettyHttpClient implements AsyncHttpClient {
+class ClosableAsyncAhcHttpClient implements AsyncHttpClient {
 
     private final org.asynchttpclient.AsyncHttpClient asyncHttpClient;
 
 
-    ClosableAsyncNettyHttpClient(org.asynchttpclient.AsyncHttpClient asyncHttpClient) {
+    ClosableAsyncAhcHttpClient(org.asynchttpclient.AsyncHttpClient asyncHttpClient) {
         Objects.requireNonNull(asyncHttpClient, "asyncHttpClient");
         this.asyncHttpClient = asyncHttpClient;
     }
@@ -62,7 +62,7 @@ class ClosableAsyncNettyHttpClient implements AsyncHttpClient {
         return asyncHttpClient
                 .executeRequest(builder.build())
                 .toCompletableFuture()
-                .thenApply(ClosableAsyncNettyHttpClient::convert);
+                .thenApply(ClosableAsyncAhcHttpClient::convert);
     }
 
     @Override

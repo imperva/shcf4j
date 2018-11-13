@@ -12,6 +12,8 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -59,10 +61,6 @@ public class HttpRequest implements HttpMessage {
     }
 
 
-
-
-
-
     public static class HttpRequestBuilder {
 
         public HttpRequestBuilder getRequest(){
@@ -93,6 +91,23 @@ public class HttpRequest implements HttpMessage {
         public HttpRequestBuilder uri(URI uri){
             this.uri = uri;
             return this;
+        }
+
+        public HttpRequestBuilder rawHeaders(Map<String, String> rawHeaders){
+            Objects.requireNonNull(rawHeaders, "rawHeaders");
+            return headers(rawHeaders
+                    .entrySet()
+                    .stream()
+                    .map(e -> Header
+                            .builder()
+                            .name(e.getKey())
+                            .value(e.getValue())
+                            .build())
+                    .collect(Collectors.toSet()));
+        }
+
+        public HttpRequestBuilder rawHeader(String name, String value){
+            return header(Header.builder().name(name).value(value).build());
         }
 
     }

@@ -26,8 +26,6 @@ public final class RequestConfig {
     private final boolean expectContinueEnabled = false;
     private final HttpHost proxy;
     private final InetAddress localAddress;
-    @Builder.Default
-    private final boolean staleConnectionCheckEnabled = true;
     private final String cookieSpec;
     @Builder.Default
     private final boolean redirectsEnabled = true;

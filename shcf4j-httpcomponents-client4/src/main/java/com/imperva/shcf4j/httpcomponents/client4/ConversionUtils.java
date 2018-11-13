@@ -45,7 +45,6 @@ class ConversionUtils {
                 .setExpectContinueEnabled(config.isExpectContinueEnabled())
                 .setProxy(convert(config.getProxy()))
                 .setLocalAddress(config.getLocalAddress())
-                .setStaleConnectionCheckEnabled(config.isStaleConnectionCheckEnabled())
                 .setCookieSpec(config.getCookieSpec())
                 .setRedirectsEnabled(config.isRedirectsEnabled())
                 .setRelativeRedirectsAllowed(config.isRelativeRedirectsAllowed())

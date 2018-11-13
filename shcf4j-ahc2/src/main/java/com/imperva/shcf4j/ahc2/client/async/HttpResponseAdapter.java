@@ -1,4 +1,4 @@
-package com.imperva.shcf4j.netty4.client.async;
+package com.imperva.shcf4j.ahc2.client.async;
 
 import com.imperva.shcf4j.Header;
 import com.imperva.shcf4j.HttpEntity;
@@ -101,10 +101,6 @@ class HttpResponseAdapter implements HttpResponse {
             return response.getResponseBodyAsStream();
         }
 
-        @Override
-        public void writeTo(OutputStream outputStream) throws IOException {
-
-        }
 
         @Override
         public boolean isStreaming() {
