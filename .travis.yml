@@ -5,6 +5,7 @@ jdk:
 
 before_install:
   - chmod +x deploy-artifacts.sh
+  - chmod +x gradlew
 
 stages:
   - name: build
@@ -18,7 +19,7 @@ stages:
 jobs:
   include:
     - stage: build
-      script: gradle build -x signArchives
+      script: ./gradlew build -x signArchives
     - stage: publish-snapshot
       script: ./deploy-artifacts.sh
 

@@ -7,7 +7,7 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; th
             -in ${TRAVIS_BUILD_DIR}/imperva.travis.gpg.enc \
             -out ${TRAVIS_BUILD_DIR}/imperva.travis.gpg \
             -d
-  gradle uploadArchives \
+  ./gradlew uploadArchives \
             -PossrhUsername=${SONATYPE_USERNAME} \
             -PossrhPassword=${SONATYPE_PASSWORD} \
             -Psigning.keyId=${GPG_KEY_ID} \
