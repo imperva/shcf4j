@@ -19,9 +19,9 @@ stages:
 jobs:
   include:
     - stage: build
-      script: ./gradlew build -x signArchives
-    - stage: publish-snapshot
-      script: ./deploy-artifacts.sh
+      script: ./gradlew build
+#    - stage: publish-snapshot
+#      script: ./deploy-artifacts.sh
 
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
