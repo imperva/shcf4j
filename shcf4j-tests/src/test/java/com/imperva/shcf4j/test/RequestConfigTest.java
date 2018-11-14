@@ -19,10 +19,10 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 /**
  * <b>RequestConfigTest</b>
  */
-public abstract class RequestConfigTest extends SyncHttpClientBaseTest {
+public abstract class RequestConfigTest extends HttpClientBaseTest {
 
 
-    @Test(expected = SocketTimeoutException.class)
+    @Test(expected = Exception.class)
     public void requestTimeoutTest() throws IOException {
 
         long millisecondsDelay = TimeUnit.MILLISECONDS.convert(1, TimeUnit.SECONDS);
@@ -45,7 +45,7 @@ public abstract class RequestConfigTest extends SyncHttpClientBaseTest {
                         .header(Header.builder().name(HttpClientBaseTest.HEADER_ACCEPT).value("text/xml").build())
                         .build();
 
-        getHttpClient().execute(HOST, request,
+        execute(HOST, request,
                 ClientContext
                         .builder()
                         .requestConfig(

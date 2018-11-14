@@ -28,7 +28,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 /**
  * <b>HttpMethodsTest</b>
  */
-public abstract class HttpMethodsTest extends SyncHttpClientBaseTest {
+public abstract class HttpMethodsTest extends HttpClientBaseTest {
 
     @Test
     public void simpleGetTest() throws IOException {
@@ -51,7 +51,7 @@ public abstract class HttpMethodsTest extends SyncHttpClientBaseTest {
                         .build();
 
         Assert.assertTrue("Accept header is missing", request.containsHeader(HttpClientBaseTest.HEADER_ACCEPT));
-        HttpResponse response = getHttpClient().execute(HttpClientBaseTest.HOST, request);
+        HttpResponse response = execute(HttpClientBaseTest.HOST, request);
 
         Assert.assertEquals("Response code is wrong",
                 HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
@@ -84,19 +84,16 @@ public abstract class HttpMethodsTest extends SyncHttpClientBaseTest {
                         .header(Header.builder().name(HttpClientBaseTest.HEADER_ACCEPT).value("text/xml").build())
                         .build();
 
-        HttpResponse response = getHttpClient().
-                execute(
-                        HttpClientBaseTest.HOST,
-                        request,
-                        resp -> {
-                            try (BufferedReader rd = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()))) {
-                                Assert.assertEquals("Wrong content received", responseContent, rd.readLine());
-                            } catch (IOException ioException) {
-                                Assert.fail("Unexpected exception caught");
-                            }
-                            return null;
-                        }
-                );
+        boolean isEquals = execute(HttpClientBaseTest.HOST, request, response -> {
+            try (BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()))) {
+                return responseContent.equals(rd.readLine());
+            } catch (IOException ioException) {
+                return false;
+            }
+        });
+
+        Assert.assertTrue("Wrong content received", isEquals);
+
     }
 
 
@@ -110,9 +107,8 @@ public abstract class HttpMethodsTest extends SyncHttpClientBaseTest {
                 )
         );
 
-        HttpResponse response = getHttpClient().execute(HttpClientBaseTest.HOST, HttpRequest.builder().postRequest().uri(uri).build());
-        Assert
-                .assertEquals("Wrong status code", HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
+        HttpResponse response = execute(HttpClientBaseTest.HOST, HttpRequest.builder().postRequest().uri(uri).build());
+        Assert.assertEquals("Wrong status code", HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
     }
 
 
@@ -128,15 +124,14 @@ public abstract class HttpMethodsTest extends SyncHttpClientBaseTest {
                 )
         );
 
-        HttpResponse response = getHttpClient().execute(HttpClientBaseTest.HOST,
+        HttpResponse response = execute(HttpClientBaseTest.HOST,
                 HttpRequest
                         .builder()
                         .postRequest()
                         .uri(uri)
                         .stringData(entity)
                         .build());
-        Assert
-                .assertEquals("Wrong status code", HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
+        Assert.assertEquals("Wrong status code", HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
     }
 
 
@@ -157,18 +152,15 @@ public abstract class HttpMethodsTest extends SyncHttpClientBaseTest {
                 )
         );
 
-        HttpResponse response =
-                getHttpClient()
-                        .execute(HttpClientBaseTest.HOST,
-                                HttpRequest
-                                        .builder()
-                                        .postRequest()
-                                        .uri(uri)
-                                        .filePath(f.toPath())
-                                        .build()
-                        );
-        Assert
-                .assertEquals("Wrong status code", HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
+        HttpResponse response = execute(HttpClientBaseTest.HOST,
+                HttpRequest
+                        .builder()
+                        .postRequest()
+                        .uri(uri)
+                        .filePath(f.toPath())
+                        .build()
+        );
+        Assert.assertEquals("Wrong status code", HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
     }
 
     @Test
@@ -200,27 +192,50 @@ public abstract class HttpMethodsTest extends SyncHttpClientBaseTest {
 
         ClientContext ctx = ClientContext.builder().credentialsProvider(cp).build();
 
-        HttpResponse response = getHttpClient().execute(HttpClientBaseTest.HOST, request, ctx);
-        Assert
-                .assertEquals("Wrong status code", HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
+        HttpResponse response = execute(HttpClientBaseTest.HOST, request, ctx);
+        Assert.assertEquals("Wrong status code", HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
 
     }
 
 
     @Test
-    public void queryParametersTest(){
+    public void queryParametersTest() throws Exception {
+        String uri = "/my/resource?queryParameter=someValue";
+        instanceRule.stubFor(get(urlEqualTo(uri))
+                .withQueryParam("queryParameter", equalTo("someValue"))
+                .willReturn(
+                        aResponse()
+                                .withStatus(HttpURLConnection.HTTP_OK)
+                )
+        );
+
+        HttpRequest request = HttpRequest.builder().getRequest().uri(uri).build();
+        HttpResponse response = execute(HttpClientBaseTest.HOST, request);
+        Assert.assertEquals("Wrong status code", HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
+
 
     }
 
 
     @Test
-    public void encodedQueryParametersTest(){
+    public void encodedQueryParametersTest() {
 
     }
 
     @Test
-    public void nonEncodedQueryParametersTest(){
+    public void nonEncodedQueryParametersTest() throws Exception {
+        String uri = "/my/resource?queryParameter=someValue/slash/slash";
+        instanceRule.stubFor(get(urlEqualTo(uri))
+                .withQueryParam("queryParameter", equalTo("someValue/slash/slash"))
+                .willReturn(
+                        aResponse()
+                                .withStatus(HttpURLConnection.HTTP_OK)
+                )
+        );
 
+        HttpRequest request = HttpRequest.builder().getRequest().uri(uri).build();
+        HttpResponse response = execute(HttpClientBaseTest.HOST, request);
+        Assert.assertEquals("Wrong status code", HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
     }
 
 

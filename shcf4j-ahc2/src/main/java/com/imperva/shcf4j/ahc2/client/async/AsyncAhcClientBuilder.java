@@ -17,6 +17,8 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.concurrent.ThreadFactory;
 
+import static org.asynchttpclient.Dsl.*;
+
 public class AsyncAhcClientBuilder implements AsyncHttpClientBuilder {
 
     private DefaultAsyncHttpClientConfig.Builder configBuilder = new DefaultAsyncHttpClientConfig.Builder();
@@ -68,6 +70,12 @@ public class AsyncAhcClientBuilder implements AsyncHttpClientBuilder {
     @Override
     public AsyncHttpClientBuilder setDefaultRequestConfig(RequestConfig config) {
         this.configBuilder.setRequestTimeout(config.getSocketTimeoutMilliseconds());
+
+        if (config.getProxy() != null) {
+            HttpHost proxy = config.getProxy();
+            this.configBuilder.setProxyServer(proxyServer(proxy.getHostname(), proxy.getPort()));
+        }
+
         return this;
     }
 
