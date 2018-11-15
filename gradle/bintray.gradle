@@ -35,8 +35,8 @@ bintray {
         publish = true
         publicDownloadNumbers = true
         version {
-            name = '0.0.1'
-            desc = 'SHCF4J 0.0.1 final'
+            name = VERSION
+            desc = 'SHCF4J ' + VERSION + ' final'
             released  = new Date()
         }
     }

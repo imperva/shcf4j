@@ -15,7 +15,7 @@ ext {
     siteUrl = 'https://github.com/imperva/shcf4j'
     gitUrl = 'https://github.com/imperva/shcf4j.git'
 
-    libraryVersion = POM_VERSION
+    libraryVersion = version
 
     developerId = 'maximkir'
     developerName = 'Maxim Kirilov'

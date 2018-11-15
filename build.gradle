@@ -19,7 +19,7 @@ def javaProjects() {
 
 allprojects {
     group = 'com.imperva.shcf4j'
-    version = '0.0.1-SNAPSHOT'
+    version = VERSION
     status = 'Integration'
     repositories {
         jcenter()
@@ -65,6 +65,6 @@ configure(javaProjects()) {
     }
 }
 
-task wrapper(type: Wrapper) {
+wrapper {
     gradleVersion = '4.10.2'
 }

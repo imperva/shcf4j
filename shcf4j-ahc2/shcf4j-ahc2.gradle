@@ -9,6 +9,6 @@ dependencies {
     compile group: 'org.asynchttpclient', name: 'async-http-client', version: '2.6.0'
     testCompile ( libraries.wiremock )
     testCompile ( libraries.junit )
-    testCompile ( libraries.logbackClassic )
+    testRuntime ( libraries.logbackClassic )
     testCompile project(':shcf4j-tests').sourceSets.test.output
 }

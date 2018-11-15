@@ -9,7 +9,13 @@
         </layout>
     </appender>
 
-    <root level="debug">
+
+    <logger name="org.asynchttpclient" level="debug" additivity="false">
+        <appender-ref ref="STDOUT" />
+    </logger>
+
+
+    <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>
 
