@@ -3,7 +3,6 @@ install: true
 jdk:
 - oraclejdk8
 before_install:
-- chmod +x deploy-artifacts.sh
 - chmod +x gradlew
 stages:
 - name: build
