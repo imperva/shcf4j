@@ -6,7 +6,7 @@ import com.imperva.shcf4j.HttpRequest;
 import com.imperva.shcf4j.HttpResponse;
 import com.imperva.shcf4j.client.SyncHttpClient;
 import com.imperva.shcf4j.client.protocol.ClientContext;
-import com.imperva.shcf4j.test.RequestConfigTest;
+import com.imperva.shcf4j.config.RequestConfigTest;
 
 import java.io.IOException;
 import java.util.function.Function;

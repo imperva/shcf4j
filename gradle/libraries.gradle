@@ -3,7 +3,7 @@
 ext {
     lombokVersion = '1.16.18'
     junitVersion = '4.12'
-    wiremockVersion = '2.7.1'
+    wiremockVersion = '2.19.0'
     logbackClassicVersion = '1.2.3'
 
     libraries = [

@@ -9,6 +9,8 @@ dependencies {
     compile group: 'org.apache.httpcomponents', name: 'httpclient', version:'4.5.6'
     compile group: 'org.apache.httpcomponents', name: 'httpmime', version:'4.5.6'
     compile group: 'org.apache.httpcomponents', name: 'httpasyncclient', version:'4.1.4'
+    testRuntime group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    testRuntime project(':shcf4j-tests').sourceSets.test.runtimeClasspath
     testCompile project(':shcf4j-tests').sourceSets.test.output
     testCompile ( libraries.junit )
     testCompile ( libraries.wiremock )

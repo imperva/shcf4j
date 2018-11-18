@@ -1,14 +1,14 @@
-package com.imperva.shcf4j.test;
+package com.imperva.shcf4j.config;
 
 import com.imperva.shcf4j.Header;
 import com.imperva.shcf4j.HttpRequest;
 import com.imperva.shcf4j.client.config.RequestConfig;
 import com.imperva.shcf4j.client.protocol.ClientContext;
+import com.imperva.shcf4j.HttpClientBaseTest;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;

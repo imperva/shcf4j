@@ -2,27 +2,23 @@ language: java
 install: true
 jdk:
 - oraclejdk8
-
 before_install:
-  - chmod +x deploy-artifacts.sh
-  - chmod +x gradlew
-
+- chmod +x deploy-artifacts.sh
+- chmod +x gradlew
 stages:
-  - name: build
-  - name: publish-snapshot
-    # only publish snapshots from "master" branch and not in pull requests
-    if: branch = master AND type IN (push)
-  - name: publish-release
-    # only publish releases from "release" branch and not in pull requests
-    if: branch = release AND type IN (push)
-
+- name: build
+- name: publish-snapshot
+  if: branch = master AND type IN (push)
+- name: publish-release
+  if: branch = release AND type IN (push)
 jobs:
   include:
-    - stage: build
-      script: ./gradlew build
-#    - stage: publish-snapshot
-#      script: ./deploy-artifacts.sh
-
+  - stage: build
+    script: "./gradlew build"
+  - stage: publish-snapshot
+    script: "./gradlew artifactoryPublish -x test -Dsnapshot=true -Dbuild.number=$TRAVIS_BUILD_NUMBER"
+  - stage: publish-release
+    script: "./gradlew bintrayUpload -x test -Dbuild.number=$TRAVIS_BUILD_NUMBER"
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -rf $HOME/.gradle/caches/*/plugin-resolution/
@@ -32,7 +28,5 @@ cache:
   - "$HOME/.gradle/wrapper/"
 env:
   global:
-  - secure: R+l4/bWLVN/WgxP1ZhG+thkaBGAFzGxwPI405/IAEt+YpxnQ6dTbk9ctELg+wQxofaG1lhyyefCHt8kEOCjVpkEDNrdxvFdx5Vlbw6upyQWITKRs4mtOpCAKLUQo6ZkExdHQ1o1YzVMpgo5PxWlVkUk06zQWz8G21+e2SXwoYl3ojBhz9PP/rrPB5F/xcrNjgyIQvtn10lXWlhcOnWBjWVX8oXig7RqNYsjQ8UKFXPMmou4giweX4Y55r0iVzF8PgsJ13gF99D+N7YiemykQd1kEI8+M1pc8n0cXX7KfPzFa1G4Aefvhbwy+jg6dAEtdysW8VihixmPbhQG43zDS7ZaKFKYJi/qk8gTcMWzEPx2KAOrK/Ba8UY6zSWjseuH2xrO+pR50V2suiT52cfu3wJMeaPwm5NYT2+QXK5rSQqNP+XAf/XOWoaZscmCractY9JgzTugSGSIzu2YEGbZ77fk+D4uq/eFLzgT3guV4QxZv9yZm8IxAYdjArtSs2t+oihfrOfncZhaKfVe4WUbKkzRxDLCZF9gR17uIU4SCZkbxTBtMQT4RQbc50Kai2ChY4xwQZDCYTajreIPB66OBlz2NUTyxaLKS2GAWahWvQy17o7PHCkrXQTM2TPPqYuHRheeROPRg/VvQHRqpLvDwTDCqi2teykPhfF1fyE9mu7E=
-  - secure: YhatI2XYPIrOvYic5PoMR590ntD9IR8Ev+Kc8Mc3bN8FH/0WDxj1TUpanWEIAeCeLXlGRmQi18ePklq+WrwWpaqqWZsDMqDmg79GdGFJibTiMTTTXhK1CR8JUzpBlJzISscOnmWkKnUR8SttM35Pbgv6M/7ja3SLF8kSp0iEJ6MCLYZ8JfpcY+VfVieIEmmkZdD5JUMSjVGkPvAvgw0VHdVjElZk2VR5Sd5e+0GJWtBtMCXEaap8mGvWp4be3xoz3PB9R6+78p01EILHcMk5ekYKbE+ourh1+GTMa4nL9vjjp0G2SG+/PvKaQpggu/CYKsxbm5mhrYSUxrK4oNlsyjWD9IesgBbNxsWkDWf1hqnNYBXbISfJZSTTvxViLGPrQMmZDpEhGmaHisMXaG3coV1wICYB7n1Tu8Nn+0sNBojXGRo89bTM9FWOyT8ctlU7FbiTEXIig/kxUFe/w9m9DRrlwQ/pTX8vwH5R3bxvAy78hEzSZypn5ghIVY7+rVLFIyEw1vCPd5o0X6nMhMM8XzDTn1otzBLXAf4avx/XUd/Wt0YHMm9iL5QD7kdTYJVIbqhdRL3Ri85Eml9FAf0pMKOpM19ZP3UITh8hklaQ94XrZkw1CCq8xgaBcR1rknBf46pV41ZTVfCXLdi4YNI/0EoCavBQSMSroIDqcqyWQtA=
-  - secure: BXO/+XM+8Wd914GSdBSNvReg9WfZjwRHDxm5dSY4/N9cW8DaFS0y8TXt16PVvj6YFrPyJxnuzshNgN9+IHIJGvqDmxM9EqUgn4+rXxIeDIDLKdrXTuHYd+l4nW6V/lyXr0qEsWfmamVZp45GbDaMs8gx5VBZAd+6CLMmc9ZZlrHm6AeebfsUhjkWpv2ZIUIW7aq8KQz48XFq5HsQkVjX+p7fdUmrgA/Vj/4/ZXlIlGh6wTVNmQ8KeeUu2IQEcvEMPXzwluHfBpwiB/lcAhvMVQ9u/mTAPVy4TRhyggqRkLgXW1PBckETM5Ity7L495vCIpweHqd+yX3Qj5a51aXhdAoHQc6mkOFP2PPfd2HI2hEaprGfy/CKGsy+Z+rI34hvT+9mplYfp19ZB38itFzT79PoGwM1vGl2h3PLBv6JHoKFQW9ta5SXLk8K29J7sp0qXBFiAOm3UKZvQJifJxdfyKiQb4adJIVeLMbfnLbJpKHN7KtNaySi4zBKG7NH2UQCGNy0elpghBvY9BESNRo0jA0DXX33ykEdQ5m1HkYKVZ8fUbK27XXlsds4gNa3Ol0S0JOCPoJJdyp/2WhPSskugp8z6knf5SB/0kDCycz9uLB/QtJRLKzQIYATLpnJXbZk7W6L2v9kOHMecTaRxVd+krfAmCKeF7h6FC9vmWwDeS0=
-  - secure: HfiEX1e5MIidy1PeOL/49ShSriP0kys512BYivHWquv8V72sV2phu7joJfroLwk8d9mBzd9veSTj802sgjljpnEpuhJvtV44fVeOS01pgcVFRFafs1bKxyod2NMJNSH8/R3DYt1URnyOw+/r9H3zCk/fqcJ5vl3njIIaQwBuvqAxnycxF2IZWBIq8kLrGSotp0Ny04TDjB12pSecBe0rbbOXwnfa9/rVMwTGKQpfhuF/wEz9flb1fPZmrWAwEAApMw5iJbF3VTssodr+42U0mcpT9zPPCgtH7G5Lj2gdl+eDcEBKKKUAb4h6omMaOGTG9Gsp6Z/oOgSsbo/EpVgz/Em+/tGkfxyuou0soP4TDw2jPCUorV218Hkk8FczFWX1EnWsKfYLAVMEMLXKS15bLBiZF4+tCKXKiaGryPK7ybo5Lop7O3wDoe+FleR2moOetckvMvBJ23zqnvTNnpYqydc6JVIxN93xoUkj8vLtYAgujFVbviGZGE3BT15laeru09nn8Q2cRlHg4RXEjw99Jtjl7bpf/P5ffr7pNSnDbsXzB/mlVxOs9KybOqWu3UolquTzVR2Q+nGMInjeqc9KJxLCD8P7Cjm+D99uqePsmjLHqjTngFJEscE860a+b7gs8rVbPj6SFnIXrB489zWj6hwTXqRDrMDW+3akIkIw0j8=
+  - secure: Kg+waccPDKgGpwuetKJCECAJJ3C/aJPENMV0eAg3vAW1wnWL5aKhAggTAjq8pLwVtT+V9oIjZvTiBZxqcnl4GdDijA1I1A9dblJttMICtiPPihE8kp7N3TGeebfn1zqXjFqpcR2D2ItD3mnQgAM43XIXkBfaM6S4tZMx3OJXW1fmRzXnL0FNvMWNsWvhZ0X9ZRQ8feg5RZb4Wrd1JYPqANxGJ65vwS0Wv8U+GvTi9INPThnq+1LL+0347xDZp25py0UZvYJ2Qp/+6uVsCy0jZgOdmOMBWY9sm0XKE7QRrmLJxsxaVLml2ZJfzrR+QByLQcIolB8Hku20C7JsB/Zc92dgU6nsfQ2qNLuTAuhrmU0jpSIWeBrsvec91/ayXOqslixjutGSG5+BToOIdH8ETOiVOYDXrdmEAllm+hfZynDtIHLBX6HsiC286pVhu0f98DG1up2H+YSmzhQsUJZsjCLMJJ1raK2tkNab25sm8sd6v0w5S4uy75dMe9augVT1oRH3Ty/QRxUHbfayLHs2oYs51AvhXL+Fj5Oxgh3AoIrv2eYoSYCyVWjJthD6O77Dx/NHLN9a/FHL9/D5ngtpeQzJIoV+jo9VMlca83Dtix3mS+0J3qXIPcH79X8b0hUIk4ahkJEHhxDCw15/gqM3cPGvY80zobMssJa5n2sgifk=
+  - secure: GBFJm7LOHDde7OMv4TR0voVIcp4n60ORrusqvpEjpoCq917Q2kbWnMscfDRYZ13SlR5AVgvnq5D/7bGyRxbnvT4vtf1+2FWviIXS0xvodZuPzC/XiMZSRRRN/oBzS9RZyciZUD49w9a8+Lr4vHFWG30uruP4Ma9FKeNvt3+UEhTOPdpAVXiLNo4nywBBuhqT0W9nn5WTwMNBfVhDcCsJ9S8+n4wX+4Rzq0uDybeU+cqinhtDmPb4Vph/+rcKvXcckKO0MbeCamBKJXy2pje7tuG1dV5JmGebp3rPraT5acbFc14PPcQKRYTmJNp3/mIJ2b++zzg1B9ufHv68B1gcsAQIo4KLs/fN9f9rP+/L9h67YV1jHR1oHiLR0uimom0n0HGd0oCgwlegT4reqFxLBftGFNJxrTayE+/VogB3IA3QRw+TxBffz+cZZZ3z/WT7EYwLOmpJYLWrpSGrx6D2nbOUDHhFSLvoGFGd01+UQj1+P5E9mJvFCvmCcmh7S/binwGYsZyi3mLfljxZ9r/9Q1PN8c18gaBPsGfgrdmEts8p5oEng7WpcBDmF1Hn90pGGODuUR9n5t00way0h38mT5K+yAPziSEwfRrFFSF9xRXZaaKbiESrflFvv613q9MZ/DRur/iU2hAaYzgOvG/bdfaf34bwqcq1ZzexvBt0H+A=

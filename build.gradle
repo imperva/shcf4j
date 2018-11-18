@@ -19,7 +19,7 @@ def javaProjects() {
 
 allprojects {
     group = 'com.imperva.shcf4j'
-    version = VERSION
+    version = VERSION + (Boolean.valueOf(System.getProperty("snapshot")) ? "-SNAPSHOT" : "")
     status = 'Integration'
     repositories {
         jcenter()

@@ -10,5 +10,6 @@ dependencies {
     testCompile ( libraries.wiremock )
     testCompile ( libraries.junit )
     testRuntime ( libraries.logbackClassic )
+    testRuntime project(':shcf4j-tests').sourceSets.test.runtimeClasspath
     testCompile project(':shcf4j-tests').sourceSets.test.output
 }

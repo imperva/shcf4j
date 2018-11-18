@@ -1,4 +1,4 @@
-package com.imperva.shcf4j.test;
+package com.imperva.shcf4j.request;
 
 import com.imperva.shcf4j.Header;
 import com.imperva.shcf4j.HttpRequest;
@@ -7,6 +7,7 @@ import com.imperva.shcf4j.auth.AuthScope;
 import com.imperva.shcf4j.auth.UsernamePasswordCredentials;
 import com.imperva.shcf4j.client.CredentialsProvider;
 import com.imperva.shcf4j.client.protocol.ClientContext;
+import com.imperva.shcf4j.HttpClientBaseTest;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -184,11 +185,11 @@ public abstract class HttpMethodsTest extends HttpClientBaseTest {
                 ));
 
         HttpRequest request = HttpRequest.builder().getRequest().uri(uri).build();
-        CredentialsProvider cp = CredentialsProvider.createSystemDefaultCredentialsProvider();
-        cp.setCredentials(
-                AuthScope.createAnyAuthScope(),
-                UsernamePasswordCredentials.builder().username(user).password(password).build()
-        );
+        CredentialsProvider cp = CredentialsProvider
+                .builder()
+                .credential(AuthScope.createAnyAuthScope(),
+                    UsernamePasswordCredentials.builder().username(user).password(password).build())
+                .build();
 
         ClientContext ctx = ClientContext.builder().credentialsProvider(cp).build();
 

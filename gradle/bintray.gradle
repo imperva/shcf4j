@@ -4,11 +4,13 @@ buildscript {
     }
     dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:4.8.1'
     }
 }
 
 
 apply plugin: com.jfrog.bintray.gradle.BintrayPlugin
+apply plugin: org.jfrog.gradle.plugin.artifactory.ArtifactoryPlugin
 
 artifacts {
     archives javadocJar, sourcesJar
@@ -24,7 +26,6 @@ bintray {
     user = project.hasProperty('bintray.user') ? project.property('bintray.user') : System.getenv('BINTRAY_USER')
     key = project.hasProperty('bintray.key') ? project.property('bintray.key') : System.getenv('BINTRAY_KEY')
     publications = ['shcf4jPublication']
-//    dryRun = true
     override = true
     pkg {
         repo = 'imperva.opensource.maven.repository'
@@ -40,4 +41,24 @@ bintray {
             released  = new Date()
         }
     }
+}
+
+artifactory {
+    contextUrl = 'http://oss.jfrog.org'
+    publish {
+        repository {
+            repoKey = 'oss-snapshot-local'
+            username = project.hasProperty('bintray.user') ? project.property('bintray.user') : System.getenv('BINTRAY_USER')
+            password = project.hasProperty('bintray.key') ? project.property('bintray.key') : System.getenv('BINTRAY_KEY')
+        }
+        defaults {
+            publications('shcf4jPublication')
+            publishArtifacts = true
+            publishPom = true
+        }
+    }
+    resolve {
+        repoKey = 'jcenter'
+    }
+    clientConfig.info.setBuildNumber(System.getProperty('build.number'))
 }

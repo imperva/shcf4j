@@ -9,6 +9,11 @@
         </layout>
     </appender>
 
+    <logger name="org.eclipse.jetty" level="debug" additivity="false">
+        <appender-ref ref="STDOUT" />
+    </logger>
+
+
     <logger name="org.apache.http.wire" level="debug" additivity="false">
         <appender-ref ref="STDOUT" />
     </logger>
