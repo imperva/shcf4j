@@ -1,4 +1,4 @@
-# SHCF4J [![Build Status](https://www.travis-ci.org/imperva/shcf4j.svg?branch=master)](https://www.travis-ci.org/imperva/shcf4j)
+# SHCF4J [![Build Status](https://www.travis-ci.org/imperva/shcf4j.svg?branch=master)](https://www.travis-ci.org/imperva/shcf4j) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.imperva.shcf4j/shcf4j-api/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.imperva.shcf4j/shcf4j-api/)
 The Simple HTTP Client Facade for Java (SHCF4J) serves as a simple facade or abstraction for various HTTP client frameworks (e.g. java.net.HttpURLConnection, Apache HttpClient, etc.) allowing the end user to plug in the desired HTTP client framework at deployment time. This library idea originated from the The Simple Logging Facade for Java [(SLF4J)](http://www.slf4j.org) progect. While SLF4J provides ready to use Logger instances, SHCF4J provides HTTP client builders that used for actual client creation and abstracts under the hood the entire creation and adoption to underlying implementation.
 
 # Motivation
