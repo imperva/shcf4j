@@ -1,6 +1,7 @@
 package com.imperva.shcf4j.ahc2;
 
 import com.imperva.shcf4j.AsyncHttpClientBuilder;
+import com.imperva.shcf4j.NotSupportedException;
 import com.imperva.shcf4j.SyncHttpClientBuilder;
 import com.imperva.shcf4j.ahc2.client.async.AsyncAhcClientBuilder;
 import com.imperva.shcf4j.helpers.Util;
@@ -12,6 +13,9 @@ import org.asynchttpclient.config.AsyncHttpClientConfigDefaults;
  * @author maxim.kirilov
  */
 public class AHC2ServiceProvider implements SHC4JServiceProvider {
+
+    private static final NotSupportedException NOT_SUPPORTED_EXCEPTION = new NotSupportedException();
+
 
     // to avoid constant folding by the compiler, this field must *not* be final
     public static String AHC_SUPPORTED_VERSION = "2.6.0"; //   !final
@@ -26,7 +30,7 @@ public class AHC2ServiceProvider implements SHC4JServiceProvider {
 
     @Override
     public SyncHttpClientBuilder getHttpClientBuilder() {
-        return null;
+        throw NOT_SUPPORTED_EXCEPTION;
     }
 
     @Override

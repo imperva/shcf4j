@@ -81,6 +81,7 @@ public class AsyncAhcClientBuilder implements AsyncHttpClientBuilder {
 
     @Override
     public AsyncHttpClientBuilder setProxy(HttpHost proxy) {
+        this.configBuilder.setProxyServer(proxyServer(proxy.getHostname(), proxy.getPort()));
         return this;
     }
 
