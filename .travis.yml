@@ -9,7 +9,7 @@ stages:
 - name: publish-snapshot
   if: branch = master AND type IN (push)
 - name: publish-release
-  if: branch = release AND type IN (push)
+  if: branch =~ ^release\/.*$ AND type IN (push)
 jobs:
   include:
   - stage: build
