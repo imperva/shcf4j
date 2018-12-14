@@ -2,6 +2,7 @@ package com.imperva.shcf4j.ahc2.client.async;
 
 import com.imperva.shcf4j.AsyncHttpClientBuilder;
 import com.imperva.shcf4j.HttpHost;
+import com.imperva.shcf4j.MutableHttpRequest;
 import com.imperva.shcf4j.client.AsyncHttpClient;
 import com.imperva.shcf4j.client.CredentialsProvider;
 import com.imperva.shcf4j.client.config.RequestConfig;
@@ -14,10 +15,12 @@ import org.asynchttpclient.DefaultAsyncHttpClientConfig;
 
 import javax.net.ssl.SSLException;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.concurrent.ThreadFactory;
+import java.util.function.Consumer;
 
-import static org.asynchttpclient.Dsl.*;
+import static org.asynchttpclient.Dsl.proxyServer;
 
 public class AsyncAhcClientBuilder implements AsyncHttpClientBuilder {
 
@@ -91,12 +94,19 @@ public class AsyncAhcClientBuilder implements AsyncHttpClientBuilder {
     }
 
     @Override
+    public AsyncHttpClientBuilder addRequestInterceptor(Consumer<MutableHttpRequest> interceptor) {
+
+        this.configBuilder.addRequestFilter(new RequestFilterInterceptor(interceptor));
+        return this;
+    }
+
+    @Override
     public AsyncHttpClient build() {
         return new ClosableAsyncAhcHttpClient(new DefaultAsyncHttpClient(configBuilder.build()));
     }
 
     @SafeVarargs
-    private static <T> Iterable<T> createIterableFrom(final T... a){
+    private static <T> Iterable<T> createIterableFrom(final T... a) {
         T[] arr = a;
         return () -> new Iterator<T>() {
             private int index = 0;
@@ -108,7 +118,10 @@ public class AsyncAhcClientBuilder implements AsyncHttpClientBuilder {
 
             @Override
             public T next() {
-                return arr[index++];
+                if (hasNext()){
+                    return arr[index++];
+                }
+                throw new NoSuchElementException();
             }
         };
     }

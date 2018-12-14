@@ -53,10 +53,7 @@ class HttpResponseAdapter implements HttpResponse {
 
     @Override
     public List<? extends Header> getAllHeaders() {
-        return StreamSupport
-                .stream(response.getHeaders().spliterator(), false)
-                .map(e -> Header.builder().name(e.getKey()).name(e.getValue()).build())
-                .collect(Collectors.toList());
+        return ConversionUtils.convert(response.getHeaders());
     }
 
 

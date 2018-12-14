@@ -1,7 +1,7 @@
 package com.imperva.shcf4j.example.di.spring;
 
 import com.imperva.shcf4j.HttpHost;
-import com.imperva.shcf4j.HttpRequest;
+import com.imperva.shcf4j.HttpRequestBuilder;
 import com.imperva.shcf4j.client.SyncHttpClient;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -20,7 +20,7 @@ public class BootstrapHttpClientFromXmlFile {
 
         syncHttpClient.execute(
                 HttpHost.builder().schemeName("https").hostname("github.com").port(443).build(),
-                HttpRequest.builder().getRequest().uri("/imperva/shcf4j").build(),
+                HttpRequestBuilder.GET().uri("/imperva/shcf4j").build(),
                 response -> {
                     System.out.println(response.getStatusLine());
                     return response.getStatusLine().getStatusCode() == 200;

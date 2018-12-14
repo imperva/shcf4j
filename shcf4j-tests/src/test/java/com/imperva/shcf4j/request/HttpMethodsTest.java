@@ -2,6 +2,7 @@ package com.imperva.shcf4j.request;
 
 import com.imperva.shcf4j.Header;
 import com.imperva.shcf4j.HttpRequest;
+import com.imperva.shcf4j.HttpRequestBuilder;
 import com.imperva.shcf4j.HttpResponse;
 import com.imperva.shcf4j.auth.AuthScope;
 import com.imperva.shcf4j.auth.UsernamePasswordCredentials;
@@ -18,6 +19,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.HttpURLConnection;
+import java.net.URI;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -44,11 +46,10 @@ public abstract class HttpMethodsTest extends HttpClientBaseTest {
         );
 
         HttpRequest request =
-                HttpRequest
-                        .builder()
-                        .getRequest()
+                HttpRequestBuilder
+                        .GET()
                         .uri(uri)
-                        .header(Header.builder().name(HttpClientBaseTest.HEADER_ACCEPT).value("text/xml").build())
+                        .header(HttpClientBaseTest.HEADER_ACCEPT, "text/xml")
                         .build();
 
         Assert.assertTrue("Accept header is missing", request.containsHeader(HttpClientBaseTest.HEADER_ACCEPT));
@@ -78,9 +79,8 @@ public abstract class HttpMethodsTest extends HttpClientBaseTest {
         );
 
         HttpRequest request =
-                HttpRequest
-                        .builder()
-                        .getRequest()
+                HttpRequestBuilder
+                        .GET()
                         .uri(uri)
                         .header(Header.builder().name(HttpClientBaseTest.HEADER_ACCEPT).value("text/xml").build())
                         .build();
@@ -108,7 +108,7 @@ public abstract class HttpMethodsTest extends HttpClientBaseTest {
                 )
         );
 
-        HttpResponse response = execute(HttpClientBaseTest.HOST, HttpRequest.builder().postRequest().uri(uri).build());
+        HttpResponse response = execute(HttpClientBaseTest.HOST, HttpRequestBuilder.POST().uri(uri).build());
         Assert.assertEquals("Wrong status code", HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
     }
 
@@ -126,9 +126,8 @@ public abstract class HttpMethodsTest extends HttpClientBaseTest {
         );
 
         HttpResponse response = execute(HttpClientBaseTest.HOST,
-                HttpRequest
-                        .builder()
-                        .postRequest()
+                HttpRequestBuilder
+                        .POST()
                         .uri(uri)
                         .stringData(entity)
                         .build());
@@ -154,9 +153,8 @@ public abstract class HttpMethodsTest extends HttpClientBaseTest {
         );
 
         HttpResponse response = execute(HttpClientBaseTest.HOST,
-                HttpRequest
-                        .builder()
-                        .postRequest()
+                HttpRequestBuilder
+                        .POST()
                         .uri(uri)
                         .filePath(f.toPath())
                         .build()
@@ -184,7 +182,7 @@ public abstract class HttpMethodsTest extends HttpClientBaseTest {
                         .withStatus(200)
                 ));
 
-        HttpRequest request = HttpRequest.builder().getRequest().uri(uri).build();
+        HttpRequest request = HttpRequestBuilder.GET(URI.create(uri)).build();
         CredentialsProvider cp = CredentialsProvider
                 .builder()
                 .credential(AuthScope.createAnyAuthScope(),
@@ -210,7 +208,7 @@ public abstract class HttpMethodsTest extends HttpClientBaseTest {
                 )
         );
 
-        HttpRequest request = HttpRequest.builder().getRequest().uri(uri).build();
+        HttpRequest request = HttpRequestBuilder.GET().uri(uri).build();
         HttpResponse response = execute(HttpClientBaseTest.HOST, request);
         Assert.assertEquals("Wrong status code", HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
 
@@ -234,7 +232,7 @@ public abstract class HttpMethodsTest extends HttpClientBaseTest {
                 )
         );
 
-        HttpRequest request = HttpRequest.builder().getRequest().uri(uri).build();
+        HttpRequest request = HttpRequestBuilder.GET().uri(uri).build();
         HttpResponse response = execute(HttpClientBaseTest.HOST, request);
         Assert.assertEquals("Wrong status code", HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
     }

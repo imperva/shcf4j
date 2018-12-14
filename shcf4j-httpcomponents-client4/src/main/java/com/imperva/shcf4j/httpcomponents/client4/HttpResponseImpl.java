@@ -98,18 +98,12 @@ class HttpResponseImpl implements HttpResponse {
 
     @Override
     public List<? extends Header> getHeaders(String name) {
-        return Arrays
-                .stream(response.getHeaders(name))
-                .map(h -> Header.builder().name(h.getName()).value(h.getValue()).build())
-                .collect(Collectors.toList());
+        return ConversionUtils.convert(response.getHeaders(name));
     }
 
     @Override
     public List<? extends Header> getAllHeaders() {
-        return Arrays
-                .stream(response.getAllHeaders())
-                .map(h -> Header.builder().name(h.getName()).value(h.getValue()).build())
-                .collect(Collectors.toList());
+        return ConversionUtils.convert(response.getAllHeaders());
     }
 
 

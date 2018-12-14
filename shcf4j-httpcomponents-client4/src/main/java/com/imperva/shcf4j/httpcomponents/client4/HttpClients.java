@@ -19,8 +19,8 @@ public class HttpClients {
      *
      * @return {@code SyncHttpClientBuilder}
      */
-    public static SyncHttpClientBuilder custom() {
-        return new SyncHttpClientBuilder(
+    public static HttpComponentsSyncHttpClientBuilder custom() {
+        return new HttpComponentsSyncHttpClientBuilder(
                 org.apache.http.impl.client.HttpClients.custom()
         );
     }
