@@ -1,6 +1,7 @@
 package com.imperva.shcf4j.request;
 
 import com.imperva.shcf4j.Header;
+import com.imperva.shcf4j.HttpClientBaseTest;
 import com.imperva.shcf4j.HttpRequest;
 import com.imperva.shcf4j.HttpRequestBuilder;
 import com.imperva.shcf4j.HttpResponse;
@@ -8,18 +9,16 @@ import com.imperva.shcf4j.auth.AuthScope;
 import com.imperva.shcf4j.auth.UsernamePasswordCredentials;
 import com.imperva.shcf4j.client.CredentialsProvider;
 import com.imperva.shcf4j.client.protocol.ClientContext;
-import com.imperva.shcf4j.HttpClientBaseTest;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -34,7 +33,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 public abstract class HttpMethodsTest extends HttpClientBaseTest {
 
     @Test
-    public void simpleGetTest() throws IOException {
+    public void simpleGetTest() {
         String uri = "/my/resource";
         instanceRule.stubFor(get(urlEqualTo(uri))
                 .withHeader(HttpClientBaseTest.HEADER_ACCEPT, equalTo("text/xml"))
@@ -65,7 +64,7 @@ public abstract class HttpMethodsTest extends HttpClientBaseTest {
 
 
     @Test
-    public void simpleEntityGetTest() throws IOException {
+    public void simpleEntityGetTest() {
         String uri = "/my/entity";
         final String responseContent = "My content";
         instanceRule.stubFor(get(urlEqualTo(uri))
@@ -85,13 +84,8 @@ public abstract class HttpMethodsTest extends HttpClientBaseTest {
                         .header(Header.builder().name(HttpClientBaseTest.HEADER_ACCEPT).value("text/xml").build())
                         .build();
 
-        boolean isEquals = execute(HttpClientBaseTest.HOST, request, response -> {
-            try (BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()))) {
-                return responseContent.equals(rd.readLine());
-            } catch (IOException ioException) {
-                return false;
-            }
-        });
+        boolean isEquals = execute(HttpClientBaseTest.HOST, request, response ->
+                responseContent.equals(response.getEntity().getResponseBody(StandardCharsets.UTF_8)));
 
         Assert.assertTrue("Wrong content received", isEquals);
 
@@ -99,7 +93,7 @@ public abstract class HttpMethodsTest extends HttpClientBaseTest {
 
 
     @Test
-    public void emptyEntityPostTest() throws IOException {
+    public void emptyEntityPostTest() {
         String uri = "/resource";
         instanceRule.stubFor(post(urlEqualTo(uri))
                 .willReturn(
@@ -114,7 +108,7 @@ public abstract class HttpMethodsTest extends HttpClientBaseTest {
 
 
     @Test
-    public void stringEntityPostTest() throws IOException {
+    public void stringEntityPostTest() {
         String uri = "/my/entity";
         String entity = "String Entity";
         instanceRule.stubFor(post(urlEqualTo(uri))
@@ -163,7 +157,7 @@ public abstract class HttpMethodsTest extends HttpClientBaseTest {
     }
 
     @Test
-    public void basicAuthenticationTest() throws IOException {
+    public void basicAuthenticationTest()  {
         String uri = "/basic/auth";
 
         String user = "user";
@@ -186,7 +180,7 @@ public abstract class HttpMethodsTest extends HttpClientBaseTest {
         CredentialsProvider cp = CredentialsProvider
                 .builder()
                 .credential(AuthScope.createAnyAuthScope(),
-                    UsernamePasswordCredentials.builder().username(user).password(password).build())
+                        UsernamePasswordCredentials.builder().username(user).password(password).build())
                 .build();
 
         ClientContext ctx = ClientContext.builder().credentialsProvider(cp).build();
@@ -198,7 +192,7 @@ public abstract class HttpMethodsTest extends HttpClientBaseTest {
 
 
     @Test
-    public void queryParametersTest() throws Exception {
+    public void queryParametersTest() {
         String uri = "/my/resource?queryParameter=someValue";
         instanceRule.stubFor(get(urlEqualTo(uri))
                 .withQueryParam("queryParameter", equalTo("someValue"))
@@ -222,7 +216,7 @@ public abstract class HttpMethodsTest extends HttpClientBaseTest {
     }
 
     @Test
-    public void nonEncodedQueryParametersTest() throws Exception {
+    public void nonEncodedQueryParametersTest() {
         String uri = "/my/resource?queryParameter=someValue/slash/slash";
         instanceRule.stubFor(get(urlEqualTo(uri))
                 .withQueryParam("queryParameter", equalTo("someValue/slash/slash"))

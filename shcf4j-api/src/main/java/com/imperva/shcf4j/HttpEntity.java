@@ -1,8 +1,7 @@
 package com.imperva.shcf4j;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 /**
  * <b>HttpEntity</b>
@@ -14,9 +13,6 @@ import java.io.OutputStream;
  * @author maxim.kirilov
  */
 public interface HttpEntity {
-
-//    String CONTENT_TYPE = "Content-Type";
-//    String CONTENT_ENCODING = "Content-Encoding";
 
     /**
      * Tells if the entity is capable of producing its data more than once.
@@ -83,18 +79,26 @@ public interface HttpEntity {
      * Entities that are not {@link #isRepeatable repeatable} are expected
      * to return the same {@link InputStream} instance and therefore
      * may not be consumed more than once.
-     *
+     * <p>
      * IMPORTANT: Please note all entity implementations must ensure that
      * all allocated resources are properly deallocated after
      * the {@link InputStream#close()} method is invoked.
      *
      * @return content stream of the entity.
-     * @throws IOException           if the stream could not be created
-     * @throws IllegalStateException if content stream cannot be created.
+     * @throws ProcessingException if the stream could not be created
      * @see #isRepeatable()
      */
-    InputStream getContent() throws IOException, IllegalStateException;
+    InputStream getContent();
 
+
+    /**
+     * Return the entire response body as a String.
+     *
+     * @param charset the charset to use when decoding the stream
+     * @return the entire response body as a String.
+     * @throws ProcessingException if the response body could not be created
+     */
+    String getResponseBody(Charset charset);
 
     /**
      * Tells whether this entity depends on an underlying stream.

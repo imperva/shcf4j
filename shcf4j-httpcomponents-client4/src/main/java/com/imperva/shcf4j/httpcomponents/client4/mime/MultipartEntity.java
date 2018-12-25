@@ -2,10 +2,12 @@ package com.imperva.shcf4j.httpcomponents.client4.mime;
 
 import com.imperva.shcf4j.Header;
 import com.imperva.shcf4j.HttpEntity;
+import com.imperva.shcf4j.ProcessingException;
 
-import java.io.IOException;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 
 /**
@@ -59,18 +61,34 @@ class MultipartEntity implements HttpEntity {
     }
 
     @Override
-    public InputStream getContent() throws IOException, IllegalStateException {
-        return entity.getContent();
+    public InputStream getContent() {
+        try {
+            return entity.getContent();
+        } catch (Throwable t) {
+            throw new ProcessingException(t);
+        }
+
+    }
+
+    @Override
+    public String getResponseBody(Charset charset) {
+        try {
+            BufferedInputStream bis = new BufferedInputStream(getContent());
+            ByteArrayOutputStream buf = new ByteArrayOutputStream();
+            int result = bis.read();
+            while (result != -1) {
+                buf.write((byte) result);
+                result = bis.read();
+            }
+            return buf.toString(charset.displayName());
+        } catch (Throwable t) {
+            throw new ProcessingException(t);
+        }
     }
 
     @Override
     public boolean isStreaming() {
         return entity.isStreaming();
-    }
-
-    @Deprecated
-    public void consumeContent() throws IOException {
-        entity.consumeContent();
     }
 
 }

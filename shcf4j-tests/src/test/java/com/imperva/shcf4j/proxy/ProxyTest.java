@@ -65,7 +65,7 @@ public abstract class ProxyTest extends HttpClientBaseTest {
 
 
     @Test
-    public void clientContextProxyTest() throws Exception {
+    public void clientContextProxyTest() {
 
         String uri = "/my/resource";
         instanceRule.stubFor(get(urlEqualTo(uri))
