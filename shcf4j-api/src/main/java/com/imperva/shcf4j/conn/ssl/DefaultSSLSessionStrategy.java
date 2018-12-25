@@ -3,6 +3,7 @@ package com.imperva.shcf4j.conn.ssl;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -23,17 +24,24 @@ public class DefaultSSLSessionStrategy implements SSLSessionStrategy {
     private KeyManagerFactory keyManagerFactory = null;
 
     public void setSupportedProtocols(String[] supportedProtocols) {
-        this.supportedProtocols = supportedProtocols;
+        this.supportedProtocols =  Arrays.copyOf(supportedProtocols, supportedProtocols.length);
     }
 
     public void setSupportedCipherSuites(String[] supportedCipherSuites) {
-        this.supportedCipherSuites = supportedCipherSuites;
+        this.supportedCipherSuites = Arrays.copyOf(supportedCipherSuites, supportedCipherSuites.length);
     }
 
     public void setHostnameVerifier(HostnameVerifier hostnameVerifier) {
         this.hostnameVerifier = Objects.requireNonNull(hostnameVerifier, "hostnameVerifier");
     }
 
+    public void setTrustManagerFactory(TrustManagerFactory trustManagerFactory) {
+        this.trustManagerFactory = trustManagerFactory;
+    }
+
+    public void setKeyManagerFactory(KeyManagerFactory keyManagerFactory) {
+        this.keyManagerFactory = keyManagerFactory;
+    }
 
     @Override
     public TrustManagerFactory getTrustManagerFactory() {
@@ -47,12 +55,12 @@ public class DefaultSSLSessionStrategy implements SSLSessionStrategy {
 
     @Override
     public String[] getSupportedProtocols() {
-        return supportedProtocols;
+        return Arrays.copyOf(supportedProtocols, supportedProtocols.length);
     }
 
     @Override
     public String[] getSupportedCipherSuites() {
-        return supportedCipherSuites;
+        return Arrays.copyOf(supportedCipherSuites, supportedCipherSuites.length);
     }
 
     @Override

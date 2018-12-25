@@ -1,5 +1,6 @@
 package com.imperva.shcf4j.helpers;
 
+import com.imperva.shcf4j.MutableHttpRequest;
 import com.imperva.shcf4j.SyncHttpClientBuilder;
 import com.imperva.shcf4j.HttpHost;
 import com.imperva.shcf4j.client.CredentialsProvider;
@@ -7,6 +8,8 @@ import com.imperva.shcf4j.client.SyncHttpClient;
 import com.imperva.shcf4j.client.config.RequestConfig;
 import com.imperva.shcf4j.config.SocketConfig;
 import com.imperva.shcf4j.conn.ssl.SSLSessionStrategy;
+
+import java.util.function.Consumer;
 
 
 /**
@@ -46,6 +49,12 @@ class NOPSyncHttpClientBuilder implements SyncHttpClientBuilder {
     public SyncHttpClientBuilder setDefaultCredentialsProvider(CredentialsProvider cp) {
         return this;
     }
+
+    @Override
+    public SyncHttpClientBuilder addRequestInterceptor(Consumer<MutableHttpRequest> request) {
+        return this;
+    }
+
 
     @Override
     public SyncHttpClient build() {

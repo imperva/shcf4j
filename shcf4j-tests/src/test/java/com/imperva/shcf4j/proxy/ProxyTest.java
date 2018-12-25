@@ -3,6 +3,7 @@ package com.imperva.shcf4j.proxy;
 import com.imperva.shcf4j.HttpClientBaseTest;
 import com.imperva.shcf4j.HttpHost;
 import com.imperva.shcf4j.HttpRequest;
+import com.imperva.shcf4j.HttpRequestBuilder;
 import com.imperva.shcf4j.HttpResponse;
 import com.imperva.shcf4j.client.config.RequestConfig;
 import com.imperva.shcf4j.client.protocol.ClientContext;
@@ -75,9 +76,8 @@ public abstract class ProxyTest extends HttpClientBaseTest {
         );
 
         HttpRequest request =
-                HttpRequest
-                        .builder()
-                        .getRequest()
+                HttpRequestBuilder
+                        .GET()
                         .uri(uri)
                         .build();
 

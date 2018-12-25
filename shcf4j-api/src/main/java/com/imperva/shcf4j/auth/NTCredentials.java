@@ -39,7 +39,7 @@ public class NTCredentials implements Credentials, Principal{
             buffer.append(this.domain);
             buffer.append('\\');
             buffer.append(this.username);
-            return toString();
+            return buffer.toString();
         } else {
             return this.username;
         }

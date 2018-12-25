@@ -22,6 +22,6 @@ public class SyncSyncHttpClientBuilderFactoryTest {
 
         syncHttpClient.execute(
                 HttpHost.builder().hostname("localhost").port(8090).build(),
-                HttpRequest.builder().getRequest().uri("/hello").build() );
+                HttpRequestBuilder.GET().uri("/hello").build() );
     }
 }

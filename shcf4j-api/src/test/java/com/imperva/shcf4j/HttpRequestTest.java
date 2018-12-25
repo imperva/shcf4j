@@ -3,6 +3,8 @@ package com.imperva.shcf4j;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.net.URI;
+
 public class HttpRequestTest {
 
 
@@ -10,10 +12,8 @@ public class HttpRequestTest {
     @Test
     public void addDifferentHeadersTest() {
         HttpRequest request =
-                HttpRequest
-                        .builder()
-                        .getRequest()
-                        .uri("https://google.com")
+                HttpRequestBuilder
+                        .GET(URI.create("https://google.com"))
                         .header(Header.builder().name("h1").value("v1").build())
                         .header(Header.builder().name("h2").value("v2").build())
                         .build();
@@ -24,10 +24,8 @@ public class HttpRequestTest {
     @Test
     public void addIdenticalHeadersTest() {
         HttpRequest request =
-                HttpRequest
-                        .builder()
-                        .getRequest()
-                        .uri("https://google.com")
+                HttpRequestBuilder
+                        .GET(URI.create("https://google.com"))
                         .header(Header.builder().name("h1").value("v1").build())
                         .header(Header.builder().name("h1").value("v2").build())
                         .build();
@@ -40,10 +38,8 @@ public class HttpRequestTest {
     @Test
     public void setMissingHeaderTest(){
         HttpRequest request =
-                HttpRequest
-                        .builder()
-                        .getRequest()
-                        .uri("http://localhost:8080")
+                HttpRequestBuilder
+                        .GET(URI.create("http://localhost:8080"))
                         .header(Header.builder().name("h").value("v").build())
                         .build();
 

@@ -1,5 +1,6 @@
 package com.imperva.shcf4j.httpcomponents.client4;
 
+import com.imperva.shcf4j.Header;
 import com.imperva.shcf4j.HttpRequest;
 import com.imperva.shcf4j.HttpResponse;
 import com.imperva.shcf4j.auth.AuthScope;
@@ -10,7 +11,10 @@ import com.imperva.shcf4j.client.protocol.ClientContext;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.SystemDefaultCredentialsProvider;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 class ConversionUtils {
 
@@ -81,5 +85,12 @@ class ConversionUtils {
         }
 
         return credentialsProvider;
+    }
+
+    static List<Header> convert(org.apache.http.Header[] headers){
+        return Arrays
+                .stream(headers)
+                .map(h -> Header.builder().name(h.getName()).value(h.getValue()).build())
+                .collect(Collectors.toList());
     }
 }

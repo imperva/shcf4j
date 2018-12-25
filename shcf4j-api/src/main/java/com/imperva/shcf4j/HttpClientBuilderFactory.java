@@ -52,7 +52,7 @@ public class HttpClientBuilderFactory {
         try {
             List<SHC4JServiceProvider> providersList = findServiceProviders();
             reportMultipleBindingAmbiguity(providersList);
-            if (providersList != null && !providersList.isEmpty()) {
+            if ( !providersList.isEmpty() ) {
                 PROVIDER.set(providersList.get(0));
                 PROVIDER.get().initialize();
                 Util.report("Actual provider is of type [" + PROVIDER.get().getClass().getCanonicalName() + "]");

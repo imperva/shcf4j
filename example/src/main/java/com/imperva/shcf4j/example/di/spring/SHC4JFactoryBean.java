@@ -1,5 +1,6 @@
 package com.imperva.shcf4j.example.di.spring;
 
+import com.imperva.shcf4j.MutableHttpRequest;
 import com.imperva.shcf4j.SyncHttpClientBuilder;
 import com.imperva.shcf4j.HttpClientBuilderFactory;
 import com.imperva.shcf4j.HttpHost;
@@ -11,6 +12,7 @@ import com.imperva.shcf4j.conn.ssl.SSLSessionStrategy;
 import org.springframework.beans.factory.FactoryBean;
 
 import javax.net.ssl.SSLException;
+import java.util.function.Consumer;
 
 
 /**
@@ -51,6 +53,11 @@ public class SHC4JFactoryBean implements SyncHttpClientBuilder, FactoryBean<Sync
     @Override
     public SyncHttpClientBuilder setDefaultCredentialsProvider(CredentialsProvider cp) {
         return builder.setDefaultCredentialsProvider(cp);
+    }
+
+    @Override
+    public SyncHttpClientBuilder addRequestInterceptor(Consumer<MutableHttpRequest> interceptor) {
+        return builder.addRequestInterceptor(interceptor);
     }
 
     @Override

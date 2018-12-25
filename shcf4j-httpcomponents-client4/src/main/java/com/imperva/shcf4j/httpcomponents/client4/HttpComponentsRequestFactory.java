@@ -1,5 +1,6 @@
 package com.imperva.shcf4j.httpcomponents.client4;
 
+import com.imperva.shcf4j.Header;
 import com.imperva.shcf4j.HttpRequest;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpDelete;
@@ -39,11 +40,9 @@ class HttpComponentsRequestFactory {
                 throw new RuntimeException("Not supported HTTP method: " + request.getHttpMethod());
         }
 
-        request
-                .getAllHeaders()
-                .stream()
-                .peek(h -> httpRequest.addHeader(h.getName(), h.getValue()))
-                .count();
+        for(Header h : request.getAllHeaders()){
+            httpRequest.addHeader(h.getName(), h.getValue());
+        }
 
         return httpRequest;
     }
