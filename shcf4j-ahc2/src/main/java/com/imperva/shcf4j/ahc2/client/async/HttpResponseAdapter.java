@@ -3,16 +3,15 @@ package com.imperva.shcf4j.ahc2.client.async;
 import com.imperva.shcf4j.Header;
 import com.imperva.shcf4j.HttpEntity;
 import com.imperva.shcf4j.HttpResponse;
+import com.imperva.shcf4j.ProcessingException;
 import com.imperva.shcf4j.StatusLine;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import org.asynchttpclient.Response;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 class HttpResponseAdapter implements HttpResponse {
 
@@ -94,8 +93,21 @@ class HttpResponseAdapter implements HttpResponse {
         }
 
         @Override
-        public InputStream getContent() throws IllegalStateException {
-            return response.getResponseBodyAsStream();
+        public InputStream getContent() {
+            try {
+                return response.getResponseBodyAsStream();
+            } catch (Throwable t){
+                throw new ProcessingException(t);
+            }
+        }
+
+        @Override
+        public String getResponseBody(Charset charset) {
+            try {
+                return response.getResponseBody(charset);
+            } catch (Throwable t){
+                throw new ProcessingException(t);
+            }
         }
 
 

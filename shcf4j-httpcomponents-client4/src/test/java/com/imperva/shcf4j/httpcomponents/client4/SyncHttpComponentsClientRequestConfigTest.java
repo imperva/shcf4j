@@ -18,11 +18,13 @@ public class SyncHttpComponentsClientRequestConfigTest extends RequestConfigTest
 
 
     @Override
-    protected <T> T execute(HttpHost host, HttpRequest request, Function<HttpResponse, T> callback, ClientContext ctx, Consumer<HttpClientCommonBuilder<?>> builderCustomizer) throws IOException {
+    protected <T> T execute(HttpHost host, HttpRequest request, Function<HttpResponse, T> callback, ClientContext ctx, Consumer<HttpClientCommonBuilder<?>> builderCustomizer) {
         SyncHttpClientBuilder clientBuilder = HttpClientBuilderFactory.getHttpClientBuilder();
         builderCustomizer.accept(clientBuilder);
         try (SyncHttpClient httpClient = clientBuilder.build()) {
             return httpClient.execute(host, request, callback, ctx);
+        } catch (IOException ioException){
+            throw new RuntimeException(ioException);
         }
     }
 }
