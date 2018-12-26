@@ -2,19 +2,18 @@ package com.imperva.shcf4j.httpcomponents.client4;
 
 import com.imperva.shcf4j.Header;
 import com.imperva.shcf4j.HttpEntity;
-import com.imperva.shcf4j.HttpMessage;
 import com.imperva.shcf4j.HttpResponse;
+import com.imperva.shcf4j.ProcessingException;
 import com.imperva.shcf4j.ProtocolVersion;
 import com.imperva.shcf4j.StatusLine;
 
-import java.io.IOException;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Arrays;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * <b>HttpResponseImpl</b>
@@ -31,8 +30,8 @@ import java.util.stream.Collectors;
  * </pre>
  *
  * @author <font color="blue">Maxim Kirilov</font>
- *         <p/>
- *         Date: April 2014
+ * <p/>
+ * Date: April 2014
  */
 class HttpResponseImpl implements HttpResponse {
 
@@ -48,11 +47,11 @@ class HttpResponseImpl implements HttpResponse {
                 .statusCode(response.getStatusLine().getStatusCode())
                 .protocolVersion(
                         ProtocolVersion
-                            .builder()
-                            .protocol(response.getStatusLine().getProtocolVersion().getProtocol())
-                            .major(response.getStatusLine().getProtocolVersion().getMajor())
-                            .minor(response.getStatusLine().getProtocolVersion().getMinor())
-                            .build())
+                                .builder()
+                                .protocol(response.getStatusLine().getProtocolVersion().getProtocol())
+                                .major(response.getStatusLine().getProtocolVersion().getMajor())
+                                .minor(response.getStatusLine().getProtocolVersion().getMinor())
+                                .build())
                 .reasonPhrase(response.getStatusLine().getReasonPhrase())
                 .build();
     }
@@ -72,7 +71,7 @@ class HttpResponseImpl implements HttpResponse {
      * Obtains the message entity of this response, if any.
      *
      * @return the response entity, or
-     *         <code>null</code> if there is none
+     * <code>null</code> if there is none
      */
     public HttpEntity getEntity() {
         return this.entity;
@@ -118,16 +117,16 @@ class HttpResponseImpl implements HttpResponse {
 
             this.contentType = entity.getContentType() != null ?
                     Header
-                    .builder()
-                    .name(entity.getContentType().getName())
-                    .value(entity.getContentType().getValue())
-                    .build() : null;
+                            .builder()
+                            .name(entity.getContentType().getName())
+                            .value(entity.getContentType().getValue())
+                            .build() : null;
             this.contentEncoding = entity.getContentEncoding() != null ?
                     Header
-                    .builder()
-                    .name(entity.getContentEncoding().getName())
-                    .value(entity.getContentEncoding().getValue())
-                    .build() : null;
+                            .builder()
+                            .name(entity.getContentEncoding().getName())
+                            .value(entity.getContentEncoding().getValue())
+                            .build() : null;
         }
 
         @Override
@@ -156,9 +155,15 @@ class HttpResponseImpl implements HttpResponse {
         }
 
         @Override
-        public InputStream getContent() throws IOException, IllegalStateException {
-            return entity.getContent();
+        public InputStream getContent() {
+            try {
+                return entity.getContent();
+            } catch (Throwable t){
+                throw new ProcessingException(t);
+            }
+
         }
+
 
         @Override
         public boolean isStreaming() {

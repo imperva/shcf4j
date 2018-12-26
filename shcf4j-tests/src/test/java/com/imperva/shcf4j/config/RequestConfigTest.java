@@ -6,11 +6,9 @@ import com.imperva.shcf4j.HttpRequest;
 import com.imperva.shcf4j.HttpRequestBuilder;
 import com.imperva.shcf4j.client.config.RequestConfig;
 import com.imperva.shcf4j.client.protocol.ClientContext;
-import org.apache.http.client.methods.RequestBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
@@ -29,7 +27,7 @@ public abstract class RequestConfigTest extends HttpClientBaseTest {
 
 
     @Test(expected = Exception.class)
-    public void requestTimeoutTest() throws IOException {
+    public void requestTimeoutTest() {
 
         long millisecondsDelay = TimeUnit.MILLISECONDS.convert(1, TimeUnit.SECONDS);
         instanceRule.stubFor(get(urlEqualTo(RESOURCE_URI))
@@ -55,14 +53,14 @@ public abstract class RequestConfigTest extends HttpClientBaseTest {
                         .requestConfig(
                                 RequestConfig
                                         .builder()
-                                        .socketTimeoutMilliseconds( (int)millisecondsDelay / 2)
+                                        .socketTimeoutMilliseconds((int) millisecondsDelay / 2)
                                         .build())
                         .build());
     }
 
 
     @Test
-    public void requestInterceptorTest() throws IOException {
+    public void requestInterceptorTest() {
 
         String injectedHeaderName = "X-Injected", injectedHeaderValue = "X-Injected-Value";
 

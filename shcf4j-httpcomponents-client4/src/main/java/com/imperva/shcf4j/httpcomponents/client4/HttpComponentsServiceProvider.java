@@ -6,6 +6,9 @@ import com.imperva.shcf4j.helpers.Util;
 import com.imperva.shcf4j.spi.SHC4JServiceProvider;
 import org.apache.http.util.VersionInfo;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 /**
  * <b>HttpComponentsServiceProvider</b>
@@ -14,17 +17,50 @@ import org.apache.http.util.VersionInfo;
  */
 public class HttpComponentsServiceProvider implements SHC4JServiceProvider {
 
-    // to avoid constant folding by the compiler, this field must *not* be final
-    public static String HTTP_COMPONENTS_SUPPORTED_VERSION = "4.5.6"; //   !final
+    private static final Pattern HTTP_COMPONENTS_VERSION_PATTERN = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)");
 
-    public HttpComponentsServiceProvider(){
+    private static final int HTTP_COMPONENTS_SYNC_SUPPORTED_VERSION_MAJOR = 4;
+    private static final int HTTP_COMPONENTS_SYNC_SUPPORTED_VERSION_MINOR = 3;
+
+    private static final int HTTP_COMPONENTS_ASYNC_SUPPORTED_VERSION_MAJOR = 4;
+    private static final int HTTP_COMPONENTS_ASYNC_SUPPORTED_VERSION_MINOR = 1;
+
+    public HttpComponentsServiceProvider() {
+        checkSyncHttpClientClasspathVersionCompatibility();
+        checkAsyncHttpClientClasspathVersionCompatibility();
+    }
+
+
+    private void checkSyncHttpClientClasspathVersionCompatibility() {
+        String packageName = "org.apache.http.client";
         String httpComponentsRelease =
-                VersionInfo.loadVersionInfo("org.apache.http.client", getClass().getClassLoader()).getRelease();
+                VersionInfo.loadVersionInfo(packageName, getClass().getClassLoader()).getRelease();
+        checkVersionCompatibility(packageName, httpComponentsRelease,
+                HTTP_COMPONENTS_SYNC_SUPPORTED_VERSION_MAJOR, HTTP_COMPONENTS_SYNC_SUPPORTED_VERSION_MINOR);
 
-        if ( !HttpComponentsServiceProvider.HTTP_COMPONENTS_SUPPORTED_VERSION.equals(httpComponentsRelease) ){
-            Util.report("The runtime version of HTTP COMPONENTS: "
-                    + httpComponentsRelease + " not supported, " +
-                    "please use version: " + HttpComponentsServiceProvider.HTTP_COMPONENTS_SUPPORTED_VERSION);
+    }
+
+    private void checkAsyncHttpClientClasspathVersionCompatibility() {
+        String packageName = "org.apache.http.nio.client";
+        String httpComponentsRelease =
+                VersionInfo.loadVersionInfo(packageName, getClass().getClassLoader()).getRelease();
+
+        checkVersionCompatibility(packageName, httpComponentsRelease,
+                HTTP_COMPONENTS_ASYNC_SUPPORTED_VERSION_MAJOR, HTTP_COMPONENTS_ASYNC_SUPPORTED_VERSION_MINOR);
+    }
+
+
+    private void checkVersionCompatibility(String packageName, String version, int supportedMajorVersion, int supportedMinorVersion) {
+        Matcher m = HTTP_COMPONENTS_VERSION_PATTERN.matcher(version);
+
+        if (m.matches()) {
+            int major = Integer.parseInt(m.group(1));
+            int minor = Integer.parseInt(m.group(2));
+            if (supportedMajorVersion != major || minor < supportedMinorVersion) {
+                Util.report("The runtime version of " + packageName + " :"
+                        + version + " not supported, " +
+                        "please use version higher than: " + supportedMajorVersion + "." + supportedMinorVersion + ".x");
+            }
         }
     }
 

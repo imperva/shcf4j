@@ -18,11 +18,13 @@ public class AsyncHttpComponentsClientRequestConfigTest extends RequestConfigTes
 
 
     @Override
-    protected <T> T execute(HttpHost host, HttpRequest request, Function<HttpResponse, T> callback, ClientContext ctx, Consumer<HttpClientCommonBuilder<?>> builderCustomizer) throws IOException {
+    protected <T> T execute(HttpHost host, HttpRequest request, Function<HttpResponse, T> callback, ClientContext ctx, Consumer<HttpClientCommonBuilder<?>> builderCustomizer) {
         AsyncHttpClientBuilder clientBuilder = HttpClientBuilderFactory.getHttpAsyncClientBuilder();
         builderCustomizer.accept(clientBuilder);
         try (AsyncHttpClient httpClient = clientBuilder.build()) {
             return httpClient.execute(host, request, ctx).thenApply(callback).join();
+        } catch (IOException ioException) {
+            throw new RuntimeException(ioException);
         }
     }
 }
