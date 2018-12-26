@@ -1,5 +1,7 @@
 package com.imperva.shcf4j;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
@@ -98,7 +100,20 @@ public interface HttpEntity {
      * @return the entire response body as a String.
      * @throws ProcessingException if the response body could not be created
      */
-    String getResponseBody(Charset charset);
+    default String getResponseBody(Charset charset) {
+        try {
+            BufferedInputStream bis = new BufferedInputStream(getContent());
+            ByteArrayOutputStream buf = new ByteArrayOutputStream();
+            int result = bis.read();
+            while (result != -1) {
+                buf.write((byte) result);
+                result = bis.read();
+            }
+            return buf.toString(charset.displayName());
+        } catch (Throwable t) {
+            throw new ProcessingException(t);
+        }
+    }
 
     /**
      * Tells whether this entity depends on an underlying stream.

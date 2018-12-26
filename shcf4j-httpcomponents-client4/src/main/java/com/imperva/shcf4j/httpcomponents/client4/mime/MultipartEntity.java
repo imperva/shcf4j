@@ -71,22 +71,6 @@ class MultipartEntity implements HttpEntity {
     }
 
     @Override
-    public String getResponseBody(Charset charset) {
-        try {
-            BufferedInputStream bis = new BufferedInputStream(getContent());
-            ByteArrayOutputStream buf = new ByteArrayOutputStream();
-            int result = bis.read();
-            while (result != -1) {
-                buf.write((byte) result);
-                result = bis.read();
-            }
-            return buf.toString(charset.displayName());
-        } catch (Throwable t) {
-            throw new ProcessingException(t);
-        }
-    }
-
-    @Override
     public boolean isStreaming() {
         return entity.isStreaming();
     }
