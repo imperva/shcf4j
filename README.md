@@ -61,7 +61,7 @@ HttpRequest request = HttpRequestBuilder
 String response = httpClient.execute(host, request, r -> r.getEntity().getResponseBody(StandardCharsets.UTF_8));
 ```
 
-### Asyncronous Client
+### Asynchronous Client
 
 ```Java
 AsyncHttpClient asyncHttpClient = HttpClientBuilderFactory
