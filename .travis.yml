@@ -18,6 +18,8 @@ jobs:
     script: "./gradlew artifactoryPublish -x test -Dsnapshot=true -Dbuild.number=$TRAVIS_BUILD_NUMBER"
   - stage: publish-release
     script: "./gradlew bintrayUpload -x test -Dbuild.number=$TRAVIS_BUILD_NUMBER"
+after_success:
+  - ./gradlew jacocoTestReport coveralls
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -rf $HOME/.gradle/caches/*/plugin-resolution/
