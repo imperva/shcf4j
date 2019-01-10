@@ -1,2 +1,1 @@
 apply from: rootProject.file( 'gradle/libraries.gradle' )
-apply plugin: 'java'
