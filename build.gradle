@@ -2,6 +2,9 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     configurations.classpath {
         resolutionStrategy {
@@ -9,7 +12,13 @@ buildscript {
             cacheChangingModulesFor 0, 'seconds'
         }
     }
+    dependencies {
+        classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.6.3"
+    }
 }
+
+apply plugin: org.kt3k.gradle.plugin.CoverallsPlugin
+
 
 def javaProjects() {
     subprojects.findAll {
@@ -28,7 +37,8 @@ allprojects {
 
 configure(javaProjects()) {
     apply plugin: 'java'
-
+    apply plugin: 'jacoco'
+    
     repositories {
         mavenLocal()
         mavenCentral()
@@ -63,8 +73,38 @@ configure(javaProjects()) {
             options.addBooleanOption('html4', true)
         }
     }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled = true // coveralls plugin depends on xml format report
+            html.enabled = true
+        }
+    }
 }
 
 wrapper {
     gradleVersion = '4.10.2'
+}
+
+
+def publishedProjects = javaProjects()
+
+task jacocoRootReport(type: JacocoReport, group: 'Coverage reports') {
+    description = 'Generates an aggregate report from all subprojects'
+    dependsOn(publishedProjects.test)
+    additionalSourceDirs = files(publishedProjects.sourceSets.main.allSource.srcDirs)
+    sourceDirectories = files(publishedProjects.sourceSets.main.allSource.srcDirs)
+    classDirectories = files(publishedProjects.sourceSets.main.output)
+    executionData = files(publishedProjects.jacocoTestReport.executionData)
+    doFirst {
+        executionData = files(executionData.findAll { it.exists() })
+    }
+    reports {
+        html.enabled = true // human readable
+        xml.enabled = true // required by coveralls
+    }
+}
+
+coveralls {
+    jacocoReportPath 'build/reports/jacoco/test/jacocoTestReport.xml'
 }
