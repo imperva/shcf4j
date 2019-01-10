@@ -26,6 +26,11 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+
+import static org.assertj.core.api.Assertions.*;
+
+
 
 /**
  * <b>HttpMethodsTest</b>
@@ -231,5 +236,64 @@ public abstract class HttpMethodsTest extends HttpClientBaseTest {
         Assert.assertEquals("Wrong status code", HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
     }
 
+
+    @Test
+    public void queryParametersValueWithSpacesEncodingTest() {
+        String uri = "/hello";
+        String queryParameterName = "q";
+        String queryParameterValue = "value with spaces";
+
+        instanceRule.stubFor(get(urlPathEqualTo(uri))
+                .withQueryParam(queryParameterName, equalTo(queryParameterValue))
+                .willReturn(
+                        aResponse()
+                                .withStatus(HttpURLConnection.HTTP_OK)
+                )
+        );
+
+        HttpRequest request =
+                HttpRequestBuilder
+                        .GET()
+                        .uri(uri)
+                        .queryParam(queryParameterName, queryParameterValue)
+                        .build();
+
+        HttpResponse response = execute(HttpClientBaseTest.HOST, request);
+        assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpURLConnection.HTTP_OK);
+    }
+
+
+    @Test
+    public void multipleQueryParametersTest(){
+        String  qn1 = "q1",
+                qv1 = "v1",
+                qn2 = "q2",
+                qv2 = "v2",
+                qn3 = "q3",
+                qv3 = "v3";
+        String uri = "/hello";
+        String uriWithQueryParams = "/hello?" + qn3 + '=' + qv3;
+
+        instanceRule.stubFor(get(urlPathEqualTo(uri))
+                .withQueryParam(qn1, equalTo(qv1))
+                .withQueryParam(qn2, equalTo(qv2))
+                .withQueryParam(qn3, equalTo(qv3))
+                .willReturn(
+                        aResponse()
+                                .withStatus(HttpURLConnection.HTTP_OK)
+                )
+        );
+
+        HttpRequest request =
+                HttpRequestBuilder
+                        .GET()
+                        .uri(uriWithQueryParams)
+                        .queryParam(qn1, qv1)
+                        .queryParam(qn2, qv2)
+                        .build();
+
+        HttpResponse response = execute(HttpClientBaseTest.HOST, request);
+        assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpURLConnection.HTTP_OK);
+    }
 
 }

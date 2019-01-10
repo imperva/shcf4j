@@ -6,9 +6,7 @@ import com.imperva.shcf4j.HttpRequestBuilder;
 import com.imperva.shcf4j.HttpResponse;
 import com.imperva.shcf4j.client.AsyncHttpClient;
 import com.imperva.shcf4j.client.SyncHttpClient;
-import com.imperva.shcf4j.client.config.RequestConfig;
 
-import java.net.URI;
 import java.util.concurrent.CompletableFuture;
 
 public class Programmatically {
@@ -18,8 +16,8 @@ public class Programmatically {
 
         SyncHttpClient syncHttpClient =
                 HttpClientBuilderFactory
-                .getHttpClientBuilder()
-                .build();
+                        .getHttpClientBuilder()
+                        .build();
 
         syncHttpClient.execute(
                 HttpHost.builder().schemeName("https").hostname("imperva.com").port(443).build(),
@@ -33,14 +31,14 @@ public class Programmatically {
 
         AsyncHttpClient asyncHttpClient =
                 HttpClientBuilderFactory
-                .getHttpAsyncClientBuilder()
-                .build();
+                        .getHttpAsyncClientBuilder()
+                        .build();
 
         CompletableFuture<HttpResponse> completableFuture =
-            asyncHttpClient.execute(
-                HttpHost.builder().schemeName("https").hostname("imperva.com").port(443).build(),
-                HttpRequestBuilder.GET().uri("/").build()
-        );
+                asyncHttpClient.execute(
+                        HttpHost.builder().schemeName("https").hostname("imperva.com").port(443).build(),
+                        HttpRequestBuilder.GET().uri("/").build()
+                );
 
         completableFuture.thenApply(response -> {
             System.out.println(response.getStatusLine());
@@ -48,25 +46,6 @@ public class Programmatically {
         }).get();
 
         asyncHttpClient.close();
-
-
-        HttpRequestBuilder
-                .GET(URI.create("/hello"))
-                .header("Accept", "application/json")
-                .build();
-
-        RequestConfig requestConfig =
-                RequestConfig
-                .builder()
-                .proxy(
-                        HttpHost
-                                .builder()
-                        .schemeName("http")
-                        .hostname("my-proxy")
-                        .build())
-                .connectionRequestTimeoutMilliseconds(10 * 1000)
-                .socketTimeoutMilliseconds(60 * 1000)
-                .build();
 
     }
 }

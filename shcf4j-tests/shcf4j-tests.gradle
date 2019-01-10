@@ -6,7 +6,7 @@ dependencies {
     testCompile project(':shcf4j-api')
     testCompile ( libraries.wiremock )
     testCompile ( libraries.junit )
-//    testCompile group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.2.24.v20180105'
+    testCompile ( libraries.assertj )
     testCompile group: 'org.eclipse.jetty', name: 'jetty-proxy', version: '9.2.24.v20180105'
 
 }

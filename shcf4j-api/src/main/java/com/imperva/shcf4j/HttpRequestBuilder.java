@@ -1,12 +1,16 @@
 package com.imperva.shcf4j;
 
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +28,9 @@ public class HttpRequestBuilder {
     protected String stringData;
     protected ByteBuffer byteBufferData;
     protected InputStream inputStreamData;
-    protected Charset charset;
+    protected Charset charset = Charset.forName("UTF-8");
+    // keep parameters order
+    protected Map<String, String> queryParams = new LinkedHashMap<>();
 
     private HttpRequestBuilder() { }
 
@@ -142,7 +148,44 @@ public class HttpRequestBuilder {
         return this;
     }
 
+    public HttpRequestBuilder queryParam(String name, String value){
+        try {
+            this.queryParams.put(name, URLEncoder.encode(value, this.charset.displayName()));
+        } catch (UnsupportedEncodingException e){
+            // Impossible to happen, since we pass a name of a charset that was already exists
+            // Java 10 have an overload that gets the charset itself
+        }
+        return this;
+    }
+
     public HttpRequest build() {
+        appendQueryParameterToUri();
         return new HttpRequestImpl( this);
+    }
+
+
+    private void appendQueryParameterToUri(){
+        if (this.queryParams.isEmpty()){
+            return;
+        }
+        String query = this.uri.getQuery();
+        if (query == null){
+            query = getQueryParametersAsString(this.queryParams);
+        } else {
+            query += '&' + getQueryParametersAsString(this.queryParams);
+        }
+        try {
+            this.uri = new URI(this.uri.getScheme(), this.uri.getAuthority(), this.uri.getPath(), query, this.uri.getFragment());
+        } catch (URISyntaxException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String getQueryParametersAsString(Map<String, String> queryParams){
+        return queryParams
+                .entrySet()
+                .stream()
+                .map(e -> e.getKey() + '=' + e.getValue())
+                .collect(Collectors.joining("&"));
     }
 }
