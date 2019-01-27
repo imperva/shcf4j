@@ -4,6 +4,8 @@ test.onlyIf {false}
 
 dependencies {
     testCompile project(':shcf4j-api')
+    testCompileOnly ( libraries.lombok )
+    testAnnotationProcessor ( libraries.lombok)
     testCompile ( libraries.wiremock )
     testCompile ( libraries.junit )
     testCompile ( libraries.assertj )

@@ -22,7 +22,7 @@ public class HttpRequestBuilder {
 
     protected List<Header> headers = new LinkedList<>();
     protected HttpRequest.SupportedHttpMethod httpMethod;
-    protected URI uri;
+    protected URI uri = URI.create("http://localhost"); //Default value
     protected Path filePath;
     protected byte[] byteData;
     protected String stringData;
