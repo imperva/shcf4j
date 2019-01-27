@@ -2,29 +2,38 @@ package com.imperva.shcf4j;
 
 import com.imperva.shcf4j.client.protocol.ClientContext;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public abstract class AbstractBasicTest {
+public interface AbstractBasicTest {
 
-    protected final HttpResponse execute(HttpHost host, HttpRequest request) {
+    default HttpResponse execute(HttpHost host, HttpRequest request) {
         return execute(host, request, (ClientContext) null);
     }
 
 
-    protected final HttpResponse execute(HttpHost host, HttpRequest request, ClientContext ctx) {
+    default HttpResponse execute(HttpHost host, HttpRequest request, ClientContext ctx) {
         return execute(host, request, Function.identity(), ctx);
     }
 
 
-    protected final <T> T execute(HttpHost host, HttpRequest request, Function<HttpResponse, T> callback) {
+   default  <T> T execute(HttpHost host, HttpRequest request, Function<HttpResponse, T> callback) {
         return execute(host, request, callback, null);
     }
 
-    protected final <T> T execute(HttpHost host, HttpRequest request, Function<HttpResponse, T> callback, ClientContext ctx) {
+    default  <T> T execute(HttpHost host, HttpRequest request, Function<HttpResponse, T> callback, ClientContext ctx) {
         return execute(host, request, callback, ctx, b -> {
         });
     }
 
-    protected abstract <T> T execute(HttpHost host, HttpRequest request, Function<HttpResponse, T> callback, ClientContext ctx, Consumer<HttpClientCommonBuilder<?>> builderCustomizer);
+    <T> T execute(HttpHost host, HttpRequest request, Function<HttpResponse, T> callback, ClientContext ctx, Consumer<HttpClientCommonBuilder<?>> builderCustomizer);
+
+    /**
+     * Enable multiple requests execution under the same constructed HTTP client.
+     *
+     * @param requests
+     * @param builderCustomizer
+     */
+    void execute(List<Request<?>> requests, Consumer<HttpClientCommonBuilder<?>> builderCustomizer);
 }

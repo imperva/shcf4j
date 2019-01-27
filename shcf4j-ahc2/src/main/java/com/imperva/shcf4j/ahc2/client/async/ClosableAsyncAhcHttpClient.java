@@ -103,6 +103,11 @@ class ClosableAsyncAhcHttpClient implements AsyncHttpClient {
         if (rc != null) {
             builder.setReadTimeout(rc.getConnectTimeoutMilliseconds())
                     .setRequestTimeout(rc.getSocketTimeoutMilliseconds());
+
+//            switch (rc.getCookieSpec()){
+//                case IGNORE_COOKIES:
+//                    builder.
+//            }
         }
     }
 

@@ -26,7 +26,8 @@ public final class RequestConfig {
     private final boolean expectContinueEnabled = false;
     private final HttpHost proxy;
     private final InetAddress localAddress;
-    private final String cookieSpec;
+    @Builder.Default
+    private final CookieSpecs cookieSpec = CookieSpecs.STANDARD_RFC_6265;
     @Builder.Default
     private final boolean redirectsEnabled = true;
     private final boolean relativeRedirectsAllowed;

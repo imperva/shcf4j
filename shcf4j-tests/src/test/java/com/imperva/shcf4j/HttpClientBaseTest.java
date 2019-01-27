@@ -4,7 +4,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.junit.ClassRule;
 import org.junit.Rule;
 
-public abstract class HttpClientBaseTest extends AbstractBasicTest {
+public abstract class HttpClientBaseTest implements AbstractBasicTest {
 
     public static final String HEADER_ACCEPT = "Accept";
     public static final String HEADER_CONTENT_TYPE = "Content-Type";
