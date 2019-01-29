@@ -9,6 +9,7 @@ import com.imperva.shcf4j.client.CredentialsProvider;
 import com.imperva.shcf4j.client.config.RequestConfig;
 import com.imperva.shcf4j.client.protocol.ClientContext;
 import com.imperva.shcf4j.request.body.multipart.ByteArrayPart;
+import com.imperva.shcf4j.request.body.multipart.FilePart;
 import com.imperva.shcf4j.request.body.multipart.InputStreamPart;
 import com.imperva.shcf4j.request.body.multipart.Part;
 import com.imperva.shcf4j.request.body.multipart.StringPart;
@@ -162,8 +163,8 @@ class ClosableAsyncAhcHttpClient implements AsyncHttpClient {
                         sp.getContentId(),
                         sp.getTransferEncoding()
                 ));
-            } else if (p instanceof ByteArrayPart){
-                ByteArrayPart bap = (ByteArrayPart)p;
+            } else if (p instanceof ByteArrayPart) {
+                ByteArrayPart bap = (ByteArrayPart) p;
                 builder.addBodyPart(new org.asynchttpclient.request.body.multipart.ByteArrayPart(
                         bap.getName(),
                         bap.getBytes(),
@@ -173,8 +174,8 @@ class ClosableAsyncAhcHttpClient implements AsyncHttpClient {
                         null,
                         bap.getTransferEncoding()
                 ));
-            } else if (p instanceof InputStreamPart){
-                InputStreamPart isp = (InputStreamPart)p;
+            } else if (p instanceof InputStreamPart) {
+                InputStreamPart isp = (InputStreamPart) p;
                 builder.addBodyPart(new org.asynchttpclient.request.body.multipart.InputStreamPart(
                         isp.getName(),
                         isp.getInputStream(),
@@ -185,8 +186,18 @@ class ClosableAsyncAhcHttpClient implements AsyncHttpClient {
                         isp.getContentId(),
                         isp.getTransferEncoding()
                 ));
+            } else if (p instanceof FilePart) {
+                FilePart fp = (FilePart) p;
+                builder.addBodyPart(new org.asynchttpclient.request.body.multipart.FilePart(
+                        fp.getName(),
+                        fp.getFilePath().toFile(),
+                        fp.getContentType() != null ? fp.getContentType().getMimeType() : null,
+                        fp.getContentType() != null ? fp.getContentType().getCharset() : null,
+                        PathUtils.extractFileExtension(fp.getFilePath()),
+                        null,
+                        fp.getTransferEncoding()
+                ));
             }
         }
     }
-
 }

@@ -2,16 +2,16 @@ package com.imperva.shcf4j.request.body.multipart;
 
 import lombok.Getter;
 
-import java.util.Arrays;
+import java.nio.file.Path;
 
 @Getter
-public class ByteArrayPart extends PartBase {
+public class FilePart extends PartBase {
 
-    protected final byte[] bytes;
+    private final Path filePath;
 
-    ByteArrayPart(ByteArrayPartBuilder builder){
+    FilePart(FilePartBuilder builder){
         super(builder);
-        this.bytes = Arrays.copyOf(builder.bytes, builder.bytes.length);
+        this.filePath = builder.filePath;
     }
 
     @Override

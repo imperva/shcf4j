@@ -17,6 +17,6 @@ public class StringPart extends PartBase {
 
     @Override
     public String getTransferEncoding() {
-        return MIME.ENC_8BIT;
+        return super.getTransferEncoding() != null ? super.getTransferEncoding() : MIME.ENC_8BIT;
     }
 }

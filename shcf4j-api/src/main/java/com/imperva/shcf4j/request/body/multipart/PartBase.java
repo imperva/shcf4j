@@ -40,7 +40,7 @@ abstract class PartBase implements Part {
     private final List<Header> customHeaders;
 
 
-    protected PartBase(PartBuilder builder) {
+    protected PartBase(PartBuilder<?> builder) {
         this.name = builder.name;
         this.contentType = builder.contentType;
         this.transferEncoding = builder.transferEncoding;

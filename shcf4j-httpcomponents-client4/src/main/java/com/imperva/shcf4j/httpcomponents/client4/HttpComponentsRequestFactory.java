@@ -2,7 +2,9 @@ package com.imperva.shcf4j.httpcomponents.client4;
 
 import com.imperva.shcf4j.Header;
 import com.imperva.shcf4j.HttpRequest;
+import com.imperva.shcf4j.NotSupportedException;
 import com.imperva.shcf4j.request.body.multipart.ByteArrayPart;
+import com.imperva.shcf4j.request.body.multipart.FilePart;
 import com.imperva.shcf4j.request.body.multipart.InputStreamPart;
 import com.imperva.shcf4j.request.body.multipart.Part;
 import com.imperva.shcf4j.request.body.multipart.StringPart;
@@ -70,27 +72,48 @@ class HttpComponentsRequestFactory {
                 if (p instanceof StringPart) {
                     StringPart sp = (StringPart) p;
                     if (sp.getContentType() != null) {
-                        multipartBuilder.addTextBody(sp.getName(), sp.getValue(),
+                        multipartBuilder.addTextBody(
+                                sp.getName(),
+                                sp.getValue(),
                                 ContentType.create(sp.getContentType().getMimeType(), sp.getContentType().getCharset()));
-                    } else {
+                    } else { // Part content-type is null
                         multipartBuilder.addTextBody(sp.getName(), sp.getValue());
                     }
                 } else if (p instanceof ByteArrayPart) {
                     ByteArrayPart bap = (ByteArrayPart) p;
                     if (bap.getContentType() != null) {
-                        multipartBuilder.addBinaryBody(bap.getName(), bap.getBytes(),
-                                ContentType.create(bap.getContentType().getMimeType(), bap.getContentType().getCharset()), null);
-                    } else {
+                        multipartBuilder.addBinaryBody(
+                                bap.getName(),
+                                bap.getBytes(),
+                                ContentType.create(bap.getContentType().getMimeType(), bap.getContentType().getCharset()),
+                                null);
+                    } else { // Part content-type is null
                         multipartBuilder.addBinaryBody(bap.getName(), bap.getBytes());
                     }
                 } else if (p instanceof InputStreamPart) {
                     InputStreamPart isp = (InputStreamPart) p;
-                    if (isp.getContentType() != null){
-                        multipartBuilder.addBinaryBody(isp.getName(), isp.getInputStream(), ContentType.create(isp.getContentType().getMimeType(), isp.getContentType().getCharset()), null);
-                    } else {
+                    if (isp.getContentType() != null) {
+                        multipartBuilder.addBinaryBody(
+                                isp.getName(),
+                                isp.getInputStream(),
+                                ContentType.create(isp.getContentType().getMimeType(), isp.getContentType().getCharset()),
+                                null);
+                    } else { // Part content-type is null
                         multipartBuilder.addBinaryBody(isp.getName(), isp.getInputStream());
                     }
-
+                } else if (p instanceof FilePart) {
+                    FilePart fp = (FilePart) p;
+                    if (fp.getContentType() != null) {
+                        multipartBuilder.addBinaryBody(
+                                fp.getName(),
+                                fp.getFilePath().toFile(),
+                                ContentType.create(fp.getContentType().getMimeType(), fp.getContentType().getCharset()),
+                                null);
+                    } else { // Part content-type is null
+                        multipartBuilder.addBinaryBody(fp.getName(), fp.getFilePath().toFile());
+                    }
+                } else {
+                    throw new NotSupportedException("An unknown part type received: " + p);
                 }
             }
             return multipartBuilder.build();

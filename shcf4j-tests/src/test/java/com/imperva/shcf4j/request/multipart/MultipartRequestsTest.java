@@ -6,12 +6,12 @@ import com.imperva.shcf4j.HttpRequestBuilder;
 import com.imperva.shcf4j.HttpResponse;
 import com.imperva.shcf4j.entity.ContentType;
 import com.imperva.shcf4j.request.body.multipart.PartBuilder;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.nio.file.Paths;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aMultipart;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -19,6 +19,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.any;
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class MultipartRequestsTest extends HttpClientBaseTest {
 
@@ -54,8 +55,7 @@ public abstract class MultipartRequestsTest extends HttpClientBaseTest {
 
         HttpResponse response = execute(HttpClientBaseTest.HOST, request);
 
-        Assert.assertEquals("Response code is wrong",
-                HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
+        assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpURLConnection.HTTP_OK);
     }
 
     @Test
@@ -94,8 +94,7 @@ public abstract class MultipartRequestsTest extends HttpClientBaseTest {
 
         HttpResponse response = execute(HttpClientBaseTest.HOST, request);
 
-        Assert.assertEquals("Response code is wrong",
-                HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
+        assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpURLConnection.HTTP_OK);
     }
 
     @Test
@@ -123,8 +122,7 @@ public abstract class MultipartRequestsTest extends HttpClientBaseTest {
 
         HttpResponse response = execute(HttpClientBaseTest.HOST, request);
 
-        Assert.assertEquals("Response code is wrong",
-                HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
+        assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpURLConnection.HTTP_OK);
     }
 
     @Test
@@ -145,14 +143,13 @@ public abstract class MultipartRequestsTest extends HttpClientBaseTest {
                         .part(PartBuilder
                                 .inputStreamPart()
                                 .name(partName)
-                                .inputStream(new ByteArrayInputStream( partBody.getBytes() ))
+                                .inputStream(new ByteArrayInputStream(partBody.getBytes()))
                                 .build())
                         .build();
 
         HttpResponse response = execute(HttpClientBaseTest.HOST, request);
 
-        Assert.assertEquals("Response code is wrong",
-                HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
+        assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpURLConnection.HTTP_OK);
     }
 
 
@@ -174,14 +171,41 @@ public abstract class MultipartRequestsTest extends HttpClientBaseTest {
                         .part(PartBuilder
                                 .inputStreamPart()
                                 .name(partName)
-                                .inputStream(new ByteArrayInputStream( partBody.getBytes() ))
+                                .inputStream(new ByteArrayInputStream(partBody.getBytes()))
                                 .contentType(ContentType.createTextPlain())
                                 .build())
                         .build();
 
         HttpResponse response = execute(HttpClientBaseTest.HOST, request);
 
-        Assert.assertEquals("Response code is wrong",
-                HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
+        assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpURLConnection.HTTP_OK);
+    }
+
+
+    @Test
+    public void filePartTest() throws Exception {
+        instanceRule.stubFor(any(urlPathEqualTo(resourceUrl))
+                .withMultipartRequestBody(
+                        aMultipart()
+                                .withName(partName)
+                                .withHeader("Content-Type", equalTo("application/octet-stream"))
+                                .withHeader("Content-Transfer-Encoding", equalTo("binary"))
+                                .withBody(equalTo(partBody))
+                )
+                .willReturn(aResponse()));
+
+        HttpRequest request =
+                HttpRequestBuilder
+                        .POST(URI.create(resourceUrl))
+                        .part(PartBuilder
+                                .filePart()
+                                .name(partName)
+                                .filePath(Paths.get(getClass().getClassLoader()
+                                        .getResource("multipart/payload-file.tmp").toURI()))
+                                .build())
+                        .build();
+
+        HttpResponse response = execute(HttpClientBaseTest.HOST, request);
+        assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpURLConnection.HTTP_OK);
     }
 }

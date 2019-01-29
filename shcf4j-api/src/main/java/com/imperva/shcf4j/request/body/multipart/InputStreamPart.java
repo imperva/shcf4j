@@ -18,6 +18,6 @@ public class InputStreamPart extends PartBase {
 
     @Override
     public String getTransferEncoding() {
-        return MIME.ENC_BINARY;
+        return super.getTransferEncoding() != null ? super.getTransferEncoding() : MIME.ENC_BINARY;
     }
 }

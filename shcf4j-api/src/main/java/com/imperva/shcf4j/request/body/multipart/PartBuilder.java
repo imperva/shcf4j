@@ -33,6 +33,10 @@ public abstract class PartBuilder<T extends PartBuilder<T>> {
         return new InputStreamPartBuilder();
     }
 
+    public static FilePartBuilder filePart() {
+        return new FilePartBuilder();
+    }
+
     @SuppressWarnings("unchecked")
     private T asDerivedType() {
         return (T) this;
