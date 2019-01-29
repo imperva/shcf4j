@@ -6,4 +6,5 @@ dependencies {
     compileOnly ( libraries.lombok )
     annotationProcessor ( libraries.lombok )
     testCompile ( libraries.junit )
+    testCompile ( libraries.assertj )
 }
