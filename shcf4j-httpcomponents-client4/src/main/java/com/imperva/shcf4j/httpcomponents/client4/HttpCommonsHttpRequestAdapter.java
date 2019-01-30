@@ -2,6 +2,7 @@ package com.imperva.shcf4j.httpcomponents.client4;
 
 import com.imperva.shcf4j.Header;
 import com.imperva.shcf4j.MutableHttpRequest;
+import com.imperva.shcf4j.request.body.multipart.Part;
 import org.apache.http.HttpRequest;
 
 import java.io.InputStream;
@@ -86,6 +87,11 @@ class HttpCommonsHttpRequestAdapter implements MutableHttpRequest {
 
     @Override
     public Charset getCharset() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<Part> getParts() {
         throw new UnsupportedOperationException();
     }
 

@@ -1,5 +1,9 @@
 package com.imperva.shcf4j;
 
+import com.imperva.shcf4j.request.body.multipart.Part;
+import lombok.AccessLevel;
+import lombok.Getter;
+
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.ByteBuffer;
@@ -8,9 +12,10 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+@Getter
 class HttpRequestImpl implements HttpRequest {
 
+    @Getter(AccessLevel.NONE)
     private final List<Header> headers;
     private final SupportedHttpMethod httpMethod;
     private final URI uri;
@@ -20,6 +25,7 @@ class HttpRequestImpl implements HttpRequest {
     private final ByteBuffer byteBufferData;
     private final InputStream inputStreamData;
     private final Charset charset;
+    private final List<Part> parts;
 
 
     protected HttpRequestImpl(HttpRequestBuilder builder){
@@ -32,6 +38,7 @@ class HttpRequestImpl implements HttpRequest {
         this.byteBufferData = builder.byteBufferData;
         this.inputStreamData = builder.inputStreamData;
         this.charset = builder.charset;
+        this.parts = builder.parts;
     }
 
     @Override
@@ -52,35 +59,4 @@ class HttpRequestImpl implements HttpRequest {
         return headers;
     }
 
-    public SupportedHttpMethod getHttpMethod() {
-        return httpMethod;
-    }
-
-    public URI getUri() {
-        return uri;
-    }
-
-    public Path getFilePath() {
-        return filePath;
-    }
-
-    public byte[] getByteData() {
-        return byteData;
-    }
-
-    public String getStringData() {
-        return stringData;
-    }
-
-    public ByteBuffer getByteBufferData() {
-        return byteBufferData;
-    }
-
-    public InputStream getInputStreamData() {
-        return inputStreamData;
-    }
-
-    public Charset getCharset() {
-        return charset;
-    }
 }
