@@ -4,16 +4,16 @@ apply from: rootProject.file('gradle/release-bintray.gradle')
 description = 'An implementation of SHCF4J that performs an ' +
         'adaptation to Apache HTTP client library, version 4.x'
 
-ext {
-    httpcomponentsVersion =     '4.5.6'
-    httpasyncclientVersion =    '4.1.4'
-}
+ext.libraryVersions = [
+        httpcomponents  : '4.5.6',
+        httpasyncclient : '4.1.4'
+]
 
 dependencies {
     compile project(':shcf4j-api')
-    compile group: 'org.apache.httpcomponents', name: 'httpclient', version:"${httpcomponentsVersion}"
-    compile group: 'org.apache.httpcomponents', name: 'httpmime',   version:"${httpcomponentsVersion}"
-    compile group: 'org.apache.httpcomponents', name: 'httpasyncclient', version:"${httpasyncclientVersion}"
+    implementation group: 'org.apache.httpcomponents', name: 'httpclient',      version:"${libraryVersions.httpcomponents}"
+    implementation group: 'org.apache.httpcomponents', name: 'httpmime',        version:"${libraryVersions.httpcomponents}"
+    implementation group: 'org.apache.httpcomponents', name: 'httpasyncclient', version:"${libraryVersions.httpasyncclient}"
     
     testRuntime group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
     testRuntime project(':shcf4j-tests').sourceSets.test.runtimeClasspath

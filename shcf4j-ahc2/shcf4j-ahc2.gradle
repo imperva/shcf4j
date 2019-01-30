@@ -4,14 +4,15 @@ apply from: rootProject.file('gradle/release-bintray.gradle')
 description = 'An implementation of SHCF4J that performs an ' +
         'adaptation to Async HTTP Client (AHC) library, version 2.x'
 
-ext {
-    ahcVersion = '2.6.0'
-}
+ext.libraryVersions = [ 
+    ahc : '2.6.0'
+]
 
 
 dependencies {
-    compile project(':shcf4j-api')
-    compile group: 'org.asynchttpclient', name: 'async-http-client', version: "${ahcVersion}"
+    api project(':shcf4j-api')
+    implementation "org.asynchttpclient:async-http-client:${libraryVersions.ahc}"
+    
     testCompile ( libraries.wiremock )
     testCompile ( libraries.junit )
     testCompile ( libraries.assertj )
