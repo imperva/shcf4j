@@ -19,6 +19,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.any;
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class MultipartRequestsTest extends HttpClientBaseTest {
@@ -115,7 +116,7 @@ public abstract class MultipartRequestsTest extends HttpClientBaseTest {
                         .part(PartBuilder
                                 .byteArrayPart()
                                 .name(partName)
-                                .bytes(partBody.getBytes())
+                                .bytes(partBody.getBytes(UTF_8))
                                 .contentType(ContentType.createTextPlain())
                                 .build())
                         .build();
@@ -137,13 +138,15 @@ public abstract class MultipartRequestsTest extends HttpClientBaseTest {
                 )
                 .willReturn(aResponse()));
 
+        byte[] body = partBody.getBytes(UTF_8);
+
         HttpRequest request =
                 HttpRequestBuilder
                         .POST(URI.create(resourceUrl))
                         .part(PartBuilder
                                 .inputStreamPart()
                                 .name(partName)
-                                .inputStream(new ByteArrayInputStream(partBody.getBytes()))
+                                .inputStream(new ByteArrayInputStream(body))
                                 .build())
                         .build();
 
@@ -165,13 +168,14 @@ public abstract class MultipartRequestsTest extends HttpClientBaseTest {
                 )
                 .willReturn(aResponse()));
 
+        byte[] body = partBody.getBytes(UTF_8);
         HttpRequest request =
                 HttpRequestBuilder
                         .POST(URI.create(resourceUrl))
                         .part(PartBuilder
                                 .inputStreamPart()
                                 .name(partName)
-                                .inputStream(new ByteArrayInputStream(partBody.getBytes()))
+                                .inputStream(new ByteArrayInputStream(body))
                                 .contentType(ContentType.createTextPlain())
                                 .build())
                         .build();
@@ -206,6 +210,56 @@ public abstract class MultipartRequestsTest extends HttpClientBaseTest {
                         .build();
 
         HttpResponse response = execute(HttpClientBaseTest.HOST, request);
+        assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpURLConnection.HTTP_OK);
+    }
+
+
+    @Test
+    public void customHeaderInMultipartRequestTest() {
+
+        String customHeaderName1 = "X-My-Custom-Header-1";
+        String customHeaderValue1 = "X-My-Custom-Header-Value-1";
+        String customHeaderName2 = "X-My-Custom-Header-2";
+        String customHeaderValue2 = "X-My-Custom-Header-Value-2";
+
+        instanceRule.stubFor(any(urlPathEqualTo(resourceUrl))
+                .withMultipartRequestBody(
+                        aMultipart()
+                                .withName(partName)
+                                .withHeader("Content-Type", containing("charset"))
+                                .withHeader(customHeaderName1, equalTo(customHeaderValue1))
+                                .withBody(equalTo(partBody))
+                )
+                .withMultipartRequestBody(
+                        aMultipart()
+                                .withName(partName + '2')
+                                .withHeader("Content-Type", containing("charset"))
+                                .withHeader(customHeaderName2, equalTo(customHeaderValue2))
+                                .withBody(equalTo(partBody))
+                )
+                .willReturn(aResponse()));
+
+        HttpRequest request =
+                HttpRequestBuilder
+                        .POST(URI.create(resourceUrl))
+                        .part(PartBuilder
+                                .stringPart()
+                                .name(partName)
+                                .value(partBody)
+                                .contentType(ContentType.createTextPlain())
+                                .customHeader(customHeaderName1, customHeaderValue1)
+                                .build())
+                        .part(PartBuilder
+                                .stringPart()
+                                .name(partName + '2')
+                                .value(partBody)
+                                .contentType(ContentType.createTextPlain())
+                                .customHeader(customHeaderName2, customHeaderValue2)
+                                .build())
+                        .build();
+
+        HttpResponse response = execute(HttpClientBaseTest.HOST, request);
+
         assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpURLConnection.HTTP_OK);
     }
 }

@@ -4,6 +4,8 @@ import org.junit.Test;
 
 import java.nio.charset.Charset;
 
+import static java.nio.charset.StandardCharsets.ISO_8859_1;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.*;
 
 public class ContentTypeTest {
@@ -11,31 +13,31 @@ public class ContentTypeTest {
     @Test
     public void createApplicationXMLTest() {
         ContentType contentType = ContentType.createApplicationXML();
-        performActualComparison(contentType, "application/xml", ContentType.ISO_8859_1);
+        performActualComparison(contentType, "application/xml", ISO_8859_1);
     }
 
     @Test
     public void createApplicationJSONTest() {
         ContentType contentType = ContentType.createApplicationJSON();
-        performActualComparison(contentType, "application/json", ContentType.UTF_8);
+        performActualComparison(contentType, "application/json", UTF_8);
     }
 
     @Test
     public void createTextPlainTest() {
         ContentType contentType = ContentType.createTextPlain();
-        performActualComparison(contentType, "text/plain", ContentType.ISO_8859_1);
+        performActualComparison(contentType, "text/plain", ISO_8859_1);
     }
 
     @Test
     public void createTextXMLTest() {
         ContentType contentType = ContentType.createTextXML();
-        performActualComparison(contentType, "text/xml", ContentType.ISO_8859_1);
+        performActualComparison(contentType, "text/xml", ISO_8859_1);
     }
 
     @Test
     public void createApplicationFormUrlEncodedTest() {
         ContentType contentType = ContentType.createApplicationFormUrlEncoded();
-        performActualComparison(contentType, "application/x-www-form-urlencoded", ContentType.ISO_8859_1);
+        performActualComparison(contentType, "application/x-www-form-urlencoded", ISO_8859_1);
     }
 
     @Test

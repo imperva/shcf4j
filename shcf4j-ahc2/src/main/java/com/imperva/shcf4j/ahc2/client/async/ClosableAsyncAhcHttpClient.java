@@ -4,6 +4,7 @@ import com.imperva.shcf4j.Header;
 import com.imperva.shcf4j.HttpHost;
 import com.imperva.shcf4j.HttpRequest;
 import com.imperva.shcf4j.HttpResponse;
+import com.imperva.shcf4j.NotSupportedException;
 import com.imperva.shcf4j.client.AsyncHttpClient;
 import com.imperva.shcf4j.client.CredentialsProvider;
 import com.imperva.shcf4j.client.config.RequestConfig;
@@ -153,30 +154,30 @@ class ClosableAsyncAhcHttpClient implements AsyncHttpClient {
 
     private static void handleMultiPart(List<Part> parts, RequestBuilder builder) {
         for (Part p : parts) {
+            org.asynchttpclient.request.body.multipart.PartBase partBase;
+
             if (p instanceof StringPart) {
                 StringPart sp = (StringPart) p;
-                builder.addBodyPart(new org.asynchttpclient.request.body.multipart.StringPart(
+                partBase = new org.asynchttpclient.request.body.multipart.StringPart(
                         sp.getName(),
                         sp.getValue(),
                         sp.getContentType() != null ? sp.getContentType().getMimeType() : null,
                         sp.getContentType() != null ? sp.getContentType().getCharset() : null,
                         sp.getContentId(),
-                        sp.getTransferEncoding()
-                ));
+                        sp.getTransferEncoding());
             } else if (p instanceof ByteArrayPart) {
                 ByteArrayPart bap = (ByteArrayPart) p;
-                builder.addBodyPart(new org.asynchttpclient.request.body.multipart.ByteArrayPart(
+                partBase = new org.asynchttpclient.request.body.multipart.ByteArrayPart(
                         bap.getName(),
                         bap.getBytes(),
                         bap.getContentType() != null ? bap.getContentType().getMimeType() : null,
                         bap.getContentType() != null ? bap.getContentType().getCharset() : null,
                         null,
                         null,
-                        bap.getTransferEncoding()
-                ));
+                        bap.getTransferEncoding());
             } else if (p instanceof InputStreamPart) {
                 InputStreamPart isp = (InputStreamPart) p;
-                builder.addBodyPart(new org.asynchttpclient.request.body.multipart.InputStreamPart(
+                partBase = new org.asynchttpclient.request.body.multipart.InputStreamPart(
                         isp.getName(),
                         isp.getInputStream(),
                         null,
@@ -184,20 +185,27 @@ class ClosableAsyncAhcHttpClient implements AsyncHttpClient {
                         isp.getContentType() != null ? isp.getContentType().getMimeType() : null,
                         isp.getContentType() != null ? isp.getContentType().getCharset() : null,
                         isp.getContentId(),
-                        isp.getTransferEncoding()
-                ));
+                        isp.getTransferEncoding());
             } else if (p instanceof FilePart) {
                 FilePart fp = (FilePart) p;
-                builder.addBodyPart(new org.asynchttpclient.request.body.multipart.FilePart(
+                partBase = new org.asynchttpclient.request.body.multipart.FilePart(
                         fp.getName(),
                         fp.getFilePath().toFile(),
                         fp.getContentType() != null ? fp.getContentType().getMimeType() : null,
                         fp.getContentType() != null ? fp.getContentType().getCharset() : null,
                         PathUtils.extractFileExtension(fp.getFilePath()),
                         null,
-                        fp.getTransferEncoding()
-                ));
+                        fp.getTransferEncoding());
+            } else {
+                throw new NotSupportedException("An unknown part type received: " + p);
             }
+
+            partBase.setDispositionType(p.getDispositionType());
+
+            for (Header h : p.getCustomHeaders()){
+                partBase.addCustomHeader(h.getName(), h.getValue());
+            }
+            builder.addBodyPart(partBase);
         }
     }
 }

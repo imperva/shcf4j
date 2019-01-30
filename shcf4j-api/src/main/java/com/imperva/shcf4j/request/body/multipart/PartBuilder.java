@@ -73,6 +73,11 @@ public abstract class PartBuilder<T extends PartBuilder<T>> {
         return asDerivedType();
     }
 
+    public T customHeader(String headerName, String headerValue) {
+        this.customHeaders.add(Header.builder().name(headerName).value(headerValue).build());
+        return asDerivedType();
+    }
+
     public T customHeaders(Collection<Header> customHeaders) {
         this.customHeaders.addAll(customHeaders);
         return asDerivedType();

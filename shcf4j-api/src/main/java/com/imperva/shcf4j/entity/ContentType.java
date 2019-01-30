@@ -5,6 +5,9 @@ import lombok.Value;
 
 import java.nio.charset.Charset;
 
+import static java.nio.charset.StandardCharsets.ISO_8859_1;
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 /**
  * <b>ContentType</b>
  *
@@ -17,10 +20,6 @@ import java.nio.charset.Charset;
 @Builder
 @Value
 public class ContentType {
-
-    public static final Charset UTF_8 = Charset.forName("UTF-8");
-    public static final Charset ASCII = Charset.forName("US-ASCII");
-    public static final Charset ISO_8859_1 = Charset.forName("ISO-8859-1");
 
     private final String mimeType;
 
