@@ -1,5 +1,7 @@
 package com.imperva.shcf4j;
 
+import com.imperva.shcf4j.request.body.multipart.Part;
+
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -22,7 +24,7 @@ public class HttpRequestBuilder {
 
     protected List<Header> headers = new LinkedList<>();
     protected HttpRequest.SupportedHttpMethod httpMethod;
-    protected URI uri;
+    protected URI uri = URI.create("http://localhost"); //Default value
     protected Path filePath;
     protected byte[] byteData;
     protected String stringData;
@@ -31,6 +33,8 @@ public class HttpRequestBuilder {
     protected Charset charset = Charset.forName("UTF-8");
     // keep parameters order
     protected Map<String, String> queryParams = new LinkedHashMap<>();
+    protected List<Part> parts = new LinkedList<>();
+
 
     private HttpRequestBuilder() { }
 
@@ -155,6 +159,16 @@ public class HttpRequestBuilder {
             // Impossible to happen, since we pass a name of a charset that was already exists
             // Java 10 have an overload that gets the charset itself
         }
+        return this;
+    }
+
+    public HttpRequestBuilder part(Part part){
+        this.parts.add(part);
+        return this;
+    }
+
+    public HttpRequestBuilder parts(Collection<Part> parts){
+        this.parts.addAll(parts);
         return this;
     }
 

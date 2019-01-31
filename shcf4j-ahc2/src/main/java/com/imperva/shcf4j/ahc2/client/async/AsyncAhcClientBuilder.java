@@ -3,15 +3,19 @@ package com.imperva.shcf4j.ahc2.client.async;
 import com.imperva.shcf4j.AsyncHttpClientBuilder;
 import com.imperva.shcf4j.HttpHost;
 import com.imperva.shcf4j.MutableHttpRequest;
+import com.imperva.shcf4j.ahc2.client.config.IgnoreAllCookieStore;
 import com.imperva.shcf4j.client.AsyncHttpClient;
 import com.imperva.shcf4j.client.CredentialsProvider;
+import com.imperva.shcf4j.client.config.CookieSpecs;
 import com.imperva.shcf4j.client.config.RequestConfig;
+import com.imperva.shcf4j.conn.ssl.AllowAllHostnameVerifier;
 import com.imperva.shcf4j.conn.ssl.SSLSessionStrategy;
 import com.imperva.shcf4j.nio.reactor.IOReactorConfig;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.SslProvider;
 import org.asynchttpclient.DefaultAsyncHttpClient;
 import org.asynchttpclient.DefaultAsyncHttpClientConfig;
+import org.asynchttpclient.cookie.ThreadSafeCookieStore;
 
 import javax.net.ssl.SSLException;
 import java.util.Iterator;
@@ -62,11 +66,10 @@ public class AsyncAhcClientBuilder implements AsyncHttpClientBuilder {
                         .sslProvider(SslProvider.JDK)
                         .keyManager(strategy.getKeyManagerFactory())
                         .trustManager(strategy.getTrustManagerFactory())
-                        .trustManager()
                         .build());
 
-        this.configBuilder.setUseInsecureTrustManager(strategy.getTrustManagerFactory() == null);
-
+        boolean skipHostnameVerification = strategy.getHostnameVerifier() instanceof AllowAllHostnameVerifier;
+        this.configBuilder.setDisableHttpsEndpointIdentificationAlgorithm(skipHostnameVerification);
         return this;
     }
 
@@ -78,6 +81,7 @@ public class AsyncAhcClientBuilder implements AsyncHttpClientBuilder {
             HttpHost proxy = config.getProxy();
             this.configBuilder.setProxyServer(proxyServer(proxy.getHostname(), proxy.getPort()));
         }
+        handleCookieSpec(config.getCookieSpec());
 
         return this;
     }
@@ -118,11 +122,25 @@ public class AsyncAhcClientBuilder implements AsyncHttpClientBuilder {
 
             @Override
             public T next() {
-                if (hasNext()){
+                if (hasNext()) {
                     return arr[index++];
                 }
                 throw new NoSuchElementException();
             }
         };
+    }
+
+
+    private void handleCookieSpec(CookieSpecs cookieSpec) {
+        switch (cookieSpec) {
+            case IGNORE_COOKIES:
+                this.configBuilder.setCookieStore(IgnoreAllCookieStore.getInstance());
+                break;
+            case STANDARD_RFC_6265:
+                this.configBuilder.setCookieStore(new ThreadSafeCookieStore());
+                break;
+            default:
+                throw new RuntimeException("Not supported Cookie spec: " + cookieSpec);
+        }
     }
 }

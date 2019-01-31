@@ -2,6 +2,7 @@ package com.imperva.shcf4j.ahc2.client.async;
 
 import com.imperva.shcf4j.Header;
 import com.imperva.shcf4j.MutableHttpRequest;
+import com.imperva.shcf4j.request.body.multipart.Part;
 import org.asynchttpclient.Request;
 
 import java.io.InputStream;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
  * <b>AhcHttpRequestAdapter</b>
  *
  * <p>
- *     Adapts {@link org.asynchttpclient.Request} to {@link com.imperva.shcf4j.MutableHttpRequest}
+ * Adapts {@link org.asynchttpclient.Request} to {@link com.imperva.shcf4j.MutableHttpRequest}
  * </p>
  *
  * @author maxim.kirilov
@@ -93,6 +94,11 @@ public class AhcHttpRequestAdapter implements MutableHttpRequest {
     @Override
     public Charset getCharset() {
         return request.getCharset();
+    }
+
+    @Override
+    public List<Part> getParts() {
+        throw new UnsupportedOperationException();
     }
 
     @Override
