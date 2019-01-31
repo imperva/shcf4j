@@ -6,12 +6,9 @@ import com.imperva.shcf4j.client.AsyncHttpClient;
 import com.imperva.shcf4j.client.CredentialsProvider;
 import com.imperva.shcf4j.client.config.ConnectionConfig;
 import com.imperva.shcf4j.client.config.RequestConfig;
-import com.imperva.shcf4j.conn.routing.HttpRoutePlanner;
 import com.imperva.shcf4j.conn.ssl.SSLSessionStrategy;
 import com.imperva.shcf4j.nio.reactor.IOReactorConfig;
 import org.apache.http.HttpRequest;
-import org.apache.http.impl.conn.DefaultRoutePlanner;
-import org.apache.http.impl.conn.DefaultSchemePortResolver;
 import org.apache.http.nio.conn.ssl.SSLIOSessionStrategy;
 import org.apache.http.protocol.HttpContext;
 
@@ -67,9 +64,6 @@ class HttpComponentsAsyncHttpClientBuilder implements com.imperva.shcf4j.AsyncHt
         this.asyncClientBuilder = asyncClient;
     }
 
-    protected HttpComponentsAsyncHttpClientBuilder() {
-        this(org.apache.http.impl.nio.client.HttpAsyncClientBuilder.create());
-    }
 
     /**
      * Assigns maximum total connection value.
@@ -230,13 +224,14 @@ class HttpComponentsAsyncHttpClientBuilder implements com.imperva.shcf4j.AsyncHt
      * @param proxy object for every outgoing request
      * @return {@code SyncHttpClientBuilder}
      */
+    @Override
     public HttpComponentsAsyncHttpClientBuilder setProxy(HttpHost proxy) {
         Objects.requireNonNull(proxy, "proxy");
         asyncClientBuilder.setProxy(ConversionUtils.convert(proxy));
         return this;
     }
 
-
+    @Override
     public HttpComponentsAsyncHttpClientBuilder setDefaultCredentialsProvider(CredentialsProvider cp) {
         Objects.requireNonNull(cp, "cp");
         asyncClientBuilder.setDefaultCredentialsProvider(ConversionUtils.convert(cp));
@@ -252,27 +247,7 @@ class HttpComponentsAsyncHttpClientBuilder implements com.imperva.shcf4j.AsyncHt
         return this;
     }
 
-    public HttpComponentsAsyncHttpClientBuilder setRoutePlanner(final HttpRoutePlanner routePlanner) {
-        Objects.requireNonNull(routePlanner, "routePlanner");
-        final org.apache.http.conn.routing.HttpRoutePlanner defaultRoutePlanner =
-                new DefaultRoutePlanner(DefaultSchemePortResolver.INSTANCE);
-        asyncClientBuilder.setRoutePlanner((target, request, context) -> {
-
-            HttpHost t1 =
-                    HttpHost
-                            .builder()
-                            .hostname(target.getHostName())
-                            .schemeName(target.getSchemeName())
-                            .port(target.getPort())
-                            .build();
-
-            t1 = routePlanner.determineRoute(t1, new HttpMessageWrapper(request));
-
-            return defaultRoutePlanner.determineRoute(ConversionUtils.convert(t1), request, context);
-        });
-        return this;
-    }
-
+    @Override
     public AsyncHttpClient build() {
         return new ClosableAsyncHttpClient(this.asyncClientBuilder.build());
     }

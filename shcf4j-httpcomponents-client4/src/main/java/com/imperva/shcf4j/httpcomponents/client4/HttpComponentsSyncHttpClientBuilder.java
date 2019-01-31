@@ -6,14 +6,11 @@ import com.imperva.shcf4j.client.CredentialsProvider;
 import com.imperva.shcf4j.client.SyncHttpClient;
 import com.imperva.shcf4j.client.config.RequestConfig;
 import com.imperva.shcf4j.config.SocketConfig;
-import com.imperva.shcf4j.conn.routing.HttpRoutePlanner;
 import com.imperva.shcf4j.conn.ssl.SSLSessionStrategy;
 import org.apache.http.HttpRequest;
 import org.apache.http.conn.socket.LayeredConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
-import org.apache.http.impl.conn.DefaultRoutePlanner;
-import org.apache.http.impl.conn.DefaultSchemePortResolver;
 import org.apache.http.protocol.HttpContext;
 
 import javax.net.ssl.SSLContext;
@@ -214,32 +211,6 @@ class HttpComponentsSyncHttpClientBuilder implements com.imperva.shcf4j.SyncHttp
     public HttpComponentsSyncHttpClientBuilder setDefaultCredentialsProvider(CredentialsProvider cp) {
         Objects.requireNonNull(cp, "cp");
         builder.setDefaultCredentialsProvider(ConversionUtils.convert(cp));
-        return this;
-    }
-
-
-    /**
-     * @param routePlanner for outgoing http requests
-     * @return {@code SyncHttpClientBuilder}
-     */
-    public HttpComponentsSyncHttpClientBuilder setRoutePlanner(final HttpRoutePlanner routePlanner) {
-        Objects.requireNonNull(routePlanner, "routePlanner");
-        final org.apache.http.conn.routing.HttpRoutePlanner defaultRoutePlanner =
-                new DefaultRoutePlanner(DefaultSchemePortResolver.INSTANCE);
-        builder.setRoutePlanner((target, request, context) -> {
-
-            HttpHost t1 =
-                    HttpHost
-                            .builder()
-                            .hostname(target.getHostName())
-                            .schemeName(target.getSchemeName())
-                            .port(target.getPort())
-                            .build();
-
-            t1 = routePlanner.determineRoute(t1, new HttpMessageWrapper(request));
-
-            return defaultRoutePlanner.determineRoute(ConversionUtils.convert(t1), request, context);
-        });
         return this;
     }
 
