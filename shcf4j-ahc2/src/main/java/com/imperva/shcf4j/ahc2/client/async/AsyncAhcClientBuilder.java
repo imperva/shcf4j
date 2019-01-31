@@ -8,6 +8,7 @@ import com.imperva.shcf4j.client.AsyncHttpClient;
 import com.imperva.shcf4j.client.CredentialsProvider;
 import com.imperva.shcf4j.client.config.CookieSpecs;
 import com.imperva.shcf4j.client.config.RequestConfig;
+import com.imperva.shcf4j.conn.ssl.AllowAllHostnameVerifier;
 import com.imperva.shcf4j.conn.ssl.SSLSessionStrategy;
 import com.imperva.shcf4j.nio.reactor.IOReactorConfig;
 import io.netty.handler.ssl.SslContextBuilder;
@@ -65,11 +66,10 @@ public class AsyncAhcClientBuilder implements AsyncHttpClientBuilder {
                         .sslProvider(SslProvider.JDK)
                         .keyManager(strategy.getKeyManagerFactory())
                         .trustManager(strategy.getTrustManagerFactory())
-                        .trustManager()
                         .build());
 
-        this.configBuilder.setUseInsecureTrustManager(strategy.getTrustManagerFactory() == null);
-
+        boolean skipHostnameVerification = strategy.getHostnameVerifier() instanceof AllowAllHostnameVerifier;
+        this.configBuilder.setDisableHttpsEndpointIdentificationAlgorithm(skipHostnameVerification);
         return this;
     }
 

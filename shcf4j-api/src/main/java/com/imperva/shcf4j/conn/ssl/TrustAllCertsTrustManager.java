@@ -5,7 +5,7 @@ import javax.net.ssl.X509ExtendedTrustManager;
 import java.net.Socket;
 import java.security.cert.X509Certificate;
 
-public class TrustAllCertsTrustManager extends X509ExtendedTrustManager {
+class TrustAllCertsTrustManager extends X509ExtendedTrustManager {
 
     @Override
     public void checkClientTrusted(X509Certificate[] chain, String authType, Socket socket) {
