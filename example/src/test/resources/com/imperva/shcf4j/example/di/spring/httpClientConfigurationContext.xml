@@ -50,7 +50,6 @@
                 <constructor-arg name="localAddress">
                     <null />
                 </constructor-arg>
-                <constructor-arg name="staleConnectionCheckEnabled"             value="true"/>
                 <constructor-arg name="cookieSpec">
                     <null />
                 </constructor-arg>

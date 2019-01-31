@@ -8,14 +8,12 @@ repositories {
 }
 
 dependencies {
-    compile project(':shcf4j-api')
-    compile project(':shcf4j-httpcomponents-client4')
-//    compile project(':shcf4j-ahc2')
-    compile group: 'org.springframework', name: 'spring-core', version: '5.1.1.RELEASE'
-    compile group: 'org.springframework', name: 'spring-beans', version: '5.1.1.RELEASE'
-    compile group: 'org.springframework', name: 'spring-context', version: '5.1.1.RELEASE'
-    compile group: 'ch.qos.logback', name: 'logback-classic', version:'1.2.3'
+    testCompile project(':shcf4j-api')
+    testCompile project(':shcf4j-httpcomponents-client4')
+    testCompile group: 'org.springframework', name: 'spring-core', version: '5.1.1.RELEASE'
+    testCompile group: 'org.springframework', name: 'spring-beans', version: '5.1.1.RELEASE'
+    testCompile group: 'org.springframework', name: 'spring-context', version: '5.1.1.RELEASE'
+    testCompile group: 'ch.qos.logback', name: 'logback-classic', version:'1.2.3'
     compileOnly ( libraries.lombok )
     annotationProcessor ( libraries.lombok )
-    testCompile ( libraries.junit )
 }

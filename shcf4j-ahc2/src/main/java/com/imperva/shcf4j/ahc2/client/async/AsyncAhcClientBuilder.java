@@ -79,7 +79,7 @@ public class AsyncAhcClientBuilder implements AsyncHttpClientBuilder {
 
         if (config.getProxy() != null) {
             HttpHost proxy = config.getProxy();
-            this.configBuilder.setProxyServer(proxyServer(proxy.getHostname(), proxy.getPort()));
+            setProxy(proxy);
         }
         handleCookieSpec(config.getCookieSpec());
 
