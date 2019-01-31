@@ -2,10 +2,6 @@ apply from: rootProject.file( 'gradle/java-module.gradle' )
 
 test.onlyIf {false}
 
-//task packageTests(type: Jar) {
-////    classifier = 'tests'
-//    from sourceSets.test.output
-//}
 
 dependencies {
     testCompile project(':shcf4j-api')
