@@ -20,10 +20,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.net.HttpURLConnection;
+import java.util.function.Function;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public abstract class ProxyTest extends HttpClientBaseTest {
 
@@ -32,7 +34,7 @@ public abstract class ProxyTest extends HttpClientBaseTest {
 
 
     @Before
-    public void setupProxyServer() throws Exception{
+    public void setupProxyServer() throws Exception {
         proxyServer = new Server();
         ServerConnector proxyServerConnector = addHttpConnector(proxyServer);
 
@@ -53,7 +55,7 @@ public abstract class ProxyTest extends HttpClientBaseTest {
     }
 
     @After
-    public void stopProxyServer() throws Exception{
+    public void stopProxyServer() throws Exception {
         proxyServer.stop();
     }
 
@@ -91,11 +93,35 @@ public abstract class ProxyTest extends HttpClientBaseTest {
                 .build();
 
 
-
         HttpResponse response = execute(HttpClientBaseTest.HOST, request, ctx);
 
         Assert.assertEquals("Response code is wrong",
                 HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
+
+    }
+
+    @Test
+    public void globalConfigurationProxyTest() {
+        String uri = "/my/resource";
+        instanceRule.stubFor(get(urlEqualTo(uri))
+                .willReturn(
+                        aResponse()
+                                .withStatus(HttpURLConnection.HTTP_OK)
+                )
+        );
+
+        HttpRequest request =
+                HttpRequestBuilder
+                        .GET()
+                        .uri(uri)
+                        .build();
+
+
+        HttpResponse response =
+                execute(HttpClientBaseTest.HOST, request, Function.identity(), null,
+                        b -> b.setProxy(HttpHost.builder().hostname("localhost").port(proxyServerPort).build()));
+
+        assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpURLConnection.HTTP_OK);
 
     }
 
