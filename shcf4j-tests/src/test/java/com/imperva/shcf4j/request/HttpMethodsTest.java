@@ -62,6 +62,9 @@ public abstract class HttpMethodsTest extends HttpClientBaseTest {
         Assert.assertEquals("Response code is wrong",
                 HttpURLConnection.HTTP_OK, response.getStatusLine().getStatusCode());
 
+
+        assertThat(response.getAllHeaders().size()).isGreaterThan(1);
+
         Assert.assertEquals("Content Header is wrong",
                 "text/xml", response.getHeaders(HttpClientBaseTest.HEADER_CONTENT_TYPE).get(0).getValue());
 

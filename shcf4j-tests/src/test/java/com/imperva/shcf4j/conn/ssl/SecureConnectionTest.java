@@ -45,10 +45,12 @@ public abstract class SecureConnectionTest extends HttpClientBaseTest {
                         .header(HttpClientBaseTest.HEADER_ACCEPT, "text/xml")
                         .build();
 
-        DefaultSSLSessionStrategy sslSessionStrategy = new DefaultSSLSessionStrategy();
-
-        sslSessionStrategy.setHostnameVerifier(new AllowAllHostnameVerifier());
-        sslSessionStrategy.setTrustManagerFactory(InsecureTrustManagerFactory.INSTANCE);
+        SSLSessionStrategy sslSessionStrategy =
+                DefaultSSLSessionStrategy
+                        .builder()
+                        .hostnameVerifier(AllowAllHostnameVerifier.INSTANCE)
+                        .trustManagerFactory(InsecureTrustManagerFactory.INSTANCE)
+                        .build();
 
         HttpResponse response = execute(HttpClientBaseTest.SECURED_HOST, request, Function.identity(), null, builder -> {
             try {
@@ -79,15 +81,8 @@ public abstract class SecureConnectionTest extends HttpClientBaseTest {
                         .header(HttpClientBaseTest.HEADER_ACCEPT, "text/xml")
                         .build();
 
-        DefaultSSLSessionStrategy sslSessionStrategy = new DefaultSSLSessionStrategy();
 
-        execute(HttpClientBaseTest.SECURED_HOST, request, Function.identity(), null, builder -> {
-            try {
-                builder.setSSLSessionStrategy(sslSessionStrategy);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        execute(HttpClientBaseTest.SECURED_HOST, request);
 
     }
 }

@@ -1,0 +1,21 @@
+
+apply from: rootProject.file( 'gradle/java-module.gradle' )
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile project(':shcf4j-api')
+    testCompile project(':shcf4j-httpcomponents-client4')
+    testCompile group: 'org.springframework', name: 'spring-core', version: '5.1.1.RELEASE'
+    testCompile group: 'org.springframework', name: 'spring-beans', version: '5.1.1.RELEASE'
+    testCompile group: 'org.springframework', name: 'spring-context', version: '5.1.1.RELEASE'
+    testCompile group: 'org.springframework', name: 'spring-test', version: '5.1.1.RELEASE'
+    testCompile group: 'ch.qos.logback', name: 'logback-classic', version:'1.2.3'
+    testImplementation (libraries.junit)
+    testImplementation (libraries.assertj)
+    testImplementation (libraries.wiremock)
+}

@@ -2,7 +2,6 @@ apply from: rootProject.file( 'gradle/java-module.gradle' )
 
 test.onlyIf {false}
 
-
 dependencies {
     testCompile project(':shcf4j-api')
     testCompileOnly ( libraries.lombok )
