@@ -1,6 +1,7 @@
 package com.imperva.shcf4j;
 
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import org.junit.After;
 import org.junit.Rule;
 
 import java.net.URI;
@@ -40,4 +41,8 @@ public abstract class HttpClientBaseTest implements AbstractBasicTest {
                             URI.create(HttpClientBaseTest.class.getClassLoader().getResource("wiremock-keystore.jks").toString())).toString())
             );
 
+    @After
+    public void resetMocks(){
+        instanceRule.resetMappings();
+    }
 }

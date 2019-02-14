@@ -42,6 +42,7 @@ public class AsyncAhcClientBuilder implements AsyncHttpClientBuilder {
     public AsyncHttpClientBuilder setDefaultSocketConfig(IOReactorConfig ioReactorConfig) {
         Objects.requireNonNull(ioReactorConfig, "ioReactorConfig");
         this.configBuilder.setConnectTimeout(ioReactorConfig.getConnectTimeoutMilliseconds());
+        this.configBuilder.setRequestTimeout(ioReactorConfig.getSoTimeoutMilliseconds());
         this.configBuilder.setSoLinger(ioReactorConfig.getSoLingerSeconds());
         this.configBuilder.setSoRcvBuf(ioReactorConfig.getRcvBufSize());
         this.configBuilder.setSoSndBuf(ioReactorConfig.getSndBufSize());
@@ -75,13 +76,16 @@ public class AsyncAhcClientBuilder implements AsyncHttpClientBuilder {
 
     @Override
     public AsyncHttpClientBuilder setDefaultRequestConfig(RequestConfig config) {
-        this.configBuilder.setRequestTimeout(config.getSocketTimeoutMilliseconds());
+        this.configBuilder.setConnectTimeout(config.getConnectTimeoutMilliseconds());
+        this.configBuilder.setReadTimeout(config.getSocketTimeoutMilliseconds());
 
         if (config.getProxy() != null) {
             HttpHost proxy = config.getProxy();
             setProxy(proxy);
         }
         handleCookieSpec(config.getCookieSpec());
+        this.configBuilder.setMaxRedirects(config.getMaxRedirects());
+        this.configBuilder.setFollowRedirect(config.isRedirectsEnabled());
 
         return this;
     }
