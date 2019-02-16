@@ -83,11 +83,6 @@ configure(javaProjects()) {
     }
 }
 
-wrapper {
-    gradleVersion = '4.10.2'
-}
-
-
 def publishedProjects = javaProjects()
 
 task jacocoRootReport(type: JacocoReport, group: 'Coverage reports') {
