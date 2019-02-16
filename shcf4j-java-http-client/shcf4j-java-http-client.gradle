@@ -1,0 +1,19 @@
+apply from: rootProject.file( 'gradle/java-module.gradle' )
+apply from: rootProject.file('gradle/release-bintray.gradle')
+
+description = 'An implementation of SHCF4J that performs an ' +
+        'adaptation to JDK11 HTTP client library'
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+dependencies {
+    compile project(':shcf4j-api')
+
+    testRuntime group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    testRuntime project(':shcf4j-tests').sourceSets.test.runtimeClasspath
+    testCompile project(':shcf4j-tests').sourceSets.test.output
+    testCompile ( libraries.junit )
+    testCompile ( libraries.wiremock )
+    testCompile ( libraries.logbackClassic )
+}

@@ -1,7 +1,7 @@
 // build a map of the dependency artifacts to use.  Allows centralized definition of the version of artifacts to
 // use.  In that respect it serves a role similar to <dependencyManagement> in Maven
 ext {
-    lombokVersion = '1.16.18'
+    lombokVersion = '1.18.4'
     junitVersion = '4.12'
     assertjVersion = '3.11.1'
     wiremockVersion = '2.20.0'

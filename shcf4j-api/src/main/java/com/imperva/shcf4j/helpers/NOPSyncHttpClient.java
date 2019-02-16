@@ -45,8 +45,4 @@ class NOPSyncHttpClient implements SyncHttpClient {
         return handler.apply(NOPHttpResponse.INSTANCE);
     }
 
-    @Override
-    public void close() {
-
-    }
 }

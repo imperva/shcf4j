@@ -13,6 +13,10 @@ package com.imperva.shcf4j;
  */
 public class ProcessingException extends RuntimeException {
 
+    public ProcessingException(String message) {
+        super(message);
+    }
+
     public ProcessingException(Throwable cause) {
         super(cause);
     }

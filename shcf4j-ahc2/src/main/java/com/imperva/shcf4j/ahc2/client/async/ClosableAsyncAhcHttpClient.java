@@ -54,7 +54,7 @@ class ClosableAsyncAhcHttpClient implements AsyncHttpClient {
     public CompletableFuture<HttpResponse> execute(HttpHost target, HttpRequest request, ClientContext ctx) {
 
 
-        String fullUri = target.getSchemeName() + "://" + target.getHostname() + ":" + target.getPort() + request.getUri().toASCIIString();
+        String fullUri = target.toURI() + request.getUri().toASCIIString();
         RequestBuilder builder = new RequestBuilder(request.getHttpMethod().name());
         builder.setUri(org.asynchttpclient.uri.Uri.create(fullUri));
         handleClientContext(ctx, builder);

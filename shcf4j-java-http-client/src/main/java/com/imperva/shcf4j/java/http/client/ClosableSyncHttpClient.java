@@ -1,4 +1,4 @@
-package com.imperva.shcf4j.httpcomponents.client4;
+package com.imperva.shcf4j.java.http.client;
 
 import com.imperva.shcf4j.HttpHost;
 import com.imperva.shcf4j.HttpRequest;
@@ -8,30 +8,17 @@ import com.imperva.shcf4j.client.SyncHttpClient;
 import com.imperva.shcf4j.client.protocol.ClientContext;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.http.HttpClient;
 import java.util.function.Function;
 
-/**
- * <b>SyncHttpClientBase</b>
- * <p>
- * Base implementation of {@link SyncHttpClient}
- * </p>
- *
- * @author maxim.kirilov
- */
-public abstract class ClosableSyncHttpClientBase implements SyncHttpClient {
+class ClosableSyncHttpClient implements SyncHttpClient {
 
-    private final org.apache.http.impl.client.CloseableHttpClient httpClient;
+    private final HttpClient httpClient;
 
-    protected ClosableSyncHttpClientBase(org.apache.http.impl.client.CloseableHttpClient httpClient) {
+    ClosableSyncHttpClient(HttpClient httpClient) {
         this.httpClient = httpClient;
     }
-
-
-    @Override
-    public void close() throws IOException {
-        httpClient.close();
-    }
-
 
     @Override
     public HttpResponse execute(HttpHost target, HttpRequest request) {
@@ -55,15 +42,20 @@ public abstract class ClosableSyncHttpClientBase implements SyncHttpClient {
 
     @Override
     public <T> T execute(HttpHost target, HttpRequest request, Function<HttpResponse, ? extends T> handler, ClientContext ctx) {
+
+        java.net.http.HttpRequest httpRequest = JavaHttpRequestFactory.createJavaHttpRequest(target, request, ctx);
+
         try {
-            return httpClient.execute(
-                    ConversionUtils.convert(target),
-                    ConversionUtils.convert(request),
-                    response -> handler.apply(ConversionUtils.convert(response)),
-                    ConversionUtils.convert(ctx)
-            );
-        } catch (IOException ioException) {
-            throw new ProcessingException(ioException);
+            java.net.http.HttpResponse<InputStream> response =
+                    this.httpClient.send(httpRequest, java.net.http.HttpResponse.BodyHandlers.ofInputStream());
+
+            return handler.apply(new HttpResponseImpl(response));
+
+        } catch (IOException | InterruptedException e){
+            throw new ProcessingException(e);
         }
+
     }
+
+
 }
