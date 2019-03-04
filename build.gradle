@@ -86,7 +86,7 @@ configure(javaProjects()) {
 def publishedProjects = javaProjects()
 
 task jacocoRootReport(type: JacocoReport, group: 'Coverage reports') {
-    description = 'Generates an aggregate report from all subprojects'
+    description = 'Generates an aggregate report from all sub-projects'
     dependsOn(publishedProjects.test)
     
     additionalSourceDirs.from(files(publishedProjects.sourceSets.main.allSource.srcDirs))
@@ -94,7 +94,7 @@ task jacocoRootReport(type: JacocoReport, group: 'Coverage reports') {
     classDirectories.from(files(publishedProjects.sourceSets.main.output))
     executionData.from(files(publishedProjects.jacocoTestReport.executionData))
     doFirst {
-        executionData.from(files(executionData.findAll { it.exists() }))
+        executionData = files(executionData.findAll { it.exists() })
     }
     reports {
         html.enabled = true // human readable
