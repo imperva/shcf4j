@@ -5,6 +5,9 @@ import com.imperva.shcf4j.HttpRequest;
 import com.imperva.shcf4j.HttpRequestBuilder;
 import com.imperva.shcf4j.HttpResponse;
 import com.imperva.shcf4j.Request;
+import com.imperva.shcf4j.auth.AuthScope;
+import com.imperva.shcf4j.auth.UsernamePasswordCredentials;
+import com.imperva.shcf4j.client.CredentialsProvider;
 import com.imperva.shcf4j.client.config.CookieSpecs;
 import com.imperva.shcf4j.client.config.RequestConfig;
 import org.junit.Assert;
@@ -37,8 +40,7 @@ public abstract class HttpClientBuilderConfigTest extends HttpClientBaseTest {
                         aResponse()
                                 .withStatus(HttpURLConnection.HTTP_OK)
                                 .withFixedDelay((int) millisecondsDelay)
-                )
-        );
+                ));
 
         HttpRequest request =
                 HttpRequestBuilder
@@ -213,7 +215,7 @@ public abstract class HttpClientBuilderConfigTest extends HttpClientBaseTest {
 
 
     @Test(expected = Exception.class)
-    public void maxRedirectsExceededTest(){
+    public void maxRedirectsExceededTest() {
 
         String movedResource1 = "/new/resource1";
         String movedResource2 = "/new/resource2";
@@ -323,6 +325,78 @@ public abstract class HttpClientBuilderConfigTest extends HttpClientBaseTest {
 
         HttpResponse resp = execute(HOST, request, Function.identity(), null, b -> b.setDefaultRequestConfig(rc));
         assertThat(resp.getStatusLine().getStatusCode()).isEqualTo(HttpURLConnection.HTTP_OK);
+    }
+
+
+    @Test
+    public void basicAuthenticationAnyScopeTest() {
+        String uri = "/basic/auth";
+        String user = "user";
+        String password = "password";
+
+        createEndpointWithBasicAuthentication(uri, user, password);
+
+        HttpRequest request = HttpRequestBuilder.GET(URI.create(uri)).build();
+        CredentialsProvider cp = CredentialsProvider
+                .builder()
+                .credential(AuthScope.createAnyAuthScope(),
+                        UsernamePasswordCredentials.builder().username(user).password(password).build())
+                .build();
+
+
+        HttpResponse response = execute(HttpClientBaseTest.HOST, request, Function.identity(), null,
+                b -> b.setDefaultCredentialsProvider(cp));
+        assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpURLConnection.HTTP_OK);
+
+    }
+
+
+    @Test
+    public void basicAuthenticationSpecificScopeTest() {
+        String uri = "/basic/auth";
+        String user = "user";
+        String password = "password";
+
+        createEndpointWithBasicAuthentication(uri, user, password);
+
+        HttpRequest request = HttpRequestBuilder.GET(URI.create(uri)).build();
+        CredentialsProvider cp = CredentialsProvider
+                .builder()
+                .credential(AuthScope.builder().host(HOST.getHostname()).scheme("basic").build(),
+                        UsernamePasswordCredentials.builder().username(user).password(password).build())
+                .build();
+
+        HttpResponse response = execute(HttpClientBaseTest.HOST, request, Function.identity(), null,
+                b -> b.setDefaultCredentialsProvider(cp));
+
+        assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpURLConnection.HTTP_OK);
+
+        CredentialsProvider cp2 = CredentialsProvider
+                .builder()
+                .credential(AuthScope.builder().host(HOST.getHostname()).scheme("digest").build(),
+                        UsernamePasswordCredentials.builder().username(user).password(password).build())
+                .build();
+
+        response = execute(HttpClientBaseTest.HOST, request, Function.identity(), null,
+                b -> b.setDefaultCredentialsProvider(cp2));
+
+        assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpURLConnection.HTTP_UNAUTHORIZED);
+
+    }
+
+    private void createEndpointWithBasicAuthentication(String uri, String user, String password) {
+
+        instanceRule.stubFor(get(urlEqualTo(uri))
+                .willReturn(aResponse()
+                        .withStatus(401)
+                        .withHeader("WWW-Authenticate", "Basic realm=localhost")
+                ));
+
+        instanceRule.stubFor(get(urlEqualTo(uri))
+                .withBasicAuth(user, password)
+                .willReturn(aResponse()
+                        .withStatus(200)
+                ));
     }
 
 }

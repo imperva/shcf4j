@@ -10,7 +10,7 @@ ext.libraryVersions = [
 ]
 
 dependencies {
-    compile project(':shcf4j-api')
+    api project(':shcf4j-api')
     implementation group: 'org.apache.httpcomponents', name: 'httpclient',      version:"${libraryVersions.httpcomponents}"
     implementation group: 'org.apache.httpcomponents', name: 'httpmime',        version:"${libraryVersions.httpcomponents}"
     implementation group: 'org.apache.httpcomponents', name: 'httpasyncclient', version:"${libraryVersions.httpasyncclient}"

@@ -98,12 +98,13 @@ public class AsyncAhcClientBuilder implements AsyncHttpClientBuilder {
 
     @Override
     public AsyncHttpClientBuilder setDefaultCredentialsProvider(CredentialsProvider cp) {
+        Objects.requireNonNull(cp, "cp");
+        this.configBuilder.setRealm(ConversionUtils.convert(cp).get(0));
         return this;
     }
 
     @Override
     public AsyncHttpClientBuilder addRequestInterceptor(Consumer<MutableHttpRequest> interceptor) {
-
         this.configBuilder.addRequestFilter(new RequestFilterInterceptor(interceptor));
         return this;
     }

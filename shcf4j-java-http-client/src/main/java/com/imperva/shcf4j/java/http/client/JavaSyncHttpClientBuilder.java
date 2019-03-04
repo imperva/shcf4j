@@ -14,6 +14,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLParameters;
 import javax.net.ssl.TrustManager;
+import java.net.CookieManager;
 import java.net.InetSocketAddress;
 import java.net.ProxySelector;
 import java.net.http.HttpClient;
@@ -47,7 +48,7 @@ class JavaSyncHttpClientBuilder implements SyncHttpClientBuilder {
             TrustManager[] tm = strategy.getTrustManagerFactory() != null ? strategy.getTrustManagerFactory().getTrustManagers() : null;
             sslContext.init(km, tm, null);
             this.builder.sslContext(sslContext);
-        } catch (NoSuchAlgorithmException | KeyManagementException e){
+        } catch (NoSuchAlgorithmException | KeyManagementException e) {
             throw new SSLException(e);
         }
 
@@ -62,13 +63,20 @@ class JavaSyncHttpClientBuilder implements SyncHttpClientBuilder {
             return setProxy(config.getProxy());
         }
 
-        if (config.getConnectTimeoutMilliseconds() > 0){
+        if (config.getConnectTimeoutMilliseconds() > 0) {
             this.builder.connectTimeout(Duration.ofMillis(config.getConnectTimeoutMilliseconds()));
         }
 
-
-//        builder.cookieHandler()
-
+        switch (config.getCookieSpec()) {
+            case IGNORE_COOKIES:
+                this.builder.cookieHandler(new CookieManager(IgnoreAllCookieStore.INSTANCE, null));
+                break;
+            case STANDARD_RFC_6265:
+                this.builder.cookieHandler(new CookieManager());
+                break;
+            default:
+                throw new RuntimeException("Not supported Cookie spec: " + config.getCookieSpec());
+        }
 
         return this;
     }
@@ -81,6 +89,11 @@ class JavaSyncHttpClientBuilder implements SyncHttpClientBuilder {
 
     @Override
     public SyncHttpClientBuilder setDefaultCredentialsProvider(CredentialsProvider cp) {
+
+//        cp.getCredentials()
+
+
+
         return this;
     }
 

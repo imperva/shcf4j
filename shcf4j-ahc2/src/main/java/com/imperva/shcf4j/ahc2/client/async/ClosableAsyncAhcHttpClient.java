@@ -14,7 +14,6 @@ import com.imperva.shcf4j.request.body.multipart.FilePart;
 import com.imperva.shcf4j.request.body.multipart.InputStreamPart;
 import com.imperva.shcf4j.request.body.multipart.Part;
 import com.imperva.shcf4j.request.body.multipart.StringPart;
-import org.asynchttpclient.Realm;
 import org.asynchttpclient.RequestBuilder;
 import org.asynchttpclient.Response;
 
@@ -22,7 +21,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 
 /**
@@ -116,39 +114,7 @@ class ClosableAsyncAhcHttpClient implements AsyncHttpClient {
 
     private static void handleCredentialsProvider(CredentialsProvider cp, RequestBuilder builder) {
         if (cp != null) {
-            List<Realm> lRealms =
-                    cp.getCredentials()
-                            .entrySet()
-                            .stream()
-                            .map(e -> {
-                                Realm.Builder realm = new Realm.Builder(
-                                        e.getValue().getUserPrincipal().getName(),
-                                        e.getValue().getPassword());
-                                if (e.getKey().getScheme() != null) {
-                                    switch (e.getKey().getScheme().toUpperCase()) {
-                                        case "BASIC":
-                                            realm.setScheme(Realm.AuthScheme.BASIC);
-                                            break;
-                                        case "DIGEST":
-                                            realm.setScheme(Realm.AuthScheme.DIGEST);
-                                            break;
-                                        case "NTLM":
-                                            realm.setScheme(Realm.AuthScheme.NTLM);
-//                                        realm.setNtlmDomain()
-                                            break;
-                                        case "SPNEGO":
-                                            realm.setScheme(Realm.AuthScheme.SPNEGO);
-                                            break;
-                                        case "KERBEROS":
-                                            realm.setScheme(Realm.AuthScheme.KERBEROS);
-                                            break;
-                                    }
-                                } else { // Default scheme
-                                    realm.setScheme(Realm.AuthScheme.BASIC);
-                                }
-                                return realm.build();
-                            }).collect(Collectors.toList());
-            builder.setRealm(lRealms.get(0));
+            builder.setRealm(ConversionUtils.convert(cp).get(0));
         }
     }
 
@@ -202,7 +168,7 @@ class ClosableAsyncAhcHttpClient implements AsyncHttpClient {
 
             partBase.setDispositionType(p.getDispositionType());
 
-            for (Header h : p.getCustomHeaders()){
+            for (Header h : p.getCustomHeaders()) {
                 partBase.addCustomHeader(h.getName(), h.getValue());
             }
             builder.addBodyPart(partBase);

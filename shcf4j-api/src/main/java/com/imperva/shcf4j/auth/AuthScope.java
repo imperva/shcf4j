@@ -1,7 +1,8 @@
 package com.imperva.shcf4j.auth;
 
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Value;
 
 @Builder
 @Value
@@ -13,7 +14,7 @@ public class AuthScope {
     private final String realm;
     private final String scheme;
 
-    public static AuthScope createAnyAuthScope(){
+    public static AuthScope createAnyAuthScope() {
         return builder().build();
     }
 

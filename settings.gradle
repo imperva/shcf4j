@@ -19,5 +19,3 @@ rootProject.children.each { project ->
     String fileBaseName = project.name.replaceAll("\\p{Upper}") { "-${it.toLowerCase()}" }
     project.buildFileName = "${fileBaseName}.gradle"
 }
-
-enableFeaturePreview('STABLE_PUBLISHING')
