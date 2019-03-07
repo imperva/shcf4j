@@ -11,7 +11,6 @@ public class FilePartBuilder extends PartBuilder<FilePartBuilder> {
 
 
     FilePartBuilder() {
-        contentType(ContentType.createApplicationOctetStream());
     }
 
     public FilePartBuilder filePath(Path filePath) {
@@ -22,6 +21,9 @@ public class FilePartBuilder extends PartBuilder<FilePartBuilder> {
     @Override
     public Part build() {
         Objects.requireNonNull(filePath, "filePath");
+        if (this.contentType == null){
+            contentType(ContentType.probeContentType(filePath));
+        }
         return new FilePart(this);
     }
 }

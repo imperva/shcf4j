@@ -7,6 +7,7 @@ import com.imperva.shcf4j.ProcessingException;
 import com.imperva.shcf4j.client.protocol.ClientContext;
 
 import java.io.Closeable;
+import java.io.IOException;
 import java.util.function.Function;
 
 /**
@@ -95,4 +96,7 @@ public interface SyncHttpClient extends Closeable {
      */
     <T> T execute(HttpHost target, HttpRequest request, Function<HttpResponse, ? extends T> handler, ClientContext ctx);
 
+
+    @Override
+    default void close() throws IOException { }
 }

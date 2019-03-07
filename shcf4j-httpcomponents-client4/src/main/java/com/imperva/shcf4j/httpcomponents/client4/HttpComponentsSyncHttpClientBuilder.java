@@ -73,7 +73,7 @@ class HttpComponentsSyncHttpClientBuilder implements com.imperva.shcf4j.SyncHttp
      */
     @Override
     public SyncHttpClient build() {
-        return new SimpleSyncHttpClient(builder.build());
+        return new ClosableSyncHttpClient(builder.build());
     }
 
 
@@ -82,7 +82,7 @@ class HttpComponentsSyncHttpClientBuilder implements com.imperva.shcf4j.SyncHttp
      * @return {@code SyncHttpClientBuilder}
      */
     @Override
-    public HttpComponentsSyncHttpClientBuilder setSSLSessionStrategy(final SSLSessionStrategy strategy)  throws SSLException {
+    public HttpComponentsSyncHttpClientBuilder setSSLSessionStrategy(final SSLSessionStrategy strategy) throws SSLException {
         Objects.requireNonNull(strategy, "strategy");
 
         try {
@@ -102,7 +102,7 @@ class HttpComponentsSyncHttpClientBuilder implements com.imperva.shcf4j.SyncHttp
 
             this.builder.setSSLSocketFactory(socketFactory);
             return this;
-        } catch (NoSuchAlgorithmException | KeyManagementException e){
+        } catch (NoSuchAlgorithmException | KeyManagementException e) {
             throw new SSLException(e);
         }
     }
@@ -225,7 +225,7 @@ class HttpComponentsSyncHttpClientBuilder implements com.imperva.shcf4j.SyncHttp
     public HttpComponentsSyncHttpClientBuilder addRequestInterceptor(Consumer<MutableHttpRequest> interceptor) {
 
         this.builder.addInterceptorLast((HttpRequest request, HttpContext context) ->
-            interceptor.accept(new HttpCommonsHttpRequestAdapter(request))
+                interceptor.accept(new HttpCommonsHttpRequestAdapter(request))
         );
 
         return this;

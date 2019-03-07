@@ -11,9 +11,11 @@ include "shcf4j-api",
         "shcf4j-examples",
         "shcf4j-tests"
 
+if (JavaVersion.current().java11Compatible){
+    include "shcf4j-java-http-client"
+}
+
 rootProject.children.each { project ->
     String fileBaseName = project.name.replaceAll("\\p{Upper}") { "-${it.toLowerCase()}" }
     project.buildFileName = "${fileBaseName}.gradle"
 }
-
-enableFeaturePreview('STABLE_PUBLISHING')

@@ -6,6 +6,7 @@ import com.imperva.shcf4j.HttpResponse;
 import com.imperva.shcf4j.client.protocol.ClientContext;
 
 import java.io.Closeable;
+import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -40,5 +41,8 @@ public interface AsyncHttpClient extends Closeable {
      * @return {@link CompletableFuture} representing pending completion of the operation.
      */
     CompletableFuture<HttpResponse> execute(HttpHost target, HttpRequest request, ClientContext ctx);
+
+    @Override
+    default void close() throws IOException { }
 
 }
