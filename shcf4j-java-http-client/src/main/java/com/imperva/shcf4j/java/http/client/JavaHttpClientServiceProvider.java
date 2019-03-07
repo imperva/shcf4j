@@ -14,6 +14,6 @@ public class JavaHttpClientServiceProvider implements SHC4JServiceProvider {
 
     @Override
     public AsyncHttpClientBuilder getHttpAsyncClientBuilder() {
-        return null;
+        return new JavaAsyncHttpClientBuilder();
     }
 }

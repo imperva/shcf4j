@@ -17,6 +17,7 @@ In addition, SHCF4J enables cleaner code by declaring all possible exceptions as
 ## Supported Providers
 * Apache HTTP Client 4.3+
 * Asynchronous HTTP Client 2.6+ (AHC2)
+* JDK11 HTTP Client
 
 ## Installation
 Binaries are deployed on both Maven central & JCenter repositories.

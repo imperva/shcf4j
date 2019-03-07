@@ -21,6 +21,7 @@ import java.net.http.HttpClient;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 class JavaSyncHttpClientBuilder implements SyncHttpClientBuilder {
@@ -39,61 +40,25 @@ class JavaSyncHttpClientBuilder implements SyncHttpClientBuilder {
 
     @Override
     public SyncHttpClientBuilder setSSLSessionStrategy(SSLSessionStrategy strategy) throws SSLException {
-
-        this.builder.sslParameters(new SSLParameters(strategy.getSupportedCipherSuites(), strategy.getSupportedProtocols()));
-
-        try {
-            SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
-            KeyManager[] km = strategy.getKeyManagerFactory() != null ? strategy.getKeyManagerFactory().getKeyManagers() : null;
-            TrustManager[] tm = strategy.getTrustManagerFactory() != null ? strategy.getTrustManagerFactory().getTrustManagers() : null;
-            sslContext.init(km, tm, null);
-            this.builder.sslContext(sslContext);
-        } catch (NoSuchAlgorithmException | KeyManagementException e) {
-            throw new SSLException(e);
-        }
-
+        HttpClientBuilderUtils.setSSLSessionStrategy(strategy, this.builder);
         return this;
     }
 
     @Override
     public SyncHttpClientBuilder setDefaultRequestConfig(RequestConfig config) {
-        this.builder.followRedirects(config.isRedirectsEnabled() ? HttpClient.Redirect.ALWAYS : HttpClient.Redirect.NEVER);
-
-        if (config.getProxy() != null) { // Handle Proxy
-            return setProxy(config.getProxy());
-        }
-
-        if (config.getConnectTimeoutMilliseconds() > 0) {
-            this.builder.connectTimeout(Duration.ofMillis(config.getConnectTimeoutMilliseconds()));
-        }
-
-        switch (config.getCookieSpec()) {
-            case IGNORE_COOKIES:
-                this.builder.cookieHandler(new CookieManager(IgnoreAllCookieStore.INSTANCE, null));
-                break;
-            case STANDARD_RFC_6265:
-                this.builder.cookieHandler(new CookieManager());
-                break;
-            default:
-                throw new RuntimeException("Not supported Cookie spec: " + config.getCookieSpec());
-        }
-
+        HttpClientBuilderUtils.setDefaultRequestConfig(config, this.builder);
         return this;
     }
 
     @Override
     public SyncHttpClientBuilder setProxy(HttpHost proxy) {
-        this.builder.proxy(ProxySelector.of(new InetSocketAddress(proxy.getHostname(), proxy.getPort())));
+        HttpClientBuilderUtils.setProxy(proxy, this.builder);
         return this;
     }
 
     @Override
     public SyncHttpClientBuilder setDefaultCredentialsProvider(CredentialsProvider cp) {
-
-//        cp.getCredentials()
-
-
-
+        HttpClientBuilderUtils.setDefaultCredentialsProvider(cp, this.builder);
         return this;
     }
 

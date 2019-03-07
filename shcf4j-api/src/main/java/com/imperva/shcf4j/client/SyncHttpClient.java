@@ -97,5 +97,6 @@ public interface SyncHttpClient extends Closeable {
     <T> T execute(HttpHost target, HttpRequest request, Function<HttpResponse, ? extends T> handler, ClientContext ctx);
 
 
+    @Override
     default void close() throws IOException { }
 }
